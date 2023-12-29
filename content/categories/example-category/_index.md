@@ -1,6 +1,6 @@
 ---
-title: Example Category
-description: A description of this category
+title: 生活随想
+description: 关于生活的一些故事
 image:
 
 # Badge style
