@@ -138,11 +138,11 @@ reactionsEnabled = 1
 emitMetadata = 0
 
 [comments.gitalk]
-owner = ""
-admin = ""
-repo = ""
-clientID = ""
-clientSecret = ""
+owner = "roseduan"
+admin = "roseduan"
+repo = "roseduan.github.io"
+clientID = "354d1c483644032e3d21"
+clientSecret = "3f65d24831ac79f4e68f762f5f02e4a75ae40ad3"
 
 [comments.cusdis]
 host = ""
