@@ -22,3 +22,19 @@ url = "https://twitter.com/roseduan520"
 
 [social.params]
 icon = "brand-twitter"
+
+[[social]]
+identifier = "zhihu"
+name = "Zhihu"
+url = "https://www.zhihu.com/people/roseduan"
+
+[social.params]
+icon = "brand-zhihu"
+
+[[social]]
+identifier = "wechat"
+name = "微信公众号 roseduan写字的地方"
+url = "https://www.zhihu.com/people/roseduan"
+
+[social.params]
+icon = "brand-wechat"
