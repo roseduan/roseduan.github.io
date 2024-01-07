@@ -5,7 +5,7 @@ rssFullContent = true
 favicon = "/favicon.ico"
 
 [footer]
-since = 2023
+since = 2024
 customText = ""
 
 [dateFormat]
