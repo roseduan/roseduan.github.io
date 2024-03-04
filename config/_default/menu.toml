@@ -34,7 +34,7 @@ icon = "brand-zhihu"
 [[social]]
 identifier = "wechat"
 name = "微信公众号 roseduan写字的地方"
-url = "https://www.zhihu.com/people/roseduan"
+url = "https://mp.weixin.qq.com/s/hs36eiU7Zr-UdJ0YBtZgKQ"
 
 [social.params]
 icon = "brand-wechat"
