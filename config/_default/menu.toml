@@ -38,3 +38,11 @@ url = "https://mp.weixin.qq.com/s/hs36eiU7Zr-UdJ0YBtZgKQ"
 
 [social.params]
 icon = "brand-wechat"
+
+[[social]]
+identifier = "bilibili"
+name = "B 站「程序员roseduan」"
+url = "https://space.bilibili.com/26194591"
+
+[social.params]
+icon = "brand-bilibili"
