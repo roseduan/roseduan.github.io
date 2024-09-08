@@ -46,7 +46,7 @@ menu:
 
 roseduan写字的地方
 
-| <img src="https://w02agegxg3.feishu.cn/space/api/box/stream/download/asynccode/?code=MDk3YzcxZTMxYTU5ZjA5OTkyNzhjZjEwODIxYzM2NmJfRlZBREdodWl4dk10Q0ZLenZUdGlRVThDaVg1cTAzU3FfVG9rZW46RzBlZmI5Rkpmb3BQN1p4akVnQmNhTUc3bjFmXzE3MjUyNTIyNDE6MTcyNTI1NTg0MV9WNA" width="200px" align="left"/> |
+| <img src="https://s2.loli.net/2024/09/08/UnyxaAlufY3qkcD.jpg" width="200px" align="left"/> |
 | ------------------------------------------------------------ |
 
 ### B 站
