@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>项目推荐 on roseduan</title><link>https://roseduan.github.io/tags/%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/</link><description>Recent content in 项目推荐 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 06 Mar 2024 21:07:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/tags/%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/index.xml" rel="self" type="application/rss+xml"/><item><title>Go 语言数据库/存储项目推荐</title><link>https://roseduan.github.io/p/go-%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%AD%98%E5%82%A8%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/</link><pubDate>Wed, 06 Mar 2024 21:07:56 +0800</pubDate><guid>https://roseduan.github.io/p/go-%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%AD%98%E5%82%A8%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/</guid><description>&lt;p>大家好，今天给大家分享一些使用 Go 语言编写的数据库/存储项目。&lt;/p>
+&lt;p>因为我的两个存储引擎开源项目 &lt;code>rosedb&lt;/code> 和 &lt;code>lotusdb&lt;/code> 都是使用 Go 语言编写的，所以这几年在这方面也有很多的积累，今天就把自己压箱底的干货分享给大家。&lt;/p>
+&lt;p>首先需要说明的是，像 &lt;code>TiDB&lt;/code>、&lt;code>CockroachDB&lt;/code>、&lt;code>etcd&lt;/code> 这些大型的项目我就不再列举了，因为这些项目都耳熟能详，公开的资料也很多，不需要我再多说什么了。&lt;/p>
+&lt;p>&lt;strong>今天想给大家分享的是，一些比较小众的，代码量在 1w 行以内，适合大家去学习上手的一些项目。如果你想入门数据库/存储领域，这些项目其实都非常适合你去研究学习，能够让你对数据库/存储领域有一个更深入的了解。如果你是学习了 Go 语言，想找一个小项目来练手，这些项目也是非常适合你。&lt;/strong>&lt;/p>
+&lt;p>这次分享的项目主要分为了两个大的类型，一是一些基础类型的教程，二是一些比较完整的项目。 最后也会分享我自己推荐的学习方式。&lt;/p>
+&lt;h2 id="基础类型的教程">基础类型的教程
+&lt;/h2>&lt;ol>
+&lt;li>第一个是我自己写的 mini-bitcask 教程 &lt;a class="link" href="https://github.com/rosedblabs/mini-bitcask" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/mini-bitcask&lt;/a>，300 多行代码实现了一个极简的 bitcask 存储引擎，可以看做是 rosedb 的 mini 版本，对于你学习存储引擎的原理和实现有很大的帮助。我之前还专门写了一篇文章来介绍这个项目，可以结合起来观看效果更佳。&lt;/li>
+&lt;li>两百行代码实现基于 paxos 的分布式 KV &lt;a class="link" href="https://github.com/openacid/paxoskv" target="_blank" rel="noopener"
+>https://github.com/openacid/paxoskv&lt;/a>，也有一个专门讲解的博客文章，非常值得学习。&lt;/li>
+&lt;li>从零开始写时序数据库 &lt;a class="link" href="https://github.com/chenjiandongx/mandodb" target="_blank" rel="noopener"
+>https://github.com/chenjiandongx/mandodb&lt;/a>。这个项目是一个时序数据库，作者从零开始写了一个简单的时序数据库，代码量不大，适合新手学习。&lt;/li>
+&lt;li>Go 语言实现的易于学习的 sql 数据库 &lt;a class="link" href="https://github.com/qw4990/NYADB2" target="_blank" rel="noopener"
+>https://github.com/qw4990/NYADB2&lt;/a>，参考了很多 boltdb 的实现。&lt;/li>
+&lt;li>1k 行代码的极简分布式 kv 数据库 &lt;a class="link" href="https://github.com/geohot/minikeyvalue" target="_blank" rel="noopener"
+>https://github.com/geohot/minikeyvalue&lt;/a>，并且用于了生产环境。&lt;/li>
+&lt;/ol>
+&lt;h2 id="进阶类型的项目">进阶类型的项目
+&lt;/h2>&lt;h3 id="关系型数据库">关系型数据库
+&lt;/h3>&lt;p>关系型数据库这里推荐几个我觉得还不错的，但是关系型 DB 难度肯定比 KV 更大，因为关系型 DB 包含了多个组件比如 parser、执行器、事务、存储等模块，感兴趣的同学可以参考。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/chaisql/chai" target="_blank" rel="noopener"
+>https://github.com/chaisql/chai&lt;/a>，嵌入式 SQL 数据库，兼容 Postgres 的 sql，支持持久化存储。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/codenotary/immudb" target="_blank" rel="noopener"
+>https://github.com/codenotary/immudb&lt;/a>，支持文档、SQL、KV 的多模数据库。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/auxten/go-sqldb" target="_blank" rel="noopener"
+>https://github.com/auxten/go-sqldb&lt;/a>，简单的 sql 数据库，使用 B+ 树存储数据，实现了 parser 和 executor。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/rqlite/rqlite" target="_blank" rel="noopener"
+>https://github.com/rqlite/rqlite&lt;/a>，基于 sqlite 的分布式数据库，可以认为是 raft+sqlite。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/hashicorp/go-memdb" target="_blank" rel="noopener"
+>https://github.com/hashicorp/go-memdb&lt;/a>，hashicorp 的内存型嵌入式数据库，比较轻量级。&lt;/p>
+&lt;h3 id="kv-数据库">KV 数据库
+&lt;/h3>&lt;h4 id="bitcask">Bitcask
+&lt;/h4>&lt;p>rosedb &lt;a class="link" href="https://github.com/rosedblabs/rosedb" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/rosedb&lt;/a>，基于 bitcask 的 KV 存储引擎，轻量级，支持 WriteBatch、TTL、Scan 等功能，目前是被应用到了生产环境中。&lt;/p>
+&lt;p>nutsdb &lt;a class="link" href="https://github.com/nutsdb/nutsdb" target="_blank" rel="noopener"
+>https://github.com/nutsdb/nutsdb&lt;/a>，同样也是基于 bitcask 的 KV 存储引擎，支持类似 Redis 的数据结构，国人开发和维护。&lt;/p>
+&lt;h4 id="btree">B+Tree
+&lt;/h4>&lt;p>boltdb &lt;a class="link" href="https://github.com/etcd-io/bbolt" target="_blank" rel="noopener"
+>https://github.com/etcd-io/bbolt&lt;/a>, Go 语言领域知名的存储引擎，B+ 树实现，支持一写多读的事务，广泛运用于生产环境，etcd 就是使用了 boltdb 作为持久化存储引擎。&lt;/p>
+&lt;h4 id="lsm-tree">LSM Tree
+&lt;/h4>&lt;p>goleveldb &lt;a class="link" href="https://github.com/syndtr/goleveldb" target="_blank" rel="noopener"
+>https://github.com/syndtr/goleveldb&lt;/a>，leveldb 的 Go 语言实现，学习 LSM Tree 实现细节的好项目。&lt;/p>
+&lt;p>badger &lt;a class="link" href="https://github.com/dgraph-io/badger" target="_blank" rel="noopener"
+>https://github.com/dgraph-io/badger&lt;/a>，wisckey 的实现，LSM Tree KV 分离。&lt;/p>
+&lt;p>pebble &lt;a class="link" href="https://github.com/cockroachdb/pebble" target="_blank" rel="noopener"
+>https://github.com/cockroachdb/pebble&lt;/a>，CockroachDB 的底层存储引擎，目前 Go 领域最难的 KV 存储引擎了，设计非常精细，代码量也比较大，主要参考了 RocksDB。&lt;/p>
+&lt;h4 id="hybridlsmbptree">Hybrid（LSM+BPTree）
+&lt;/h4>&lt;p>lotusdb &lt;a class="link" href="https://github.com/lotusdblabs/lotusdb" target="_blank" rel="noopener"
+>https://github.com/lotusdblabs/lotusdb&lt;/a>，结合 LSM 和 B+Tree 的存储引擎，架构较为新颖。&lt;/p>
+&lt;h2 id="学习建议">学习建议
+&lt;/h2>&lt;p>最后，针对 KV 数据库的学习，这里给出我的一些小的建议。&lt;/p>
+&lt;p>从存储模型上来说，主流的 KV 存储模型有两种，分别是 &lt;code>B+Tree&lt;/code> 和 &lt;code>LSM Tree&lt;/code>，当然后来也出现了很多基于此的变种和优化，但最基本的还是这两个。&lt;/p>
+&lt;p>bitcask 可以看做是一个简化版的 LSM Tree，它大致只包含 LSM 中的 wal 和 memtable 组件，LSM 中最复杂的 SSTable 组件被省略了。&lt;/p>
+&lt;p>所以在学习上，建议先从 bitcask 学起，可以参考我的那个 mini-bitask 教程，结合文章，很容易就能够理解了，代码也只有 300 多行。&lt;/p>
+&lt;p>然后再看看我的 rosedb 项目，就基本上能够理解 bitcask 存储模型了。&lt;/p>
+&lt;p>有了这个基础之后，可以再学习 B+树或者 LSM Tree，倒也不用两个都学，可以挑选一个自己感兴趣的去学习。&lt;/p>
+&lt;p>B+树的话就去看 boltdb，网上也有很多 boltdb 源码解析的文章。LSM Tree 的话推荐 goleveldb，结合 leveldb 一些资料和原理，应该理解起来也不难。&lt;/p>
+&lt;p>当然，看代码学习也只是迈出了第一步，想要更加深入的话，比如自己去撸一个出来，就需要花费更多的时间和精力了。&lt;/p></description></item></channel></rss>

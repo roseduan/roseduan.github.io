@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>开源 on roseduan</title><link>https://roseduan.github.io/categories/%E5%BC%80%E6%BA%90/</link><description>Recent content in 开源 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 11 Sep 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/categories/%E5%BC%80%E6%BA%90/index.xml" rel="self" type="application/rss+xml"/><item><title>rose 聊开源—2 如何快速上手一个开源项目</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%902-%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Wed, 11 Sep 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%902-%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>在前面的一篇开源项目系列中，主要介绍了目前开源项目蓬勃发展的态势，并且拥有一个开源项目，对我们个人履历、职业发展等都有非常多的好处。&lt;/p>
+&lt;p>这一次就来跟大家分享一下，面对一个开源项目，我们应该如何上手，快速看懂项目的源代码，并且能够参与到开源项目的社区中。&lt;/p>
+&lt;p>首先，如果我们通过 Github 找到了一些项目，如何判断这个项目是否符合我们的需求，是否值得我们花时间去投入呢?&lt;/p>
+&lt;p>在我看来，有几个比较重要的点需要关注。&lt;/p>
+&lt;p>一是项目是否对新人友好，是否有比较完善的文档和上手教程。其实一般做的比较规范的项目，都会有这部分内容，会在项目的 README 文档中，说明上手项目的整体流程，以及如何参与到社区当中等等。&lt;/p>
+&lt;p>如果连这些基本的内容都没有的话，说明社区的建设并不是很好，或者说只是一些年久失修的项目，想要上手的话难度会很大。&lt;/p>
+&lt;p>二是，如果想要参与到开源项目当中的话，则需要关注这个项目是否接受外部贡献者。因为有的项目实际上是公司内部在维护，对外部贡献者可能并没有完善的流程、规范等等。&lt;/p>
+&lt;p>第三点，可以关注是否有适合的 Good First Issue，一般来说，开源社区会将一些适合新人上手的 Issue 标记为 Good First Issue，从这些 Issue 开始上手会是一个不错的选择。&lt;/p>
+&lt;p>在这个基础之上，如果你已经选择了一个不错的开源项目，如何快速上手呢？我认为搞懂下面几个问题是比较关键的。&lt;/p>
+&lt;p>首先，面对一个开源项目，其实最基础的问题，就是搞懂这个项目的基本背景，就是这个项目是基于什么契机建立的，比如是为了解决什么实际的问题，或者是对某个系统进行优化，或者是使用新的语言进行重写等等。&lt;/p>
+&lt;p>通过这些背景，需要搞懂项目主要的功能是什么，用来解决什么样的问题。&lt;/p>
+&lt;p>其次，需要搞懂项目的大致架构，当然在初期不太可能将每个模块都能够完全搞明白，特别是如果一个项目比较庞大的情况下，但是尽量搞清楚架构图中每个模块的大致功能，先从宏观上有个大致的了解。&lt;/p>
+&lt;p>这个理论背景的基础之上，我们需要动手实践起来。&lt;/p>
+&lt;p>比如，首先需要能够编译并且运行这个项目，这是最基础的一个步骤。并且针对项目当中的一些核心流程和方法，能够去进行调试，一步一步的去查看执行过程中的状态转换。&lt;/p>
+&lt;p>比如针对一个数据库项目，或者存储引擎的项目，其实最基础的流程就是，建立表，并且向表中插入数据，然后能够从表中读取数据，这是一个最基础的步骤。&lt;/p>
+&lt;p>当然，这个链路当中可能又涉及到了很多的不同的内部组件和方法等等，需要我们在调试的过程中去慢慢熟悉。&lt;/p>
+&lt;p>以上是我对如何入门开源项目的一点建议，我在 B 站也发布了一个视频，使用一个 Rust 项目作为示例，用上面我提到的步骤，一步步调试 Rust 项目，向大家详细演示了如何搞懂一个开源项目。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-1439355f6784c468ef62c088770b5306_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>感兴趣可以观看下：&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.bilibili.com/video/BV1Qc4YevEVy" target="_blank" rel="noopener"
+>https://www.bilibili.com/video/BV1Qc4YevEVy&lt;/a>&lt;/p></description></item><item><title>近期对 wal 组件的性能提升</title><link>https://roseduan.github.io/p/%E8%BF%91%E6%9C%9F%E5%AF%B9-wal-%E7%BB%84%E4%BB%B6%E7%9A%84%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/</link><pubDate>Sat, 15 Jun 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E8%BF%91%E6%9C%9F%E5%AF%B9-wal-%E7%BB%84%E4%BB%B6%E7%9A%84%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/</guid><description>&lt;h2 id="wal-的由来">wal 的由来
+&lt;/h2>&lt;p>wal 是我去年写的一个小组件，主要用于 LSM Tree 或者 Bitcask 的预写日志文件，以及任意的 append-only 文件读写都可以使用，第一次发布是 2023.6.13，刚好开源一年了：&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-67afdeac25522133bfb2f3056d3848c6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>rosedb 和 lotusdb 将其作为重要的底层日志文件存储组件使用，这个通用的组件简化了 rosedb 和 lotusdb 的一部分代码，使项目整体更加简洁。
+一年过去了，wal 同时也被很多其他的开源/闭源项目所使用（生产环境），对这个小组件我还是比较满意的，整体代码的质量还不错，代码理解起来也比较简单。&lt;/p>
+&lt;p>之前写过一篇文章，简单介绍了如何使用 wal 构建一个极简的 KV 存储模型，以及我还在 Go 夜读社区分享过关于 wal 的设计和实现，结合这些资料看懂源代码应该没有什么困难。
+&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/BAsJsdWYyIpPZjwsc1u8JQ" target="_blank" rel="noopener"
+>使用 wal 构建你自己的 KV 存储&lt;/a>
+&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//www.bilibili.com/video/BV1V44y1A7Mx" target="_blank" rel="noopener"
+>Go 夜读：高性能预写日志（Write Ahead Log）的设计与实现&lt;/a>&lt;/p>
+&lt;p>总体来说 wal 就是一个 append-only 的日志文件，提供了基础的读写方法，基本上参考了 leveldb 的预写日志文件的格式。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-1e2bfa053b3acd365a322681b78fe32a_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>写是一直 append 的，写完之后会得到一个表示数据位置的结构体，通过这个结构可以读取到对应的数据。&lt;/p>
+&lt;h2 id="这次对-wal-的优化">这次对 wal 的优化
+&lt;/h2>&lt;p>之前对整个 wal 文件进行遍历的时候，如果 value 比较小，那么会多次重复读取 value 所属的 block，这样的话效率比较低，而且是完全没必要的。
+之前的策略是加上了一个 block cache 来缓解这个问题。&lt;/p>
+&lt;p>但是细想，一个 block 读上来之后，如果 value 仍然在当前 block 中，那么可以重复利用这个 block，不用再去读取文件了。
+在这个思路之下，对 wal 的读取进行了优化，主要是去掉了 block cache，并且如果 value 比较小的话，会直接重复利用当前 block，避免重复读取。&lt;/p>
+&lt;p>优化之后的效果还是比较明显的，在我的机器上，遍历 1.8G 的数据，花了 5 s 左右，之前是 20s，遍历读取的性能提升在 4-5 倍左右。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-46aec859c87c590a15da49cc3cda6bb1_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>带来的一个好处便是，rosedb 的启动速度会得到提升，因为 rosedb 在启动的时候，会加载所有的 wal 文件进行索引的构建。&lt;/p></description></item><item><title>rose 聊开源—1 你为什么需要一个开源项目</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%901-%E4%BD%A0%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Wed, 05 Jun 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%901-%E4%BD%A0%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>我自己从最开始开源 rosedb/lotusdb，以及一些其他组件，折腾开源也有很多年了，这次想写一个关于开源项目的系列，结合我自己的实际经历，讲讲开源项目的开发、参与、维护、流程规范、收获、盈利等内容，希望这个系列对大家有所帮助。&lt;/p>
+&lt;hr>
+&lt;p>在当今快速发展的技术领域，开源项目越来越受到开发者和企业的重视，近几年开源在国内的势头其实也发展得非常好，涌现出了非常多优秀的开源项目、开源社区，以及日益增长的开源开发者和爱好者。&lt;/p>
+&lt;p>开源甚至是一些公司的商业策略以及赖以生存的根本，比如国内开源各方面做的最好的 TiDB，还有很多其他优秀的开源项目。&lt;/p>
+&lt;p>对于我们个人来说，参与或维护开源项目不仅可以提升个人的技术水平，还能带来诸多好处，这一次来和大家简单探讨为什么你需要一个开源项目，以及它如何在个人成长和职业发展中发挥关键作用。&lt;/p>
+&lt;p>&lt;strong>技术提升&lt;/strong>&lt;/p>
+&lt;p>开源能够带给我们非常多的好处，对于技术人来说，最直观的就是技术能力方面的提升了。&lt;/p>
+&lt;p>通过开发项目解决实际问题，并且在开源维护的过程当中，阅读别人的代码，能够见识到不同的人的代码，以及编码风格，可以从别人写的好的地方去学习。&lt;/p>
+&lt;p>我自己开源了一些关于存储引擎方面的开源项目，让我能够在这方面一直深入研究，不断提升在这方面的能力。&lt;/p>
+&lt;p>&lt;strong>履历&lt;/strong>&lt;/p>
+&lt;p>开源项目是一种展示技术能力的最佳方式之一。&lt;/p>
+&lt;p>比如在简历中列出你参与的开源项目以及你的贡献，能够直观地向招聘者展示你的实际能力和项目经验，这比任何证书和成绩单都更具说服力。&lt;/p>
+&lt;p>深入参与一个比较知名的开源项目，或者自己运营一个有影响力的开源项目，都会使自己的个人履历增光添彩。&lt;/p>
+&lt;p>&lt;strong>人脉&lt;/strong>&lt;/p>
+&lt;p>开源社区汇聚了全球各地的优秀开发者，通过参与开源项目，有机会结识这些志同道合的技术爱好者。&lt;/p>
+&lt;p>无论是项目讨论、技术交流，还是合作开发，这些互动都将极大地拓展你的人脉圈。&lt;/p>
+&lt;p>强大的人脉不仅对技术提升有帮助，还能在职业发展中带来更多机遇。&lt;/p>
+&lt;p>比如我自己就通过开源项目结识了很多志同道合的朋友，并且还和一些人维持了不错的关系。&lt;/p>
+&lt;p>&lt;strong>团队协作&lt;/strong>&lt;/p>
+&lt;p>一个项目开源出去之后，你肯定不希望只是自己一个人玩儿，如果有后续有很多的人参与进来，你将学会如何在团队中有效协作，这包括代码规范、版本控制、任务分配、沟通协调等多方面的技能。&lt;/p>
+&lt;p>这些团队协作经验对于你在未来的职场中适应团队工作模式、提升工作效率具有重要意义。&lt;/p>
+&lt;p>&lt;strong>表达能力&lt;/strong>&lt;/p>
+&lt;p>参与开源项目不仅需要写代码，还需要撰写文档、报告问题和提出建议，这些活动有助于提升你的书面表达能力。&lt;/p>
+&lt;p>同时，在开源社区中，你也需要通过讨论和交流来表达自己的想法，这对于口头表达能力也是一种锻炼。这些表达能力在技术分享、会议演讲和项目汇报中都非常重要。&lt;/p>
+&lt;p>在职场工作这么多年，我发现大多数人的表达能力其实并不算太好，能够把一件事情透彻的讲清楚，并且让别人能够理解，是一件并不容易的事情。&lt;/p>
+&lt;p>&lt;strong>技术管理&lt;/strong>&lt;/p>
+&lt;p>如果你主导或维护一个开源项目，你将接触到项目管理的方方面面。&lt;/p>
+&lt;p>这包括制定项目规划、管理任务进度、协调团队工作、处理项目风险，技术选型等。&lt;/p>
+&lt;p>这些技术管理经验不仅对个人能力提升有帮助，还能为未来担任技术领导角色打下坚实的基础。&lt;/p>
+&lt;p>&lt;strong>对求职的帮助&lt;/strong>&lt;/p>
+&lt;p>目前很多公司岗位在招聘的时候，都把拥有开源项目，或者参与开源项目作为了一个重要的加分项。&lt;/p>
+&lt;p>因为参与或维护开源项目意味着候选人至少有很多的优势，比如：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>实际项目经验&lt;/strong>：开源项目中的实际开发经验可以证明候选人的技术能力和解决问题的能力。&lt;/li>
+&lt;li>&lt;strong>自主学习能力&lt;/strong>：参与开源项目通常需要自主学习和探索新技术，这表明候选人具有较强的自我驱动力和学习能力。&lt;/li>
+&lt;li>&lt;strong>团队协作能力&lt;/strong>：在开源项目中，候选人需要与来自不同背景的开发者协作，这展示了其良好的沟通和协作能力。&lt;/li>
+&lt;li>&lt;strong>责任感和毅力&lt;/strong>：开源项目通常需要长时间的投入和持续的维护，参与者需要具备高度的责任感和毅力。&lt;/li>
+&lt;/ul>
+&lt;p>说回我自己，我上一次找工作的时候，实际上我的开源项目对我的帮助非常大，在面试的过程当中，给了我很多的信心，并且也证明了自己的能力。&lt;/p>
+&lt;p>所以，无论是出于技术提升、职业发展，还是个人成长的考虑，参与或者维护开源项目都是一个明智的选择。&lt;/p></description></item></channel></rss>
