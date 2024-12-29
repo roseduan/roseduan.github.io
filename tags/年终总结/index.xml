@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>年终总结 on roseduan</title><link>https://roseduan.github.io/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link><description>Recent content in 年终总结 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 17 Dec 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/index.xml" rel="self" type="application/rss+xml"/><item><title>2024 年的回顾与总结</title><link>https://roseduan.github.io/p/2024-%E5%B9%B4%E7%9A%84%E5%9B%9E%E9%A1%BE%E4%B8%8E%E6%80%BB%E7%BB%93/</link><pubDate>Tue, 17 Dec 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/2024-%E5%B9%B4%E7%9A%84%E5%9B%9E%E9%A1%BE%E4%B8%8E%E6%80%BB%E7%BB%93/</guid><description>&lt;h3 id="工作">&lt;strong>工作&lt;/strong>
+&lt;/h3>&lt;p>今年是继续在数据库行业摸爬打滚的一年，比起刚入行时的懵懂，现在有了一些自己定位问题、解决问题的能力，对 Postgres 的源码也更加熟悉了。&lt;/p>
+&lt;p>但终究来说数据库是一个太复杂的领域，了解得越多反而越发现自己的无知，时常信心会受到打击和摧毁，甚至自我怀疑，然后又给自己鼓劲重拾信心，如此循环往复，在折磨中不断学习和提升。&lt;/p>
+&lt;p>今年的工作主要集中在数据库&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251680215&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%ba%91%e5%8e%9f%e7%94%9f&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>云原生&lt;/a>的适配方面，做了各种 feature 开发、bug 修复、测试等等，协助系统稳定上线运营。&lt;/p>
+&lt;p>还参与了两次线下的 talk。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/v2-44b0fc9c901c8e71bd02b4e28059872e_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-caf11cb69635e5656ee84a29e6139aa7_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>以及一次我司直播技术分享。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-5d7aad97422d652002f3643de41a8b78_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>国内数据库行业大致已经进入到了存量淘汰的阶段，在这样的一个趋势下，对我们个人来说有太多的不确定性，未来只能说走一步看一步了。&lt;/p>
+&lt;h3 id="开源项目">&lt;strong>开源项目&lt;/strong>
+&lt;/h3>&lt;p>今年在开源项目方面没有投入太多的精力，因为项目已经趋于稳定，功能也比较完善，大多是一些常规迭代更新，根据一些社区 issue 反馈来驱动。&lt;/p>
+&lt;p>rosedb 今年共更新了 6 个版本：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-4081a06bb0c3cb1a92901a2912e5f655_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>目前累计有 4.6k star&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-3c401550f1b5f852c7862747cff6f47c_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>今年还即兴开源了一个小的 rust 练习项目，效果没想到还挺不错，帮助了一些人去学习和实践 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251680215&amp;amp;content_type=Article&amp;amp;match_order=2&amp;amp;q=rust&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>rust&lt;/a>，并且这个项目还很幸运的上了一次 Github Trending。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-36fd247d010c695ebd2418750afc9c43_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>未来在开源项目这方面应该会维持现状，佛系更新吧。如果社区有人反馈就进行更新和维护，目前暂时也没有新的想法和灵感去搞新的开源项目了。&lt;/p>
+&lt;h3 id="知识服务">&lt;strong>知识服务&lt;/strong>
+&lt;/h3>&lt;p>《&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251680215&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%bb%8e%e9%9b%b6%e5%ae%9e%e7%8e%b0&amp;#43;KV&amp;#43;%e5%ad%98%e5%82%a8&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>从零实现 KV 存储&lt;/a>》是去年更新的课程，这一年多的时间里也帮助了很多同学锻炼提升了技术能力，并且拿到了心仪的 offer，好评也非常多。&lt;/p>
+&lt;p>&lt;strong>课程详情：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/strong>&lt;/p>
+&lt;p>《从零实现分布式 KV》也在今年初更新完结了，这应该也是学习&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251680215&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%88%86%e5%b8%83%e5%bc%8f%e7%b3%bb%e7%bb%9f&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>分布式系统&lt;/a>，手写 raft 算法的首选教程。&lt;/p>
+&lt;p>&lt;strong>课程详情：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/strong>&lt;/p>
+&lt;p>《从零实现 SQL 数据库》是我从去年底就开始准备的课程了，然后准备了大半年的时间，在今年九月发布，也在前几天更新完毕。&lt;/p>
+&lt;p>这个课程应该是目前全网唯一使用 Rust 手写一个数据库的教程了，非常的硬核有挑战，也帮助到了很多同学学习和上手使用 Rust，提升自己的底层基础，以及系统设计能力。&lt;/p>
+&lt;p>&lt;strong>课程详情：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//icnyamgobd0u.feishu.cn/docx/AbXZdEbY0obdcTxF0FKcx4Pqnyf" target="_blank" rel="noopener"
+>https://icnyamgobd0u.feishu.cn/docx/AbXZdEbY0obdcTxF0FKcx4Pqnyf&lt;/a>&lt;/strong>&lt;/p>
+&lt;p>后续在知识服务这方面没有太多明确的计划，可能会根据大家的反馈去进行动态调整。持续提供优质内容，能够帮助到大家学习真正硬核的技术，是我永恒不变的初衷。&lt;/p>
+&lt;p>庆幸的是这的确帮助到了很多同学，每次有同学私信我说项目给与了他们很大的帮助，比如找到了一份满意的工作，都是我非常开心的时刻。&lt;/p>
+&lt;h3 id="自媒体">&lt;strong>自媒体&lt;/strong>
+&lt;/h3>&lt;p>今年一些业余时间在自媒体的运营方面花费了不少，主要是录制和剪辑视频。这个看起来挺简单的事，其实做起来远比自己想象的要辛苦不少。&lt;/p>
+&lt;p>刚开始的时候，会不太适应，比如面对镜头说话断断续续，需要提前将自己想说的内容记下来，然后反复的练习。后面慢慢熟悉了，面对镜头坦然了许多，自己的语言表达能力得到了很大的提升。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-8971ca3d936b79194649fcf1fc5fa9e0_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>视频主要是在 B 站发布，不知不觉今年已经累计发布了二十多个视频，粉丝接近 8K。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-061828d7466d6c529bb5e7e90ad528f3_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>最高的一个视频播放是 3w，其实算是做的比较差的了，主要是视频还不够有趣味性，风格比较单一。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-2e233e05af6f7fdaf1ad5da608b5df4f_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>俗话说就是不太会整活儿，只能先慢慢坚持拍下去，后续尽量尝试让视频的风格更加多样化。&lt;/p>
+&lt;p>公众号今年中规中矩，还是没能突破一万粉丝。主要是写了 Postgres 源码学习系列，以及开源项目经验分享系列，还有其他的一些关于学习、职场、生活等零散的内容。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/v2-79d52b3f6f9628f329d5239f19306e32_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>在自媒体方面的尝试，主要是想拓宽自己的发展路径，不让自己局限于单纯的写代码，而且还能够锻炼自己的表达能力，构建自己的个人影响力和粉丝圈子。后续如果想做更多事情的话，必须得有一个有影响力的个人 IP 作为基础。&lt;/p>
+&lt;h3 id="生活">&lt;strong>生活&lt;/strong>
+&lt;/h3>&lt;p>生活方面，今年下半年开始重拾了网球这个为数不多的爱好。想到自己也快奔三了，不希望看到自己变成一个油腻大叔模样，还是想尽量保持身材。&lt;/p>
+&lt;p>&lt;img src="https://picx.zhimg.com/v2-fbc13217a8415664689f124ef69ad2df_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>并且平时坐着的时间太多了，身体健康方面确实需要重视起来，后续应该会把锻炼和网球运动作为常态，有一个健康的身体才是所有事情中最重要的。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-6a397407c05e64cb83086d93ecceeb21_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;hr>
+&lt;p>2024 年总体来说，工作、开源、知识服务、自媒体这几个方面平稳发展，有了更多的积累，并且尝试了自己不那么擅长的事情，取得了一些初步成果。&lt;/p>
+&lt;p>但有时候也会觉得有一种无力感，想要寻求更大的突破，发现异常的困难。比如现在 B 站粉丝只有 8k，如何达到 8w？假如工作之外能月入 1w，如何更进一步，达到 5w？从 1 到 100 或许简单，但是从 0 到 1 的起步，却是最困难的。&lt;/p>
+&lt;p>我自己是一个始终不满足于现状的人，到了一个台阶，便会想方设法的到一个更高的台阶。但是取得多大的成就，个人的努力只是一方面，有时候运气、趋势、大环境发挥的作用远比个人因素大得多。&lt;/p>
+&lt;p>只能说，做好自己所热爱的事情，不给自己留下遗憾就很好了。&lt;/p></description></item><item><title>我的 2023 年，关于工作、开源、副业</title><link>https://roseduan.github.io/p/%E6%88%91%E7%9A%84-2023-%E5%B9%B4%E5%85%B3%E4%BA%8E%E5%B7%A5%E4%BD%9C%E5%BC%80%E6%BA%90%E5%89%AF%E4%B8%9A/</link><pubDate>Thu, 23 Nov 2023 14:23:11 +0000</pubDate><guid>https://roseduan.github.io/p/%E6%88%91%E7%9A%84-2023-%E5%B9%B4%E5%85%B3%E4%BA%8E%E5%B7%A5%E4%BD%9C%E5%BC%80%E6%BA%90%E5%89%AF%E4%B8%9A/</guid><description>&lt;h2 id="工作">&lt;strong>工作&lt;/strong>
+&lt;/h2>&lt;p>去年六月份加入到现在的公司，目前已经一年多了，今年全年的时间，逐步深入的参与到数据库内核的一些 feature 开发中来，做了非常多的事情，包括：&lt;/p>
+&lt;ul>
+&lt;li>支持数据库中的并发创建索引（Create Index Concurrently 和 Reindex Concurrently），主要是参考了 Postgres 的做法，达到的基本效果是在索引创建和重建期间，不阻塞数据表的 DML 操作&lt;/li>
+&lt;li>为数据库引入了 pgvector 和 kafka fdw 插件，支持向量搜索和 Kafka 外部数据源&lt;/li>
+&lt;li>还有一个重要的工作，在数据库中新增了 Create/Alter/Drop Task 的功能，主要是支持定时任务的执行&lt;/li>
+&lt;li>当然还有最重要的，今年下半年开始参与，也是目前还在进行中的，那就是参与到公司数据库产品的存算分离中来，我们对传统的基于 Postgres 的 MPP 数据库的架构进行了大幅的调整，原来的 Postgres 进程充当了计算节点，不存储数据，支持计算集群 warehouse 的创建、水平扩展、高可用；将元数据进行了拆分，数据存储部分进行了全新设计，接入了对象存储，支持多种文件存储格式。&lt;/li>
+&lt;li>目前也在设计和开发云原生架构下的一个重要功能，那就是 Time Travel， 支持访问一个数据表的任意时刻的历史数据。&lt;/li>
+&lt;/ul>
+&lt;p>总体来说，相较于去年，在内核方面有了更多的积累，当然数据库内核本身非常庞大、复杂、对技术能力要求较高，想要继续深入，需要花费不少的时间，希望在明年能够投入更多的时间去研究。&lt;/p>
+&lt;p>也非常感激我现在的 Team Leader，虽然他平时各种繁杂事务缠身，但总是耐心地给了我很多的帮助，不遗余力的引导我去解决工作中遇到的一些难题。&lt;/p>
+&lt;h2 id="开源">&lt;strong>开源&lt;/strong>
+&lt;/h2>&lt;p>今年在开源项目的运营方面，时间主要集中在年中的几个月，虽然投入精力比较有限，但是做出的改动却非常大。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-11d2a4239344002edf53be1c9a3b120f_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/rosedblabs/rosedb" target="_blank" rel="noopener"
+>rosedb&lt;/a> 开始进入全新的 V2 版本，这主要是由于自己在数据库方面积累的知识越多，不得不重新开始审视自己之前做过的事情。 发现了很多 rosedb 之前的一些问题，并进行了一次大的重构。&lt;/p>
+&lt;p>主要是将原来 rosedb 之上的 Redis 数据结构的支持去掉了，并且重写了数据文件部分，目前 rosedb 专注于成为一个轻量级的 KV 存储引擎。&lt;/p>
+&lt;p>今年也收获了一些用户，开始有人将 rosedb 部署到生产环境中使用，看到自己写出的项目能够去解决实际的问题，是一种很不错的感觉。 star 数从去年的 3.5k 涨到了现在的 4.2k：&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-238c63987a2dcde83e6ae34e259e1465_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/lotusdblabs/lotusdb" target="_blank" rel="noopener"
+>LotusDB&lt;/a> 也一样，将原来的架构进行了大刀阔斧的改造，基本是完全重写了一遍，也发布了 V2 版本。&lt;/p>
+&lt;p>由于个人的精力有限，LotusDB 的重构工作，是在和两位社区小伙伴的共同努力下完成的。&lt;/p>
+&lt;p>LotusDB 的 star 也从去年的 1k 到现在的 1.9k，基本上翻了一倍。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-1207c7ab2e440f08d160f9005b8b6151_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>明年针对 LotusDB 项目，我会打算组织团队运营，制定一些规范化的开发流程、文档、Release 日志、CI、Code Review 等等，就算做慢一点也没关系，主要是能够持续的运营下去。&lt;/p>
+&lt;p>今年也开源了两个新的项目，都是在重构 rosedb 和 LotusDB 的时候，抽取了一些通用的组件开发然后开源的。&lt;/p>
+&lt;p>一个是 WAL，Write Ahead Log，也就是预写日志，写这个组件的时候，是在重构 rosedb 期间，考虑到写日志是一个通用的需求，不仅 rosedb 会用到，LotusDB 也会用到，其他的基于 LSM 或者 Bitcask 的存储引擎，可能都会有这个需求。&lt;/p>
+&lt;p>于是我在五一假期期间，花了几个小时，写出了一个最初的版本开源了出去，后面也是按照实际需求在更新这个项目。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-fa69871e9b060cb4dbae08284e9da43e_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>第二个是 diskhash，基于磁盘的哈希表，主要考虑到像 Bitcask 这种存储引擎，重启的时候需要去全量加载索引，数据量很大的话重启很耗时，于是我开发了基于磁盘的哈希索引结构，花了某个周末的一天时间开发然后开源。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-c2c268a8edc36dce7d795c2df2e3e78a_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>但是后面并没有接入到 rosedb 中，因为改造起来比较繁琐，比我预想的麻烦得多，而且想到 rosedb 的定位，还是让它专注成为一个轻量、适合少量数据的引擎。&lt;/p>
+&lt;p>对于大数据量就可以使用 LotusDB，于是将 diskhash 接入到了 LotusDB 里面，使其成为了目前唯一一个支持 BTree 和 Hash 双索引的 KV 数据库。&lt;/p>
+&lt;p>在开源方面，其实今年有非常多的想法，但是无奈时间和精力有限，很多想法都搁置了。&lt;/p>
+&lt;p>比如我重构 rosedb 的时候，将原来的 Redis 数据结构拆了出来，原本是打算出一个新的开源项目，在 KV 之上去构建 Redis 的数据结构，并且支持 Redis 协议，底层就可以接入不同的 KV，比如 RoseDB、LotusDB、Pebble、Badger 等等，但是一直没时间去继续推进。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-74761627dfa2afe6f0f15c5b9095d6d0_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>还有一个想法是基于 LotusDB 做一个搜索引擎项目，主要是对一个现有的项目进行改造，并且更换存储引擎，但是也搁置了。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-7fcbac58f1d165835a1ebbb078f8c62a_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>还有其他的一些事情，比如写一个 Rust 的版本 WAL，运营 LotusDB 公众号，都因为没有太多的时间投入而全都搁置。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-68c117c1d37da34cacc49fdfc6b2c57e_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这些事情看明年的具体情况去抽取一些继续做了，如果有同学有兴趣做这些项目的话，可以联系我，我会给与你帮助与支持。&lt;/p>
+&lt;h2 id="教程">&lt;strong>教程&lt;/strong>
+&lt;/h2>&lt;p>今年还写了两个教程（付费），一个是《从零实现 KV 存储》。&lt;/p>
+&lt;p>主要是将我过去这几年，在存储引擎方面的知识进行了总结和回顾，并且从零开始，实现了一个兼容 Redis 数据结构和 Redis 协议的数据库，当然这个项目主要是出于教学的目的。&lt;/p>
+&lt;p>教程也帮助到了非常多的人，有的人拿去面试，获得了不错的 offer，有的人将学到的项目进行增强完善，开源出去也获得了成百上千 star，给自己的履历增加了一个很大的亮点。&lt;/p>
+&lt;p>&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3gw02agegxg3.feishu.cn" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3gw02agegxg3.feishu.cn&lt;/a>&lt;/p>
+&lt;p>第二个教程是《从零实现分布式 KV》，和知名博主「青藤木鸟」进行合作，将自己之前的分布式相关的经验进行了系统的总结，并且基于 MIT 6824 课程，专注于代码实现层面。&lt;/p>
+&lt;p>对我自己来说也是一次总结输出，也希望这个教程能够帮助到更多的人，特别是这几年互联网就业环境非常不理想的情况之下。&lt;/p>
+&lt;p>&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5bav6huf2e1k.feishu.cn" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5bav6huf2e1k.feishu.cn&lt;/a>&lt;/p>
+&lt;hr>
+&lt;p>好了，这就是我在 2023 年做的一些事情，目前毕业已经四年多了，虽然做了不少自己感兴趣的事儿，但是对一些事情仍然感觉到迷茫、疑惑，甚至焦虑，或许这是人生之路上无法避免的吧。&lt;/p></description></item><item><title>2022 年小结</title><link>https://roseduan.github.io/p/2022-%E5%B9%B4%E5%B0%8F%E7%BB%93/</link><pubDate>Sat, 14 Jan 2023 14:23:11 +0000</pubDate><guid>https://roseduan.github.io/p/2022-%E5%B9%B4%E5%B0%8F%E7%BB%93/</guid><description>&lt;h2 id="澳网">澳网
+&lt;/h2>&lt;p>2022 的年初是美好的，因为纳达尔在澳网夺冠了，为这一刻，我等待了十年。从 2012 年开始关注纳达尔，见证了他的一个又一个巅峰，其实从 2010 年之后，纳达尔的大满贯全都是法网和美网了，澳网和温网总是望尘莫及，于是我特别的期待他能够再拿一次澳网（温网概率太小了）。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-17b74d68f3f923a161b609e54a083f33_1440w.webp"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>其实扪心自问，为什么如此喜欢纳达尔？我也没有明确的原因，可能他满足了自己内心幻想的那个少年吧。&lt;/p>
+&lt;p>每个人的内心或许都藏着另一个自己，这个自己可能跟现实中的完全不一样，现实中的我们，可能羞怯、懦弱、自卑，但是幻想中的自己，我们会变得勇敢、无畏、骄傲。&lt;/p>
+&lt;p>我特别喜欢纳达尔年轻的时候，留着一头长发，穿着一身海盗衫，风度翩翩，青春无敌，那是最好的时代。&lt;/p>
+&lt;p>只可惜，网球在国内太小众，身边几乎没什么人关注，2022 年澳网夺冠的这一份喜悦，只能自己一个人享受。&lt;/p>
+&lt;h2 id="封闭">封闭
+&lt;/h2>&lt;p>上海的 3 月~ 6 月是魔幻的，最开始身边住得远一些的同事都申请居家了，后来公司通知全部居家，当时想应该只是日常的疫情反复，没几天就过去了。&lt;/p>
+&lt;p>居家期间小区通知会封闭两天，让我们自己出去采购物资，谁知这是三个月内的最后一次出小区。&lt;/p>
+&lt;p>从那时起，第一次感觉到基本生存都受到了威胁，每顿饭都得省着点吃，希望能多撑几天，一些物资比如纸巾、饮用水也是省着用。每天早上六点多，在睡眼朦胧中打开手机 APP 抢菜，而且大概率还是抢不到的。&lt;/p>
+&lt;p>其实对于孤身在外的年轻人还好，可以用 APP 抢，和邻居交换等等，但想想那些上有老下有小的，或者生病的人，还有线下实体行业的从业人员，他们有些人所背负的压力是巨大的，社区的物资救济只是杯水车薪，很多人可能因此而崩溃。&lt;/p>
+&lt;p>最后总算是熬过来了，当然这个城市和每个人都付出了巨大的代价。&lt;/p>
+&lt;p>这是一段不应该被遗忘的历史。&lt;/p>
+&lt;h2 id="工作">工作
+&lt;/h2>&lt;p>上海 6 月解封后，入职了一家新的公司，辗转到了数据库行业，看似是巧合，却又像是水到渠成，从最开始写业务，到业余时间折腾存储引擎，到转入公司的基础架构做分布式存储，然后到数据库。&lt;/p>
+&lt;p>工作内容和我所想象的还是不太一样，更加的有难度，产品是基于开源的 greenplum 数据库，会更多的研究 PostgreSQL 的源码，这期间还因为工作所需学习并使用了 Rust 语言。&lt;/p>
+&lt;p>我很看好也比较喜欢 Rust，今年应该会投入更多的时间学习并实践。还是希望能够在数据库领域有更多的沉淀吧，毕业的这三年多，做的事情很杂乱，接触的编程语言也很多，但是没有深入到某个领域去研究，对于职业生涯的长期发展感觉还是不太好的。&lt;/p>
+&lt;p>数据库行业这两年挺火热，但后面会如何发展却不得而知，在这个垂直领域，想要在几百家公司中生存下来，还是有挑战的。都说选择比努力更重要，但是我们又如何在最开始的时候验证自己的选择呢，或许身在局中的我们，只能尽力而为，去相信自己的选择。&lt;/p>
+&lt;h2 id="运营">运营
+&lt;/h2>&lt;p>在开源项目这方面，今年投入的精力有限，一是因为上半年封控期间，居家办公效率比较低，精力消耗严重；二是下半年换了工作，更多的时间花在了工作方面，毕竟对数据库的一些基础还是不太熟悉的。&lt;/p>
+&lt;p>Github 从 6 月份开始基本上就没更新了：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-516d769c5e437d8575938c38c82d7c74_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>两个项目的状态：&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-7ad379b3126a35ae2e08409be7eaaaed_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>今年不知道有没有时间去驱动这两个开源项目了，感觉项目功能方面已经不会有太大的改变了，定位还是很简单的 KV 存储引擎，或许应该可以在易用性、文档建设等方面着手，降低使用者的门槛。&lt;/p>
+&lt;p>知乎在下半年也几乎没有更新了。&lt;/p>
+&lt;p>公众号这段时间主要更新了 CMU-15445 的学习笔记，这是入门数据库的必学课程了，后续应该会坚持更新完毕，其他还有一些职场、生活感悟相关的文章。&lt;/p>
+&lt;h2 id="感情">感情
+&lt;/h2>&lt;p>因为一些机缘巧合，遇到了一个对的人，经历了这魔幻的 2022 年，这是最幸运的事情，我特别喜欢一句诗：&lt;/p>
+&lt;blockquote>
+&lt;p>草在结它的种子&lt;/p>
+&lt;p>风在摇它的叶子&lt;/p>
+&lt;p>我们站着 不说话&lt;/p>
+&lt;p>就十分美好&lt;/p>
+&lt;/blockquote>
+&lt;p>这是我期待的爱情最好的模样，谢谢你让我感受到这种美好。&lt;/p>
+&lt;h2 id="新冠">新冠
+&lt;/h2>&lt;p>在 12 月中旬加入了“小阳人”的大军，这是无法避免的，新冠三年恰好贯穿了自己毕业后的这三年，经历了太多的辛酸苦辣，幸好这一切都慢慢结束了。&lt;/p>
+&lt;p>在历史的潮流中，在这个环境下，有时候我们真的是身不由己，我们更多的只是被动的接受，无法参与到历史的抉择之中去，很多人可能会像我一样在心理上备受煎熬。&lt;/p>
+&lt;p>但无论怎样，还是要努力的生活，希望可以慢慢恢复到正常的状态，2023 年大家一起加油！&lt;/p></description></item></channel></rss>

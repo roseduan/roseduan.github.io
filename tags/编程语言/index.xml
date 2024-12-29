@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>编程语言 on roseduan</title><link>https://roseduan.github.io/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</link><description>Recent content in 编程语言 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 16 Nov 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss+xml"/><item><title>到明年，Rust 和 Go 都将稳居前十</title><link>https://roseduan.github.io/p/%E5%88%B0%E6%98%8E%E5%B9%B4rust-%E5%92%8C-go-%E9%83%BD%E5%B0%86%E7%A8%B3%E5%B1%85%E5%89%8D%E5%8D%81/</link><pubDate>Sat, 16 Nov 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E5%88%B0%E6%98%8E%E5%B9%B4rust-%E5%92%8C-go-%E9%83%BD%E5%B0%86%E7%A8%B3%E5%B1%85%E5%89%8D%E5%8D%81/</guid><description>&lt;p>平时不太关注 TIOBE INDEX 的排名，但是今天刚好看到了，发现 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=Go&amp;#43;%e8%af%ad%e8%a8%80&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Go 语言&lt;/a>都已经排在第七了。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-cc5468004d8b6ebfe0aa564289ca3f6a_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>几年前我刚开始学习的时候，Go 语言其实受关注和欢迎程度没有这么高，但是近些年来一路狂飙，稳坐前十，成为了主流编程语言之一。&lt;/p>
+&lt;p>Go 在云计算、容器化和微服务架构中的应用越来越广泛。&lt;/p>
+&lt;p>而且&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%ba%91%e5%8e%9f%e7%94%9f&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>云原生&lt;/a>的基础设施 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=Kubernetes&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Kubernetes&lt;/a> 和 Docker 等技术的普及，Go 语言凭借其高效的执行性能和简洁的代码结构，成为开发者构建&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%ba%91%e5%8e%9f%e7%94%9f%e7%b3%bb%e7%bb%9f&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>云原生系统&lt;/a>的首选语言。&lt;/p>
+&lt;p>未来几年，Go 语言应该会继续向前，稳居前十应该没什么问题，看什么时候能够超过 JavaScript 了。&lt;/p>
+&lt;p>其实另一个值得关注的是 Rust，Rust 的上升速度也非常惊人，去年还在 20 名左右徘徊，今年这时候的排名已经来到第 14 位了。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/v2-34ded798f69579519fc2761ed36e2c7e_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>我在这几年接触和使用 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=3&amp;amp;q=Rust&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Rust&lt;/a> 的经历中，也非常看好 Rust 的发展。&lt;/p>
+&lt;p>Rust 的内存安全性和高性能，其实也逐步成为开发高性能系统、嵌入式应用和区块链技术的理想选择。&lt;/p>
+&lt;p>主要是 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=Rust&amp;#43;%e8%af%ad%e8%a8%80&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Rust 语言&lt;/a>避免了传统 C/C++ 中存在的许多内存管理问题，且在性能上几乎不输给这些底层语言，这使得它在需要高效并且稳定的应用中逐渐取代了传统的&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e6%8a%80%e6%9c%af%e6%a0%88&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>技术栈&lt;/a>。&lt;/p>
+&lt;p>当然，C 和 C++ 的基本盘还是很大，Rust 作为一门相对较年轻的语言，其实能做到这种程度已经非常不错了。&lt;/p>
+&lt;p>到明年，Rust 或许能够超过前面的几个，首次进入到前十当中，拭目以待吧哈哈！&lt;/p>
+&lt;hr>
+&lt;p>我自己的课程也是优先支持 Go 和 Rust 这两种语言，目前看来是挺正确的选择。&lt;/p>
+&lt;p>目前《&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%bb%8e%e9%9b%b6%e5%ae%9e%e7%8e%b0&amp;#43;KV&amp;#43;%e5%ad%98%e5%82%a8&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>从零实现 KV 存储&lt;/a>》支持 Rust 和 Go 两种语言，手把手教学，只需要了解基础的语法知识，即可学会一个硬核实战项目！&lt;/p>
+&lt;p>课程详情链接：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p>
+&lt;p>《从零实现 SQL 数据库》支持 Rust，使用 Rust 手写一个数据库系统，超级硬核，Rust 实战项目首选，并且还有 Rust 零基础的入门讲解，就算没有 Rust 基础也可以来学习。&lt;/p>
+&lt;p>课程详情链接：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/OxwGdeM30oss7vxEG5AcUn4unEc" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/do&lt;/a>&lt;/p></description></item><item><title>细数自己学习过的编程语言，附学习建议</title><link>https://roseduan.github.io/p/%E7%BB%86%E6%95%B0%E8%87%AA%E5%B7%B1%E5%AD%A6%E4%B9%A0%E8%BF%87%E7%9A%84%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E9%99%84%E5%AD%A6%E4%B9%A0%E5%BB%BA%E8%AE%AE/</link><pubDate>Mon, 18 Mar 2024 20:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E7%BB%86%E6%95%B0%E8%87%AA%E5%B7%B1%E5%AD%A6%E4%B9%A0%E8%BF%87%E7%9A%84%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E9%99%84%E5%AD%A6%E4%B9%A0%E5%BB%BA%E8%AE%AE/</guid><description>&lt;p>今天给大家分享一下我从大学自学编程，然后毕业四年多以来，学习过的编程语言，然后也会对这些编程语言做一个简单的比较，最后也会给出我的学习建议。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>我在 B 站录制了本文的视频，有更多的详细内容：https://www.bilibili.com/video/BV1Xt421V7zW&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="学习历程">学习历程
+&lt;/h2>&lt;p>我最开始接触编程，是在大一的时候，学的是 C 语言，因为那个时候 C 语言是计算机系的第一门课程了吧，我虽然不是计算机系的，但是也能从其他同学那里打听到一些信息，于是自己也开始学习 C 语言了。&lt;/p>
+&lt;p>买了一本 C 语言的书，是谭浩强的《C 语言程序设计》，这本书总体来说一言难尽，然后买了第二本是《C Primer Plus》，跟着大致敲了一遍代码。只是当时计算机基础很差，学习断断续续，很不成系统。&lt;/p>
+&lt;p>到了大三，为了能够毕业时找到工作，开始自学 Java，Java 当时还是非常火爆的，培训班、网上的资料铺天盖地的都是 Java 相关的，我那时候还学习了 Java Web，做了一个类似淘宝的商城项目，自己写了简单的前端，所以用到了 Html/CSS 、JavaScript。
+商城系统/XX 管理系统那个时候还是很流行的练手项目（以致于后来有一个梗，面试官说你们项目组人还挺多的&amp;hellip;&amp;hellip;）。&lt;/p>
+&lt;p>不像现在，人手都是高并发、 CMU 15445、MIT 6824 这些项目和课程，只能说越来越卷了。&lt;/p>
+&lt;p>毕业之后，在工作中有一些比较繁琐、重复劳动的工作，比如生成一些随机数据的 Execl 文件，根据字段自动生成 sql，文本内容替换等等，所以学习了 Python，用 Python 写这类小工具非常适合，能够大大提升工作效率。&lt;/p>
+&lt;p>工作业余时间我还自学了 Go 语言，开始用 Go 写开源项目，围绕存储引擎写了很多开源项目和小轮子，比如 rosedb、lotusdb、wal、diskhash、mini-bitcask 等等。
+然后还找到了 Go 后端开发的工作，去了 B 站做后端开发，也算是实现了从 Java 到 Go 的转变，从那以后就没怎么接触 Java 生态了。&lt;/p>
+&lt;p>后来我又转到了数据库方向，这个方向整体还是 C 和 C++ 比较多，所以又重新开始了学习 C 语言。同时工作中偶尔也接触到了 C++，但我对 C++ 了解比较一般，不算特别熟悉。&lt;/p>
+&lt;p>在工作中维护的组件是 Rust 写的，并且我本身也对 Rust 比较感兴趣，所以就学习了 Rust，并且实现了一个 Bitcask 存储模型的 Rust 语言实现，相当于是 rosedb 的 Rust 版本（只不过没有开源），对熟悉基础语法、Rust 上手实践的帮助还是挺大的。&lt;/p>
+&lt;p>这就是我毕业这几年以来的编程语言学习历程，涉及到&lt;/p>
+&lt;ul>
+&lt;li>前端：Html/CSS、JavaScript&lt;/li>
+&lt;li>C&lt;/li>
+&lt;li>C++&lt;/li>
+&lt;li>Java&lt;/li>
+&lt;li>Python&lt;/li>
+&lt;li>Go&lt;/li>
+&lt;li>Rust&lt;/li>
+&lt;/ul>
+&lt;p>到目前为止，我使用得比较频繁的语言是：&lt;/p>
+&lt;ul>
+&lt;li>开源项目的维护主要是用 Go 语言&lt;/li>
+&lt;li>自己的兴趣 Rust 语言，业余时间会写一些有意思的项目&lt;/li>
+&lt;li>工作上 C/C++/Rust&lt;/li>
+&lt;/ul>
+&lt;h2 id="编程语言比较">编程语言比较
+&lt;/h2>&lt;p>基本上比较主流的后端语言我都接触到了，这里简单谈谈自己的看法吧，&lt;/p>
+&lt;p>&lt;code>Java&lt;/code> 比较适合用来写一些企业级后端业务，大一统的后端框架 Spring 全家桶，业务开发的效率比较高，安卓开发也用的较多，移植性好，面
+向对象、泛型，自动内存回收。Java 总体来说是一门综合实力挺强的一门语言。&lt;/p>
+&lt;p>&lt;code>Go&lt;/code> 的杀手锏是高效易用的并发，比如 goroutine 协程，channel 通道，比较适合用来构建云原生微服务、网络编程、中间件等等，kubernetes 和 docker 也是 Go 比较知名的项目了。&lt;/p>
+&lt;p>&lt;code>Python&lt;/code> 比较简洁，主要场景目前主要在机器学习、网络爬虫、当然也有一些 web 开发，比如 Django、Flask 框架，也比较适合用来写自动化测试。&lt;/p>
+&lt;p>&lt;code>C/C++&lt;/code> 目前主要是在系统级编程领域发挥重要作用，执行效率高，性能好，但是也相对复杂，手动管理内存。主要应用于系统级软件，比如操作系统，数据库，驱动程序，嵌入式等等。&lt;/p>
+&lt;p>&lt;code>Rust&lt;/code> 是近些年来崛起的比较火热的语言之一了，具备内存安全、高性能的特点，在系统级编程领域对 C/C++ 发起了挑战，现在很多新兴的数据库软件都开始使用 Rust 了，比如 neon、risingwave、databend、influxdb、surrealdb，同时也在区块链、web3 方面有应用。&lt;/p>
+&lt;h2 id="学习建议">学习建议：
+&lt;/h2>&lt;p>1、不要给自己设限，通常情况下我们会给自己打上一个标签，比如 Java 程序员、Go 程序员、C++ 程序员等等，程序员不应该和一门语言绑定在一起，可以根据自己的兴趣去学习自己感兴趣的内容。工作之后，更多的是根据实际情况去进行转换，学习新的语言以及技术栈，而不是一成不变。&lt;/p>
+&lt;p>2、如果你只是为了快速上手，然后找到一份工作的话，在这种功利目的下，可以按照市场需求去学习，比如 Java、Go、C++ 都非常的不错，当
+然目前相对来说 Java 是最卷的了，Rust 也是近些年来非常不错的语言，也建议去上手学习。&lt;/p>
+&lt;p>3、针对在校学生，建议学好 C 语言，C 语言是贴近系统层的语言，对自己的计算机基础有非常大的帮助，不要觉得 C 语言很无趣，这个世界上最伟大的一批软件，Linux、Nginx、Redis、SQLite、Postgres、Git、Vim、curl 都是使用 C 语言写的。有了 C 语言的基础，再去学其他的语言会容易很多。&lt;/p>
+&lt;p>4、针对已经工作的同学，其实最好是在一门语言上多花时间，最好能够精通，也就是先纵向发展，培养自己的核心竞争力。然后在此基础之上，结合自己的兴趣以及实际情况，去学习一门新的语言其实上手就会非常快了。&lt;/p>
+&lt;p>最后，编程语言具体的学习方式，比如如何快速上手一门语言，就后面再分享了，感谢大家。&lt;/p></description></item><item><title>那些年，我写过的编程语言</title><link>https://roseduan.github.io/p/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E5%86%99%E8%BF%87%E7%9A%84%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</link><pubDate>Mon, 10 Apr 2023 18:36:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E5%86%99%E8%BF%87%E7%9A%84%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</guid><description>&lt;p>毕业到现在，三年多的时间里，接触过很多编程语言，这篇文章简单来聊一聊，最后也有自己的一些思考和看法，Enjoy！&lt;/p>
+&lt;p>之前发过一个朋友圈，简单罗列了一下自己之前写过的语言，感觉主流的编程语言自己都接触过了，今天就来详细谈一谈。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-0086665bbdf3b3db586f02ea644c4c85_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>一些读者都知道，我是在大学期间自学编程，我的专业是国际经济与贸易，然后看到本校的计算机专业课程，他们最开始学习的语言就是 C，于是便开始接触到了 C 语言。&lt;/p>
+&lt;p>但那时候我根本没有任何计算机的底子，C 又偏偏是一个很难的语言，对计算机基础的要求比较高，所以是浅尝辄止，只是把《C Primer Plus》这本书简单学习了一遍，也没有任何的项目实践和深入学习。&lt;/p>
+&lt;p>然后到了大三的时候，迫于找实习和工作的压力，从那时起开始系统性的学习 Java 了。&lt;/p>
+&lt;p>至于为什么选择 Java，稍微工作几年的同学都知道，Java 当时还是挺火的，语法容易学，对计算机基础的要求并不是特别高，然后培训班铺天盖地的都是 Java 的课程，网上的 Java 教学视频、学习资源等也有很多。&lt;/p>
+&lt;p>当时学 Java，人手一个电商/博客项目，有点像现在，学习数据库的，都得学习 CMU-15445、MIT-6824，然后还要自己参与或者手撸一个数据库项目一样（只能说越来越卷了。。。）&lt;/p>
+&lt;p>当时写一些商城项目，前端页面也是自己写，所以学习了一些 Html/CSS 和 JavaScript 基础，搭配 Java 的 JSP，简单的页面就能自己撸出来了，当然现在估计都没人用 JSP 了。&lt;/p>
+&lt;p>大学毕业参加工作，第一份工作便顺理成章的找了 Java，毕竟其他的咱也不会。&lt;/p>
+&lt;p>工作有时候会遇到一些重复机械的活，于是当时就想能不能通过一些脚本，帮助自己提升工作效率。于是简单学习了 Python，写了一些小工具，例如自动生成 SQL 定义，提取数据库的数据转成 Excel，等等。&lt;/p>
+&lt;p>到了 2020 年中，大概毕业后一年的样子，业余的时间开始学 Go，Go的语法还是挺简单的，上手很快，rosedb 就是从那个时候开始的。&lt;/p>
+&lt;p>后来换了工作，找到的职位刚好是用 Go 的，所以便完成了从 Java 到 Go 的跨越，至此 Java 便不怎么接触了。用 Go 最开始也是写业务，然后转到了基础架构方向，用 Go 写了一段时间的数据库中间件。&lt;/p>
+&lt;p>然后就是接触到了分布式 KV 存储，公司的这个存储项目是用 C++ 写的，于是便开始学习了一些 C++，当然这个项目我参与并不是很多，然后就离职了，所以我对 C++只是很浅显的了解。&lt;/p>
+&lt;p>后来到了数据库行业做内核开发，开始用 C，于是便重操旧业，开始复习大学期间最开始接触的 C 语言。&lt;/p>
+&lt;p>最近，又因为工作的一些要求，开始学习 Rust，刚接触 Rust 的确不太适应，但是也能够感受到这门语言的强大和灵活。&lt;/p>
+&lt;p>于是总结一下，从最开始接触编程到现在，我已经写过 Html/CSS、JavaScript、Java、Python、Go、C++、C、Rust。&lt;/p>
+&lt;p>工作之后才发现，完全有可能根据工作的改变，而去学习并且切换到新的语言，这是无法避免的，所以还在学校的同学，不用去纠结自己到底应该学哪门编程语言，能够深入任何一门语言，以后再学习新的语言，都会非常的快。&lt;/p>
+&lt;p>这也是一些大厂面试，并不怎么看重语言的原因之一。&lt;/p>
+&lt;p>而对于工作之余，想要学习新的语言的同学，可以想想自己学习的目的是什么，例如你想要做什么样的产品，然后再据此去选择一门新的语言。&lt;/p>
+&lt;p>我之前也在 V2EX 上发表过类似的看法：&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-69615b1181a5000deb331bab6ea0b3f6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>接触到多个语言，能够让自己不会成为一个语言控，能够比较清晰的认识到每个语言诞生的背景，以及它的适用场景，总之会更加包容的看待一些问题。&lt;/p>
+&lt;p>对于语言学习的经验，简单分享一下，如果你有明确的目标，这样学习肯定是最好的。比如你学一门新的语言，就是为了看懂公司的项目，那么可以一边看一边学，并且能够接一些小的需求，逐渐深入。&lt;/p>
+&lt;p>如果学一门语言并没有太明确的目的，只是为了兴趣，或者说给以后的自己多一个选择，那么可以找一个基础的教程，跟着敲代码，然后自己参与到项目中去。可以是自己折腾的项目，也可以是别人的开源项目，总之，实践起来才是最快的学习方法。&lt;/p>
+&lt;p>当然工作的这几年，接触了比较多的语言，有一个非常不好的方面，就是对大多数语言的认知都是浮于表面，没有更加深入的去学习。&lt;/p>
+&lt;p>最好的状态还是能够精通一两门，所以我后续希望能够在 Go 和 Rust 方向有更深入的理解。&lt;/p>
+&lt;p>最后再说一句，PHP 是世界上最好的语言（手动狗头）。&lt;/p></description></item></channel></rss>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on roseduan</title><link>https://roseduan.github.io/page/</link><description>Recent content in Pages on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 06 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://roseduan.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>关于</title><link>https://roseduan.github.io/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://roseduan.github.io/about/</guid><description>&lt;h2 id="了解我">了解我
+&lt;/h2>&lt;p>我是 roseduan，一个爱折腾、充满技术热情的程序员。&lt;/p>
+&lt;p>大三自学编程，写过 Java、Go、Python、C、C++、Rust，混迹过大厂，干过业务开发，基础架构，数据库内核。&lt;/p>
+&lt;p>热爱数据库和存储领域，开源过两个知名的项目 &lt;a class="link" href="https://github.com/rosedblabs/rosedb" target="_blank" rel="noopener"
+>rosedb&lt;/a> 和 &lt;a class="link" href="https://github.com/lotusdblabs/lotusdb" target="_blank" rel="noopener"
+>lotusdb&lt;/a>，以及其他很多轮子，比如 wal、diskhash、mini-bitcask、rust-practice 等。&lt;/p>
+&lt;p>我的 Github 主页：https://github.com/roseduan&lt;/p>
+&lt;h2 id="我的编程故事">我的编程故事
+&lt;/h2>&lt;p>讲述了我是如何从大学自学编程，并且进入大厂，然后转向数据库内核开发的心路历程。&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247485936&amp;amp;idx=1&amp;amp;sn=d69148ef1f02e10f94abf2b0d69f933f&amp;amp;chksm=e9b9bb21dece3237471eebd3fdfc939e4b405479659cc65b4f96b112c98651dee4a190588cc5&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—1 上大学了&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247486030&amp;amp;idx=1&amp;amp;sn=04e965afed85cd99661dd5c72318e5cc&amp;amp;chksm=e9b9b89fdece318915f18b5341f74d1c29b9c0cb0aa0bd71e10212d4f79f9d4f7b8c3800a03c&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—2 决定自学&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247486041&amp;amp;idx=1&amp;amp;sn=ab3fef44ef28b939e6373000e8a62145&amp;amp;chksm=e9b9b888dece319e0fb4376da7d259b816d358819e7eafbe963c752cba19d2f76fbcb345e07c&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—3 秋招之旅&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247486066&amp;amp;idx=1&amp;amp;sn=50b2907e9158a6813c50aa28bcfe27b3&amp;amp;chksm=e9b9b8a3dece31b516f15d366a3a9311f8f9ee5adf57d93ac0d70ca3b02a0841a8775321c1f1&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—4 第一份工作&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247486111&amp;amp;idx=1&amp;amp;sn=b9fe562956223c34073c3a85b4f1de85&amp;amp;chksm=e9b9b84edece31582edc791ec00a8d6281ea79a71d6855a5cf336bdd0fa1da3b42626e3e6ea5&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—5 Java 到 Go，开源 rosedb&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247486165&amp;amp;idx=1&amp;amp;sn=f5d89b2053724bdf42ebd5158beaf335&amp;amp;chksm=e9b9b804dece311258a4e03bf1ac63e4cbc3d98fd61e75d63ff1c329d53b1586e1d625f6513c&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—6 转岗 &amp;amp; rosedb持续维护&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s?__biz=MzI0Njg1MTUxOA==&amp;amp;mid=2247486192&amp;amp;idx=1&amp;amp;sn=44988a9c76ddfb9d9f5a19bd9f36e322&amp;amp;chksm=e9b9b821dece3137ef316326195dfcd98a2ba4f2bb610c7a3c2b084a791d97791280cbb5cb36&amp;amp;scene=21#wechat_redirect" target="_blank" rel="noopener"
+>我的编程故事—7 第二个开源项目&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://mp.weixin.qq.com/s/zxD3CEnNQfF97qXemGCu9g" target="_blank" rel="noopener"
+>我的编程故事—8 数据库内核&lt;/a>&lt;/p>
+&lt;h2 id="联系我">联系我
+&lt;/h2>&lt;h3 id="微信公众号">微信公众号
+&lt;/h3>&lt;p>roseduan写字的地方&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;img src="https://s2.loli.net/2024/09/08/UnyxaAlufY3qkcD.jpg" width="200px" align="left"/>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="b-站">B 站
+&lt;/h3>&lt;p>&lt;a class="link" href="https://space.bilibili.com/26194591" target="_blank" rel="noopener"
+>https://space.bilibili.com/26194591&lt;/a>&lt;/p>
+&lt;h3 id="知乎">知乎
+&lt;/h3>&lt;p>&lt;a class="link" href="https://www.zhihu.com/people/roseduan" target="_blank" rel="noopener"
+>https://www.zhihu.com/people/roseduan&lt;/a>&lt;/p>
+&lt;h2 id="付费课程">付费课程
+&lt;/h2>&lt;h3 id="从零实现-kv-存储">从零实现 KV 存储
+&lt;/h3>&lt;p>使用 &lt;strong>Rust 和 Go&lt;/strong> 两种语言实现，手把手教学，只需要了解基础的语法知识，即可学会一个硬核实战项目！&lt;/p>
+&lt;p>课程详情：&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>使用 Rust 和 Go 从零实现 KV 存储&lt;/a>&lt;/p>
+&lt;h3 id="从零实现-sql-数据库">从零实现 SQL 数据库
+&lt;/h3>&lt;p>使用 Rust 手写一个数据库系统，超级硬核，Rust 实战项目首选&lt;/p>
+&lt;p>课程详情：&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/OxwGdeM30oss7vxEG5AcUn4unEc" target="_blank" rel="noopener"
+>Rust 手写 SQL 数据库&lt;/a>&lt;/p>
+&lt;h3 id="从零实现分布式-kv">从零实现分布式 KV
+&lt;/h3>&lt;p>手写 raft + 分布式 KV 系统，硬核实战教程，深入理解分布式理论和实践必备！&lt;/p>
+&lt;p>课程详情：&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>从零实现分布式 KV&lt;/a>&lt;/p></description></item><item><title>归档</title><link>https://roseduan.github.io/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://roseduan.github.io/archives/</guid><description/></item><item><title>搜索</title><link>https://roseduan.github.io/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://roseduan.github.io/search/</guid><description/></item></channel></rss>

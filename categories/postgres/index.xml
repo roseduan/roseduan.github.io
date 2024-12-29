@@ -1,0 +1,2082 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Postgres on roseduan</title><link>https://roseduan.github.io/categories/postgres/</link><description>Recent content in Postgres on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 07 Aug 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/categories/postgres/index.xml" rel="self" type="application/rss+xml"/><item><title>Postgres 源码学习番外篇—FDW 详解</title><link>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%95%AA%E5%A4%96%E7%AF%87fdw-%E8%AF%A6%E8%A7%A3/</link><pubDate>Wed, 07 Aug 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%95%AA%E5%A4%96%E7%AF%87fdw-%E8%AF%A6%E8%A7%A3/</guid><description>&lt;h2 id="fdw-概述">FDW 概述
+&lt;/h2>&lt;p>FDW，即 Foreign Data Wrapper，是 PostgreSQL 中的一项关键特性，通过接入 fdw，用户可以直接通过 SQL 语句访问各种外部&lt;a class="link" href="https://zhida.zhihu.com/search?q=%e6%95%b0%e6%8d%ae%e6%ba%90&amp;amp;zhida_source=entity&amp;amp;is_preview=1" target="_blank" rel="noopener"
+>数据源&lt;/a>。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-17880528227249d55fecf659b40c9760_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>在 Postgres 中，FDW 有很多应用场景，比如：&lt;/p>
+&lt;p>&lt;strong>1. 跨数据库查询：&lt;/strong>
+在 PostgreSQL 数据库中，我们可以通过 FDW 直接请求和查询其他 PostgreSQL 实例，或是其他数据库如 MySQL、Oracle、DB2、SQL Server 等。&lt;/p>
+&lt;p>&lt;strong>2. 数据整合：&lt;/strong>
+当我们需要从不同数据源整合数据时，例如 RESTFUL API、文件系统、NoSQ L数据库以及流式系统等，FDW 能够帮助我们轻松实现这种跨来源的数据整合。&lt;/p>
+&lt;p>&lt;strong>3. 数据迁移：&lt;/strong>
+利用 FDW，我们可以高效地将数据从旧系统迁移到新的 PostgreSQL 数据库中。&lt;/p>
+&lt;p>&lt;strong>4. &lt;a class="link" href="https://zhida.zhihu.com/search?q=%e5%ae%9e%e6%97%b6%e6%95%b0%e6%8d%ae&amp;amp;zhida_source=entity&amp;amp;is_preview=1" target="_blank" rel="noopener"
+>实时数据&lt;/a>访问：&lt;/strong>
+通过 FDW，我们能够访问外部实时更新的数据源。&lt;/p>
+&lt;h2 id="常见的-fdw">常见的 FDW
+&lt;/h2>&lt;p>PostgreSQL 支持非常多常见的 FDW，能够&lt;a class="link" href="https://zhida.zhihu.com/search?q=%e7%9b%b4%e6%8e%a5%e8%ae%bf%e9%97%ae&amp;amp;zhida_source=entity&amp;amp;is_preview=1" target="_blank" rel="noopener"
+>直接访问&lt;/a>多种类型的外部数据源。例如，可以连接并查询远程的PostgreSQL，或者其他主流的 SQL 数据库如 Oracle、MySQL、DB2 以及 SQL Server。同时，PostgreSQL FDW 也具备灵活的接口，支持用户自定义外部访问方式。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-285c7eb5c7238784d8cf1f78a5ea51e9_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>此外，对于 NoSQL 数据库，以及实时数据库如 InfluxDB、&lt;a class="link" href="https://zhida.zhihu.com/search?q=%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97&amp;amp;zhida_source=entity&amp;amp;is_preview=1" target="_blank" rel="noopener"
+>消息队列&lt;/a>如 Kafka、文档型数据库如 MongoDB 等等都能通过FDW实现数据访问。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-b5d4e5f648de69ccab89fb16d2dfa3a6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>常见的文本格式数据，如 CSV、JSON、Parquet 和 XML，也可以通过 FDW 轻松访问。大数据组件如 Elasticsearch、BigQuery，以及 Hadoop 生态系统中的 HDFS 和 Hive 等等都可以通过 FDW 实现无缝集成。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-9c84681f52a6a24553bdc580314136d6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h2 id="fdw-基本使用">FDW 基本使用
+&lt;/h2>&lt;p>FDW机制由四个核心组件构成：&lt;/p>
+&lt;p>&lt;strong>1. Foreign Data Wrapper：&lt;/strong>
+特定于各数据源的库，定义了如何建立与外部数据源的连接、执行查询及处理其他操作。&lt;/p>
+&lt;p>&lt;strong>2. Foreign Server：&lt;/strong> 在本地PostgreSQL中定义一个外部服务器对象，对应实际的远程或非本地数据存储实例。&lt;/p>
+&lt;p>&lt;strong>3. User Mapping：&lt;/strong> 为每个外部服务器设置用户映射，明确哪些本地用户有权访问，并提供相应的认证信息，如用户名和密码。&lt;/p>
+&lt;p>&lt;strong>4. Foreign Table：&lt;/strong> 在&lt;a class="link" href="https://zhida.zhihu.com/search?q=%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ba%93&amp;amp;zhida_source=entity&amp;amp;is_preview=1" target="_blank" rel="noopener"
+>本地数据库&lt;/a>创建表结构，作为外部数据源中表的映射。对这些外部表发起的 SQL 查询将被转换并传递给相应的 FDW，在外部数据源上执行。&lt;/p>
+&lt;p>以 postgres_fdw 为例，下面是一个 fdw 的基础使用方法：&lt;/p>
+&lt;p>&lt;strong>创建插件和 Foreign Server&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">创建插件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">test=# create extension postgres_fdw;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CREATE EXTENSION
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">创建 Foreign Server
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CREATE SERVER foreign_server
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FOREIGN DATA WRAPPER postgres_fdw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">OPTIONS (host &amp;#39;127.0.0.1&amp;#39;, port &amp;#39;8001&amp;#39;, dbname &amp;#39;postgres&amp;#39;);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>创建 User Mapping 和外部表&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">创建 User Mapping
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CREATE USER MAPPING FOR gpadmin SERVER foreign_server;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">创建外部表
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CREATE FOREIGN TABLE foreign_table (
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> val int
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">SERVER foreign_server
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">OPTIONS (schema_name &amp;#39;public&amp;#39;, table_name &amp;#39;t2&amp;#39;);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="fdw-实现原理">FDW 实现原理
+&lt;/h2>&lt;p>在 PostgreSQL 的内核代码中，FDW 访问外部数据源的操作接口主要通过 FdwRoutine 这一结构体进行定义。任何接入外部数据源的插件都可以根据自身需要去实现这些接口。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-b655ef63c413f6abdb9dcb5db6de8f0c_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>接口函数大致分为多个类别，包括但不限于扫描、修改、分析外部表等等。例如，扫描外部表相关接口定义了如何扫描外部表，常见的操作包括开始扫描（ BeginForeignScan，主要进行准备工作）、执行扫描（IterateForeign Scan，从扫描中获取数据）、重新扫描（RescanForeignScan）以及结束扫描（EndForeignScan）等。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-289a04fd609f8e90357a0807a4e3eea0_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>此外，还有用于修改数据的&lt;strong>外部表接口&lt;/strong>，支持对数据进行 insert、delete、updat e等操作，以及 explain 和 analyze 等外部表接口。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-c519aeebd64b55d148b9520245f5a662_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>如下图，这是一个file_fdw 插件实现 FdwRoutine 的示例，这里仅实现了一些基础的扫描操作接口（如BeginForeignScan、IterateForeignScan 等），以及用于表分析的 AnalyzeForeignTable 接口。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-28112b30957818aa921b3216f914ee53_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>在 PostgreSQL 的执行过程中，这些接口函数会在 planner 或 executor 阶段被调用。尤其是当 executor 需要依赖外部服务插件访问数据时，它会通过插件提供的数据访问接口来获取数据。这使得 FDW 能够与 PostgreSQL 的Parser、Planner 以及 Rewriter 等组件能够无缝协作。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-a2f3236f67cc8b398f14e689df6d4042_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>在需要访问外部数据源时，我们只需定义好相应的数据访问接口，就能直接获取数据，并按照PostgreSQL的标准流程进行后续处理。在执行过程中，执行器会分解为几个阶段进行：&lt;/p>
+&lt;p>1.首先进入 &lt;strong>初始化阶段&lt;/strong>，核心任务是执行外部表扫描 ExecInitForeignScan。在这个阶段，主要是定义了一些外部扫描的接口，并调用 FdwRoutine 中用户自定义的接口，从而进行扫描前的准备。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-d9d88d2a0d657c122dce4fa1eddb7218_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>2.紧接着是&lt;strong>执行查询阶段&lt;/strong> ，此时会调用 ExecuteForeignScan 方法。在这个方法中，我们主要需指定 ForeignNext 来获取下一条数据，并定义 ForeignRecheck 来检验数据元组的可见性。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-8f9ef9a5e2ec09c02f92b7adde654805_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>3.最后进入&lt;strong>结束查询阶段&lt;/strong> ，即执行 EndForeignScan，该阶段主要负责资源清理工作。若系统检测到存在 FDWRoutine，就会利用用户自定义的 EndForeignScan 函数来释放资源。&lt;/p>
+&lt;p>&lt;img src="https://picx.zhimg.com/80/v2-3a420250a9830f9a7153f33c1e535981_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>以上就是FDW整体的实现流程。接下来，为了更深入地了解FDW的工作机制，我们将深入探讨FDW的源码。&lt;/p>
+&lt;h2 id="fdw源码解析">FDW源码解析
+&lt;/h2>&lt;p>FDW 支持的数据类型众多，但在此我们以常见的 Postgres_fdw 为例，剖析其源码实现，同样可帮助理解其他 FDW的源码逻辑。&lt;/p>
+&lt;p>首先，我们需要定义 FdwRoutine。前文提到了 FdwRoutine 主要负责定义外部数据扫描的接口，接口需要自定义实现外部扫描的方法。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-fdf90c010c657f02b0f5f0cc159aa914_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;strong>访问外部数据源&lt;/strong>&lt;/p>
+&lt;p>定义好 FdwRoutine 之后，开始访问并扫描外部数据源。在 Postgres_fdw 中，流程也就是进入 BeginForeignScan 阶段。这一阶段主要是获取我们先前定义的外部表实例和用户信息，然后初始化并获取一个连接到远端数据源。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-9a364180c86a79206c7d01b5b6c85efc_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;strong>执行查询阶段&lt;/strong>&lt;/p>
+&lt;p>获取连接后，执行查询，即进行 IterateForeignScan 阶段。这个过程的逻辑是创建一个游标&lt;a class="link" href="https://zhida.zhihu.com/search?q=%e8%bf%ad%e4%bb%a3%e5%99%a8&amp;amp;zhida_source=entity&amp;amp;is_preview=1" target="_blank" rel="noopener"
+>迭代器&lt;/a>(cursor)，并从cursor中持续获取数据。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-10a141aa6a137d4d72a5538ae7dbef4e_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>当全部数据迭代或扫描完成后，我们会释放连接并关闭 cursor 等资源，通过自定义的 EndForeignScan 阶段完成。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-bae4224a2d22798e6b702c74df3bf822_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;strong>insert操作&lt;/strong>&lt;/p>
+&lt;p>对于 insert 操作，例如，在本地 PostgreSQL 数据库中修改Web数据源，增加一条数据，需要访问插入Web数据的接口。此操作先进入BeginForeignInsert 阶段，任务是构造SQL语句，通过预处理语句进行初始化，做好插入准备。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-bc52a148d29e2096df847275f21506df_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>之后，进入 ExecuteForeignInsert 阶段，执行数据插入，主要通过预处理语句传递参数，然后发送SQL到远端执行。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-ba21268abd33da52a31248e9a05f8557_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>最后，EndForeignInsert 阶段负责收尾和资源清理。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-7b0d18fe630b56b030b8d1854f1a8974_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;strong>更新/删除操作&lt;/strong>&lt;/p>
+&lt;p>更新和删除操作的逻辑与插入类似。首先进入BeginDirectModify阶段，进行数据修改前的准备，如构建查询语句、获取连接等。随后执行修改操作，主要通过发送参数和查询到远端来执行。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-d373b0b7b91e2a4504d013c4ae815a05_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p></description></item><item><title>Postgres 源码学习 5—FSM 空闲空间映射</title><link>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-5fsm-%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E6%98%A0%E5%B0%84/</link><pubDate>Sun, 30 Jun 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-5fsm-%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E6%98%A0%E5%B0%84/</guid><description>&lt;p>前面提到了 Postgres 中的数据文件是被换分为了多个 page，每个 page 的大小默认是 8 KB。当我们向表中插入数据的时候，就需要从这些 page 中找到一个能够放得下这条数据的 page。&lt;/p>
+&lt;p>因为数据文件 page 的组织是无序的，元组的插入也是无序的，所以如果依次遍历查找满足条件的 page，可能会非常的低效，Postgres 中使用 FSM（Free Space Map） 来进行查找，加速找到适合插入的 page 的过程。&lt;/p>
+&lt;p>FSM（Free Space Map），即空闲空间映射，其目的主要是快速定位一个有足够空间容纳插入元组的文件页。&lt;/p>
+&lt;p>我们需要保证这个映射空间尽可能小，并且辅以一个高效的数据组织方式，这样才能够快速的检索。&lt;/p>
+&lt;p>在 Postgres 中，一个 page 默认的大小是 8KB，默认情况下一个文件的大小是 1GB，所以能够最多容纳 131072 个 page。&lt;/p>
+&lt;p>如果我们采用一个 32 位 int 类型来表示一个 page 的空闲空间的话，当然是没问题的。但是如果 page 很多的话，每个 page 都需要 32 位来表示空闲空间的值。&lt;/p>
+&lt;p>FSM 也是需要物理存储的，为了在搜索的时候，能够更加快速，我们需要保证 FSM 占用的空间尽可能的少，所以在 Postgres 中采用了分类别的方式，将空闲空间的大小以 32 为步长，分为了 256 个区间：&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-079397541b42c40788bb58218472c792_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这样一个 8KB 的 page 的空闲空间大小，使用一个 uint8 类型就可以表示了，由 4 个字节变成了 1 个字节。&lt;/p>
+&lt;blockquote>
+&lt;p>如果 page 大小超过了 8KB，例如是 32KB，那么步长也随之增加：32KB / 256&lt;/p>
+&lt;/blockquote>
+&lt;p>表示空闲空间的数据信息，存储到了在磁盘文件上，以 &lt;code>_fsm&lt;/code> 结尾。文件的数据存储方式和 heap page 类似，也是采用了 page 的方式，page 的内部结构和前面提到的 heap page 类似，也有对应的 page header。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-e3ab43eb50714e3a45128d27a487f36c_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>存储的内容则比 heap page 简单很多，主要是两个属性：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Structure of a FSM page. See src/backend/storage/freespace/README for
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * details.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">typedef&lt;/span> &lt;span class="k">struct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * fsm_search_avail() tries to spread the load of multiple backends by
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * returning different pages to different backends in a round-robin
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * fashion. fp_next_slot points to the next slot to be returned (assuming
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * there&amp;#39;s enough space on it for the request). It&amp;#39;s defined as an int,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * because it&amp;#39;s updated without an exclusive lock. uint16 would be more
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * appropriate, but int is more likely to be atomically
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * fetchable/storable.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">fp_next_slot&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * fp_nodes contains the binary tree, stored in array. The first
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * NonLeafNodesPerPage elements are upper nodes, and the following
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * LeafNodesPerPage elements are leaf nodes. Unused nodes are zero.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">uint8&lt;/span> &lt;span class="n">fp_nodes&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">FLEXIBLE_ARRAY_MEMBER&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="n">FSMPageData&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>fp_next_slot：从堆中搜索的起始位置&lt;/li>
+&lt;li>fp_nodes：空闲空间的数据（uint8 类型）&lt;/li>
+&lt;/ul>
+&lt;p>解决了空闲空间占用的问题，接下来就是空闲空间的数据如何组织的问题。其实这可以理解为是一个从无序的数组中，找到一个大于等于给定值的元素。&lt;/p>
+&lt;p>所以 Postgres 中使用了堆这个数据结构来存储空闲空间的大小，堆的叶子节点对应的是 page 的空闲大小，堆顶元素是最大的元素，当查找是，从堆顶元素进入，依次和其子节点进行对比，一直到达叶子节点。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-446f3890bdf894e77beaaa46ef058e12_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>查找的时候，还需要注意一个问题，那就是如果每次都从堆的顶层节点进入，那么有可能不同的进程找到的 page 是一样的。&lt;/p>
+&lt;p>为了提升并发性能，让不同的进程尽量找到不同的 page，这样能够避免锁竞争。&lt;/p>
+&lt;p>所以在查找的时候，记录了一个下次开始查找的下标值，如果该下标处的值不满足条件，则跳转到其右边的那个节点，然后从右边的节点的父节点开始查找，以此类推。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-1b29ff790627993ea90cf30f56f7d1f0_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>还需要注意一个问题，一个 FSMPage 有可能存不下所有的 heap page 的空闲空间大小。&lt;/p>
+&lt;p>所以实际上在存储的时候，会将空闲空间大小存储到不同的 FSM Page 中，那么不同 fsm page 中的空闲空间数据，又怎么维护成一个堆结构呢？&lt;/p>
+&lt;p>实际上是使用了多层结构，将不同 fsm page 的数据维护成了多个 level 层级的关系。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-5289c0ba89d3cc8f0929737b3999e1fb_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p></description></item><item><title>Postgres 源码学习 4—表文件 Page 结构概览</title><link>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-4%E8%A1%A8%E6%96%87%E4%BB%B6-page-%E7%BB%93%E6%9E%84%E6%A6%82%E8%A7%88/</link><pubDate>Sun, 02 Jun 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-4%E8%A1%A8%E6%96%87%E4%BB%B6-page-%E7%BB%93%E6%9E%84%E6%A6%82%E8%A7%88/</guid><description>&lt;p>前面一节主要从宏观上了解 Postgres 表数据文件的组织方式，接下来我们深入到一个表文件的 page 内部，查看 page 的具体结构表示。&lt;/p>
+&lt;p>存储在磁盘上的一个表数据文件，内部切分为了多个 page，每个 page 默认的大小是 8KB，为了从磁盘上读取数据的效率，每次从文件中读取数据的时候，都是以 page 作为基本单位。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-041c38c01b589c6b4850ce48468ababb_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>文件页中的每个 Page 被赋予了一个连续递增的唯一的编号，叫做 &lt;code>BlockNumber&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">/*
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * BlockNumber:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * each data file (heap or index) is divided into postgres disk blocks
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * (which may be thought of as the unit of i/o -- a postgres buffer
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * contains exactly one disk block). the blocks are numbered
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * sequentially, 0 to 0xFFFFFFFE.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * InvalidBlockNumber is the same thing as P_NEW in bufmgr.h.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * the access methods, the buffer manager and the storage manager are
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * more or less the only pieces of code that should be accessing disk
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * blocks directly.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">typedef uint32 BlockNumber;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们可以通过 Postgres 的插件 &lt;code>pageinspect&lt;/code> 来查看一个 page 的内部结构和状态。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">postgres=#
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">postgres=#
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">postgres=# create extension pageinspect;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CREATE EXTENSION
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">postgres=# create table t as select generate_series(1,100)a;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我这里创建了一个对应的插件，并且创建了一个表。&lt;/p>
+&lt;p>然后可以通过 pageinspect 插件的一些函数查看表所属的 page 的数据信息：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">postgres=# select * from page_header(get_raw_page(&amp;#39;t&amp;#39;, 0));
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> lsn | checksum | flags | lower | upper | special | pagesize | version | prune_xid
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">------------+----------+-------+-------+-------+---------+----------+---------+-----------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 1/8CA839B0 | 0 | 0 | 824 | 1792 | 8192 | 8192 | 4 | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">(1 row)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>get_raw_page&lt;/code> 是插件实现的方法，接收两个参数，分别是表名和 page 编号；&lt;code>page_header&lt;/code> 方法则可以获取到 page 的 Header 头部信息。&lt;/p>
+&lt;p>可以看到获取到的字段和下图的 PageHeader 结构基本一致。&lt;/p>
+&lt;p>每个 page 主要由页头、内容、special 三部分组成，大致物理存储结构如下所示：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl"> /*
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * +----------------+---------------------------------+
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | PageHeaderData | linp1 linp2 linp3 ... |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * +-----------+----+---------------------------------+
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | ... linpN | |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * +-----------+--------------------------------------+
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | ^ pd_lower |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | v pd_upper |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * +-------------+------------------------------------+
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | | tupleN ... |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * +-------------+------------------+-----------------+
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * | ... tuple3 tuple2 tuple1 | &amp;#34;special space&amp;#34; |
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * +--------------------------------+-----------------+
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * ^ pd_special
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> typedef struct PageHeaderData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* XXX LSN is member of *any* block, not only page-organized ones */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PageXLogRecPtr pd_lsn; /* LSN: next byte after last byte of xlog
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * record for last change to this page */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> uint16 pd_checksum; /* checksum */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> uint16 pd_flags; /* flag bits, see below */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> LocationIndex pd_lower; /* offset to start of free space */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> LocationIndex pd_upper; /* offset to end of free space */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> LocationIndex pd_special; /* offset to start of special space */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> uint16 pd_pagesize_version;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> TransactionId pd_prune_xid; /* oldest prunable XID, or zero if none */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ItemIdData pd_linp[FLEXIBLE_ARRAY_MEMBER]; /* line pointer array */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">} PageHeaderData;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>页头部分其实是这个 page 的一些元数据信息，由 PageHeaderData 结构体表示，主要有如下内容：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>pd_lsn：xlog（WAL） 在当前 page 的最后一次修改的日志记录&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_checksum：文件页对应的校验和，保护文件页内容&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_flags：page 的一些状态信息，取值有如下几种&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>
+&lt;p>#define PD_HAS_FREE_LINES 0x0001 /* are there any unused line pointers? &lt;em>/
+#define PD_PAGE_FULL 0x0002 /&lt;/em> not enough free space for new tuple? &lt;em>/
+#define PD_ALL_VISIBLE 0x0004 /&lt;/em> all tuples on page are visible to
+* everyone &lt;em>/
+#define PD_VALID_FLAG_BITS 0x0007 /&lt;/em> OR of all valid pd_flags bits */&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>PD_HAS_FREE_LINES：是否还有未使用的 linp 指针&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>PD_PAGE_FULL：页面已满，剩余的空间无法容纳新的 Tuple&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>PD_ALL_VISIBLE：page 所有的 tuple 都是可见的&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>PD_VALID_FLAG_BITS：全部有效的 pd_flags 标记位&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>pd_lower：该 page 内空闲空间的起始位置&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_upper：该 page 内空闲空间的结束位置&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_special：存储一些特定的信息，比如 BTree 索引会用到&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_pagesize_version：存储页面大小和版本信息&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_prune_xid：page 中可删除的最旧的事务 ID&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>pd_linp：即前面注释中标注的 linp 1 linp 2 linp 3 &amp;hellip; Linp n，是一个数组，用来标识 page 内一条数据的位置偏移，使用结构体 ItemIdData 表示。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-1662224a27d022145079090b33da4711_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>ItemIdData 结构体主要有三个字段：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">typedef struct ItemIdData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> unsigned lp_off:15, /* offset to tuple (from start of page) */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> lp_flags:2, /* state of line pointer, see below */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> lp_len:15; /* byte length of tuple */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">} ItemIdData;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>lp_off 占 15 位，表示数据在 page 的偏移&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>lp_flags 占 2 位，表示状态，取值有这几种：&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>
+&lt;p>/*
+* lp_flags has these possible states. An UNUSED line pointer is available
+* for immediate re-use, the other states are not.
+&lt;em>/
+#define LP_UNUSED 0 /&lt;/em> unused (should always have lp_len=0) &lt;em>/
+#define LP_NORMAL 1 /&lt;/em> used (should always have lp_len&amp;gt;0) &lt;em>/
+#define LP_REDIRECT 2 /&lt;/em> HOT redirect (should have lp_len=0) &lt;em>/
+#define LP_DEAD 3 /&lt;/em> dead, may or may not have storage */&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>LP_UNUSED：表示此空间空闲，未被使用&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>LP_NORMAL：指向实际的偏移位置&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>LP_REDIRECT：不指向实际数据，而是一个跳转，指向其他的 ItemIdData，用于 HOT（Heap Only Tuple）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>LP_DEAD：数据已经被删除&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>lp_length：数据的长度&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>从前面的 page 结构描述中可以得知，一条 Tuple 在插入到 page 当中的时候，是无序的，所以 Postgres 中最常用的表组织方式叫做 Heap，意为杂乱的，无顺序的。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-5be041fb3c47fd9d2a6238e50df08c78_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这种数据组织的方式，其实可以非常高效的读取、插入、删除表中的一行数据，因此 Postgres 的 Heap 表结构其实适用于 OLTP 的场景。&lt;/p>
+&lt;p>当读取数据的时候，可以根据 BlockNumber 确定 page 编号，以及页内偏移 OffsetNumber 确定数据在 page 内的位置，使用结构体 ItemPointerData 表示一条数据的物理存储位置。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">typedef struct ItemPointerData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> BlockIdData ip_blkid;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> OffsetNumber ip_posid;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>参考资料&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//www.postgresql.org/docs/14/storage-page-layout.html" target="_blank" rel="noopener"
+>https://www.postgresql.org/docs/14/storage-page-layout.html&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//www.interdb.jp/pg/pgsql01/03.html" target="_blank" rel="noopener"
+>https://www.interdb.jp/pg/pgsql01/03.html&lt;/a>&lt;/p></description></item><item><title>Postgres 源码学习 3—Postgres 存储管理器</title><link>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-3postgres-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E5%99%A8/</link><pubDate>Sun, 26 May 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-3postgres-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E5%99%A8/</guid><description>&lt;p>前面一节说到，在 Postgres 的 VFD 机制之上，我们可以避开打开文件数量的系统限制，通过 VFD 可以进行打开、读写、关闭、删除文件等操作，简单来说就是 VFD 为我们提供了一个抽象，屏蔽了操作系统文件描述符的接口，后续我们对文件的 open、close，以及 CRUD 操作都在 VFD 的基础之上。&lt;/p>
+&lt;h2 id="文件类型和文件块">文件类型和文件块
+&lt;/h2>&lt;p>要了解 Postgres 的存储管理，需要先对 Postgres 的表文件的组织方式、类型有一个简单的了解。&lt;/p>
+&lt;p>Postgres 中的表文件可能会非常大，在物理存储上会将表文件拆分为多个，每一个表文件通过 segno 来区分。&lt;/p>
+&lt;p>在 Postgres 的数据目录中，表文件的存储格式为 &lt;code>base/&amp;lt;database oid&amp;gt;/&amp;lt;table relfilenode&amp;gt;&lt;/code>。&lt;/p>
+&lt;p>在 base 目录下，存储了不同 Database 的数据，例如在我的当前环境中，当前的数据库名为 &lt;code>rose&lt;/code>，其 oid 为 24582。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-0a757091bd4ac9ade32197ede4dc62d2_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>所以在 Postgres 数据目录的 base 目录下，就会有对应的 Database 目录，目录名称就是 Oid：&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-e16ae310fc3924e91e9e414713c01611_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>我在当前数据库中有一个表，其名为 articles，我们可以通过 &lt;code>pg_class&lt;/code> 表查询到对应的表 relfilenode。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-8515ce6870af08c9069479725c190123_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>可以看到表对应的 relfilenode 是 24588，所以可以到 24582 这个数据库目录中，查看所有表数据相关的文件：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-48af351dd12b3e69837463d0cdde4223_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>img&lt;/p>
+&lt;p>可以看到表数据文件被分为了&lt;/p>
+&lt;p>24588
+24588.1
+24588.2
+24588.3
+24588.4
+24588.5&lt;/p>
+&lt;p>每一个数据文件被称为一个数据段（Segment）文件，符号 &lt;code>.&lt;/code> 后就是段号（segno），第 0 个分段文件没有段号。&lt;/p>
+&lt;p>除了数据文件，还有 &lt;code>24588_fsm&lt;/code> 表示的是表的空闲空间映射文件，记录每个文件的空闲空间大小，&lt;code>24588_vm&lt;/code> 即 VisibilityMap 文件，记录的是每个文件页的可见状态。&lt;/p>
+&lt;p>在源码中，定义了枚举 &lt;code>ForkNumber&lt;/code> 来表示每种文件的类型。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Stuff for fork names.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * The physical storage of a relation consists of one or more forks.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * The main fork is always created, but in addition to that there can be
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * additional forks for storing various metadata. ForkNumber is used when
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * we need to refer to a specific fork in a relation.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typedef&lt;/span> &lt;span class="k">enum&lt;/span> &lt;span class="n">ForkNumber&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">InvalidForkNumber&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">MAIN_FORKNUM&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">FSM_FORKNUM&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VISIBILITYMAP_FORKNUM&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">INIT_FORKNUM&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * NOTE: if you add a new fork, change MAX_FORKNUM and possibly
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * FORKNAMECHARS below, and update the forkNames array in
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * src/common/relpath.c
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="n">ForkNumber&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>MAIN_FORKNUM：表数据文件
+FSM_FORKNUM：空闲空间映射文件
+VISIBILITYMAP_FORKNUM：文件页可见性
+INIT_FORKNUM：主要用于 UNLOGGED 表&lt;/p>
+&lt;p>在分配和读取数据文件的时候，为了效率，一般会以块为单位， 在 Postgres 中默认块大小是 8KB，可以在系统初始化时设置。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Size of a disk block --this also limits the size of a tuple. You can set
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> it bigger if you need bigger tuples (although TOAST should reduce the need
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> to have large tuples, since fields can be spread across multiple tuples).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> BLCKSZ must be a power of 2. The maximum possible value of BLCKSZ is
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> currently 2^15 (32768). This is determined by the 15-bit widths of the
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> lp_off and lp_len fields in ItemIdData (see include/storage/itemid.h).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Changing BLCKSZ requires an initdb. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cp">#define BLCKSZ 8192
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>还有另一个参数是 RELSEG_SIZE，表示一个文件中的最大块数量，使用这个参数和 BLOCKZ，就能够计算出每个数据文件的最大值，目前默认是 1GB（&lt;code>131072 * 8192 / 1024 / 1024 / 1024 = 1GB&lt;/code>）。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* RELSEG_SIZE is the maximum number of blocks allowed in one disk file. Thus,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> the maximum size of a single file is RELSEG_SIZE * BLCKSZ; relations bigger
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> than that are divided into multiple files. RELSEG_SIZE * BLCKSZ must be
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> less than your OS&amp;#39; limit on file size. This is often 2 GB or 4GB in a
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> 32-bit operating system, unless you have large file support enabled. By
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> default, we make the limit 1 GB to avoid any possible integer-overflow
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> problems within the OS. A limit smaller than necessary only means we divide
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> a large relation into more chunks than necessary, so it seems best to err
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> in the direction of a small limit. A power-of-2 value is recommended to
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> save a few cycles in md.c, but is not absolutely required. Changing
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> RELSEG_SIZE requires an initdb. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cp">#define RELSEG_SIZE 131072
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="存储管理器">存储管理器
+&lt;/h2>&lt;p>在 Postgres 中，在对表文件管理和操作时，提供了存储管理器（SMGR）的抽象，由于历史原因，早期的系统中，可能存在不同的存储系统，比如磁盘（magnetic disk）、索尼光盘（Sony WORM optical disk jukebox）、持久化主存（persistent main memory）等。&lt;/p>
+&lt;p>但是目前在操作系统层面，已经提供了文件系统的抽象，所以存储管理器其实已经没有存在的必要了，但是 Postgres 依然选择将其保留，主要是认为这层抽象并没有什么其他的影响。&lt;/p>
+&lt;p>所以目前只保留了基于磁盘的存储管理，实际上底层还是调用的操作系统的文件系统。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-8299b88407080ae2bdfac999964ae7bd_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>img&lt;/p>
+&lt;p>在源代码中也体现的很明显，两个文件，smgr.c 主要是存储管理器，而 md.c 就是磁盘的存储管理。&lt;/p>
+&lt;p>存储管理器类似一个顶层抽象，具体的存储管理操作都交给了磁盘存储管理器。&lt;/p>
+&lt;h2 id="磁盘存储管理器">磁盘存储管理器
+&lt;/h2>&lt;p>在 Postgres 中，一个表会有多个文件，对于表中打开的文件的管理，使用结构体 &lt;code>SMgrRelationData&lt;/code> 来表示：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * smgr.c maintains a table of SMgrRelation objects, which are essentially
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * cached file handles. An SMgrRelation is created (if not already present)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * by smgropen(), and destroyed by smgrclose(). Note that neither of these
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * operations imply I/O, they just create or destroy a hashtable entry.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * (But smgrclose() may release associated resources, such as OS-level file
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * descriptors.)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * An SMgrRelation may have an &amp;#34;owner&amp;#34;, which is just a pointer to it from
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * somewhere else; smgr.c will clear this pointer if the SMgrRelation is
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * closed. We use this to avoid dangling pointers from relcache to smgr
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * without having to make the smgr explicitly aware of relcache. There
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * can&amp;#39;t be more than one &amp;#34;owner&amp;#34; pointer per SMgrRelation, but that&amp;#39;s
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * all we need.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * SMgrRelations that do not have an &amp;#34;owner&amp;#34; are considered to be transient,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * and are deleted at end of transaction.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typedef&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">SMgrRelationData&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* rlocator is the hashtable lookup key, so it must be first! */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RelFileLocatorBackend&lt;/span> &lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* relation physical identifier */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* pointer to owning pointer, or NULL if none */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">SMgrRelationData&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">smgr_owner&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * The following fields are reset to InvalidBlockNumber upon a cache flush
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * event, and hold the last known size for each fork. This information is
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * currently only reliable during recovery, since there is no cache
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * invalidation for fork extension.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">BlockNumber&lt;/span> &lt;span class="n">smgr_targblock&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* current insertion target block */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">BlockNumber&lt;/span> &lt;span class="n">smgr_cached_nblocks&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAX_FORKNUM&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="cm">/* last known size */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* additional public fields may someday exist here */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Fields below here are intended to be private to smgr.c and its
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * submodules. Do not touch them from elsewhere.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">smgr_which&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* storage manager selector */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * for md.c; per-fork arrays of the number of open segments
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * (md_num_open_segs) and the segments themselves (md_seg_fds).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">md_num_open_segs&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAX_FORKNUM&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">_MdfdVec&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">md_seg_fds&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAX_FORKNUM&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* if unowned, list link in list of all unowned SMgrRelations */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dlist_node&lt;/span> &lt;span class="n">node&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="n">SMgrRelationData&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中比较关键的字段有：&lt;/p>
+&lt;p>md_num_open_segs：记录每个 FORK 类型当前已经打开的文件数量
+md_seg_fds：针对每个 FORK 类型打开文件的 VFD 信息&lt;/p>
+&lt;p>&lt;code>SMgrRelationData&lt;/code> 会使用一个进程私有的哈希表来保存，每次需要打开一个表的文件时，可以首先从这个哈希表中查找，如果找到的话直接返回，这样同一个表只需要维护一个结构体即可，有利于保持对表文件操作的一致性。&lt;/p>
+&lt;p>哈希表的 key 是 &lt;code>SMgrRelationData&lt;/code> 结构体的第一个属性 &lt;code>smgr_rlocator&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typedef&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">RelFileLocator&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Oid&lt;/span> &lt;span class="n">spcOid&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* tablespace */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Oid&lt;/span> &lt;span class="n">dbOid&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* database */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RelFileNumber&lt;/span> &lt;span class="n">relNumber&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* relation */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="n">RelFileLocator&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Augmenting a relfilelocator with the backend ID provides all the information
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * we need to locate the physical storage. The backend ID is InvalidBackendId
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * for regular relations (those accessible to more than one backend), or the
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * owning backend&amp;#39;s ID for backend-local relations. Backend-local relations
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * are always transient and removed in case of a database crash; they are
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * never WAL-logged or fsync&amp;#39;d.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typedef&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">RelFileLocatorBackend&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RelFileLocator&lt;/span> &lt;span class="n">locator&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">BackendId&lt;/span> &lt;span class="n">backend&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="n">RelFileLocatorBackend&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>smgr_rlocator&lt;/code> 的类型是 RelFileLocatorBackend，locator 是一个三元组，分别是 &lt;code>&amp;lt;tablespaceid，database id，relation id&amp;gt;&lt;/code>，backend 只对临时表有用，对普通表来说，其值一般是 -1。&lt;/p>
+&lt;p>在磁盘存储管理器中，其实主要就是对 &lt;code>SMgrRelationData&lt;/code> 的管理，涉及到对其创建、打开、关闭、删除、扩展等操作。&lt;/p>
+&lt;h3 id="创建表文件">创建表文件
+&lt;/h3>&lt;p>在函数 mdcreate 中实现，一个数据表会有很多个数据文件，这里的创建表文件指的是传入给定的 tablespace id、database id、relation id，以及文件类型（ForkNumber），创建第一个物理文件，后续其他新的文件会在写入数据的时候动态扩展。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">TablespaceCreateDbspace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">locator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">spcOid&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">locator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dbOid&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">isRedo&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">relpath&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">PathNameOpenFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nf">_mdfd_open_flags&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">O_CREAT&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">O_EXCL&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">save_errno&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">errno&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">isRedo&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">PathNameOpenFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nf">_mdfd_open_flags&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* be sure to report the error reported by create, not open */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">errno&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">save_errno&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">ereport&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERROR&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="nf">errcode_for_file_access&lt;/span>&lt;span class="p">(),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errmsg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;could not create file &lt;/span>&lt;span class="se">\&amp;#34;&lt;/span>&lt;span class="s">%s&lt;/span>&lt;span class="se">\&amp;#34;&lt;/span>&lt;span class="s">: %m&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">path&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pfree&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">_fdvec_resize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mdfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">md_seg_fds&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">forknum&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mdfd&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mdfd&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_segno&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="nf">SmgrIsTemp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">register_dirty_segment&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mdfd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>所以 mdcrete 的逻辑其实比较简单，如上，主要就是创建第一个文件，通过 &lt;code>PathNameOpenFile&lt;/code> 方法创建（或打开）文件并获得文件描述符，然后存储到 SMgrRelation 的 md_seg_fds 数组中。&lt;/p>
+&lt;h3 id="打开表文件">打开表文件
+&lt;/h3>&lt;p>在函数 smgropen 中，注意这个方法并不会实际去打开文件，只会初始化一些状态。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * smgropen() -Return an SMgrRelation object, creating it if need be.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * This does not attempt to actually open the underlying file.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SMgrRelation&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">smgropen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">RelFileLocator&lt;/span> &lt;span class="n">rlocator&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BackendId&lt;/span> &lt;span class="n">backend&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RelFileLocatorBackend&lt;/span> &lt;span class="n">brlocator&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SMgrRelation&lt;/span> &lt;span class="n">reln&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">found&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelationHash&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* First time through: initialize the hash table */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">HASHCTL&lt;/span> &lt;span class="n">ctl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ctl&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">keysize&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">RelFileLocatorBackend&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ctl&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">entrysize&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelationData&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SMgrRelationHash&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">hash_create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;smgr relation table&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">400&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">ctl&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">HASH_ELEM&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">HASH_BLOBS&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">dlist_init&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">unowned_relns&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Look up or create an entry */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">brlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">locator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rlocator&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">brlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">backend&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">backend&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelation&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">hash_search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelationHash&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">brlocator&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">HASH_ENTER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">found&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Initialize it if not present before */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="n">found&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* hash_search already filled in the lookup key */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_owner&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_targblock&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">InvalidBlockNumber&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">MAX_FORKNUM&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_cached_nblocks&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">InvalidBlockNumber&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_which&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* we only have md.c at present */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* implementation-specific initialization */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">smgrsw&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_which&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nf">smgr_open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* it has no owner yet */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">dlist_push_tail&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">unowned_relns&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">node&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">reln&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol>
+&lt;li>
+&lt;p>如果哈希表 SMgrRelationHash 为空，则初始化&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>从哈希表中查找表对应的 SMgrRelation 结构&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ol>
+&lt;li>如果没找到的话，则初始化一个对应的表文件管理结构体（reln）&lt;/li>
+&lt;li>然后调用磁盘存储管理器（md.c）中的 smgr_open 进行初始化&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ol>
+&lt;p>md 中的 smgr_open 其实也非常简单，只是对 md_num_open_segs 属性进行了初始化。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * mdopen() -Initialize newly-opened relation.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">mdopen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelation&lt;/span> &lt;span class="n">reln&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* mark it not open */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">forknum&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">forknum&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">MAX_FORKNUM&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">md_num_open_segs&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">forknum&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="关闭表文件">关闭表文件
+&lt;/h3>&lt;p>通过函数 mdclose 实现，主要是对每个 Fork 类型的文件，查询 md_seg_fds 中保存的文件描述符信息，然后通过 FileClose 方法关闭文件。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * mdclose() -Close the specified relation, if it isn&amp;#39;t closed already.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">mdclose&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelation&lt;/span> &lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ForkNumber&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">nopensegs&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">md_num_open_segs&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">forknum&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* No work if already closed */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">nopensegs&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* close segments starting from the end */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">nopensegs&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">MdfdVec&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">v&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">md_seg_fds&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">forknum&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">nopensegs&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">FileClose&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">_fdvec_resize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">nopensegs&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">nopensegs&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="删除表文件">删除表文件
+&lt;/h3>&lt;p>在 smgr 中，删除表文件的方法是 &lt;code>smgrdounlinkall&lt;/code>，主要会将表文件先关闭（mdclose）：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * create an array which contains all relations to be dropped, and close
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * each relation&amp;#39;s forks at the smgr level while at it
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">rlocators&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">palloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">RelFileLocatorBackend&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">nrels&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">nrels&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">RelFileLocatorBackend&lt;/span> &lt;span class="n">rlocator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">which&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_which&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">rlocators&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rlocator&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Close the forks at smgr level */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">forknum&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">forknum&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">MAX_FORKNUM&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">smgrsw&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">which&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nf">smgr_close&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">rels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后遍历每个 Fork 类型，删除其中的每个文件。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">nrels&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">which&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">rels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_which&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">forknum&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">forknum&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">MAX_FORKNUM&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">smgrsw&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">which&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="nf">smgr_unlink&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">rlocators&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">isRedo&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>实际的删除文件流程都在 md.c 中的 mdunlinkfork 方法，删除表文件的时候，会立即删除除了 MAIN_FORK 第 0 个分段文件（Segment）之外的其他文件。&lt;/p>
+&lt;p>对于 MAIN_FORK 的 0 个文件，会将其保留防止其他表重用文件名，并且将文件内容截取（truncate）到 0，然后发送请求给 checkpointer 进程，让其在下一次 checkpoint 之后再实际删除该文件，关键代码如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Prevent other backends&amp;#39; fds from holding on to the disk space */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">do_truncate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Register request to unlink first segment later */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">save_errno&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">errno&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">register_unlink_segment&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">rlocator&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="cm">/* first seg */&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">errno&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">save_errno&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="扩展表文件">扩展表文件
+&lt;/h3>&lt;p>在对数据表文件进行写入时，如果表文件空间不够了，那么需要扩展表文件的大小，通过函数 mdextend 实现。&lt;/p>
+&lt;p>在扩展时，会以 BLOCK 为单位，每次扩展一个或多个 BLOCK。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">v&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">_mdfd_getseg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blocknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">skipFsync&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">EXTENSION_CREATE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">seekpos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">off_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">BLCKSZ&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">blocknum&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">BlockNumber&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">RELSEG_SIZE&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">seekpos&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">off_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">BLCKSZ&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RELSEG_SIZE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">nbytes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">FileWrite&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buffer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLCKSZ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">seekpos&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">WAIT_EVENT_DATA_FILE_EXTEND&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">BLCKSZ&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">nbytes&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">ereport&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERROR&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="nf">errcode_for_file_access&lt;/span>&lt;span class="p">(),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errmsg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;could not extend file &lt;/span>&lt;span class="se">\&amp;#34;&lt;/span>&lt;span class="s">%s&lt;/span>&lt;span class="se">\&amp;#34;&lt;/span>&lt;span class="s">: %m&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">FilePathName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span>&lt;span class="p">)),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errhint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Check free disk space.&amp;#34;&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* short write: complain appropriately */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">ereport&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERROR&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="nf">errcode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERRCODE_DISK_FULL&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errmsg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;could not extend file &lt;/span>&lt;span class="se">\&amp;#34;&lt;/span>&lt;span class="s">%s&lt;/span>&lt;span class="se">\&amp;#34;&lt;/span>&lt;span class="s">: wrote only %d of %d bytes at block %u&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">FilePathName&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">nbytes&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLCKSZ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blocknum&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errhint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Check free disk space.&amp;#34;&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="n">skipFsync&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="nf">SmgrIsTemp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">register_dirty_segment&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">v&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>大致逻辑是会获得对应的文件描述符，然后通过 FileWrite 方法写入 block 数量大小的数据。&lt;/p>
+&lt;p>写完之后，会标识该文件是 dirty 的，然后发送请求到 checkpointer 进程（register_dirty_segment），让其在下一次发生 checkpoint 的时候将文件内容落盘。&lt;/p>
+&lt;h3 id="读写表文件">读写表文件
+&lt;/h3>&lt;p>读写表文件中的 block 主要是通过 mdread/mdwrite 方法。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * mdread() -Read the specified block from a relation.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">mdread&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SMgrRelation&lt;/span> &lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ForkNumber&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BlockNumber&lt;/span> &lt;span class="n">blocknum&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">buffer&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">off_t&lt;/span> &lt;span class="n">seekpos&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">nbytes&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">MdfdVec&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* If this build supports direct I/O, the buffer must be I/O aligned. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">PG_O_DIRECT&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">PG_IO_ALIGN_SIZE&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">BLCKSZ&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="kt">uintptr_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">buffer&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nf">TYPEALIGN&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PG_IO_ALIGN_SIZE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buffer&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">TRACE_POSTGRESQL_SMGR_MD_READ_START&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blocknum&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">locator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">spcOid&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">locator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dbOid&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">locator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">relNumber&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">reln&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">smgr_rlocator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">backend&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">v&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">_mdfd_getseg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blocknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">EXTENSION_FAIL&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">EXTENSION_CREATE_RECOVERY&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">seekpos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">off_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">BLCKSZ&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">blocknum&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">BlockNumber&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">RELSEG_SIZE&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">seekpos&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">off_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">BLCKSZ&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RELSEG_SIZE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">nbytes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">FileRead&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buffer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLCKSZ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">seekpos&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">WAIT_EVENT_DATA_FILE_READ&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>读取的时候，会传入表文件的 SMgrRelation 结构体，以及文件类型 forknum 和块号 blocknum，然后通过 &lt;code>FileRead&lt;/code> 方法将数据读取到指定的 buffer 中。&lt;/p>
+&lt;p>mdwrite 的方法和读取基本类似，主要是将指定的 buffer 内容通过 FileWrite 方法写入到对应的文件中。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">v&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">_mdfd_getseg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reln&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">forknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blocknum&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">skipFsync&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">EXTENSION_FAIL&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">EXTENSION_CREATE_RECOVERY&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">seekpos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">off_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">BLCKSZ&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">blocknum&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">BlockNumber&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">RELSEG_SIZE&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">seekpos&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">off_t&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">BLCKSZ&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">RELSEG_SIZE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">nbytes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">FileWrite&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">mdfd_vfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buffer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLCKSZ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">seekpos&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">WAIT_EVENT_DATA_FILE_WRITE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>注意这里写入之后，并不会等待操作系统刷盘之后再返回，而是直接返回，将刷盘的请求交给了 checkpointer 进程，由此来提高数据写入的效率，而数据的崩溃恢复、一致性，是通过 WAL 来保证的。&lt;/p></description></item><item><title>Postgres 源码学习 2—Postgres 的 VFD 机制</title><link>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-2postgres-%E7%9A%84-vfd-%E6%9C%BA%E5%88%B6/</link><pubDate>Thu, 18 Apr 2024 10:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-2postgres-%E7%9A%84-vfd-%E6%9C%BA%E5%88%B6/</guid><description>&lt;h2 id="操作系统中的文件">操作系统中的文件
+&lt;/h2>&lt;p>数据库的本质其实就是用来存储数据的，所以免不了和文件系统、存储进行交互，万丈高楼平地起，存储一般是一个数据库的最底层，Postgres 在存储的文件管理方面也有很多的设计与抽象。&lt;/p>
+&lt;p>在操作系统层面，提供了一些文件操作相关的系统调用（fopen、fclose、fsync 等），我们作为上层使用者，可以直接通过 C 语言库进行调用即可（Postgres 使用 C 语言编写）。&lt;/p>
+&lt;p>具体和文件系统的交互我们并不关心，操作系统打开文件之后，会在进程的控制块中维护一些打开文件的相关信息，并返回一个文件描述符，后续我们与文件的交互都通过文件描述符进行。&lt;/p>
+&lt;p>操作系统能够打开多少文件，是有限制的，一个是系统级限制，指的是在内核中可以打开多少文件，可以通过命令 &lt;code>sysctl fs.file-max&lt;/code> 查看。另一个是用户级限制，为了不让某个进程打开太多的文件，进而消耗所有的资源，对单个进程能打开文件也有限制，可以通过 &lt;code>ulimit -n&lt;/code> 命令查看。&lt;/p>
+&lt;h2 id="postgres-的-vfd-作用">Postgres 的 VFD 作用
+&lt;/h2>&lt;p>Postgres 数据库在运行的过程当中，可能会打开非常多的文件，比如数据表对应的文件，元数据表文件，以及一些在 SQL 运行时打开的临时文件，例如排序、哈希表所需的文件。&lt;/p>
+&lt;p>所以有非常大的概率超过单个进程打开文件数量的限制，为了解决这个问题，Postgres 设计了 VFD（虚拟文件描述符）机制，主要是将实际的操作系统文件描述符维护到一个 LRU 缓存中，通过切换打开的方式，规避了进程打开文件数量的限制。&lt;/p>
+&lt;p>如果一个进程打开的文件数目达到了限制，则暂时关闭最久未使用的文件，保存其状态，待下次重新打开。&lt;/p>
+&lt;h2 id="vfd-的基本工作方式">VFD 的基本工作方式
+&lt;/h2>&lt;p>Postgres 主要通过一个进程私有的数组来维护 VFD，名为 &lt;code>VfdCache&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-SQL" data-lang="SQL">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Virtual File Descriptor array pointer and size. This grows as
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * needed. &amp;#39;File&amp;#39; values are indexes into this array.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Note that VfdCache[0] is not a usable VFD, just a list header.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">static&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">Vfd&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>VfdCache 数组的第一个元素不存储任何数据，仅作为头部使用，下面是 vfdCache 的初始化逻辑，会在 backend 进程启动的时候调用，大致的逻辑就是为 VfdCache 数组分配内存。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * InitFileAccess --- initialize this module during backend startup
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * This is called during either normal or standalone backend start.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * It is *not* called in the postmaster.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Note that this does not initialize temporary file access, that is
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * separately initialized via InitTemporaryFileAccess().
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">InitFileAccess&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SizeVfdCache&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="cm">/* call me only once */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* initialize cache header entry */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">Vfd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Vfd&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">VfdCache&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">ereport&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">FATAL&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="nf">errcode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERRCODE_OUT_OF_MEMORY&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errmsg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;out of memory&amp;#34;&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">MemSet&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]),&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Vfd&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">VFD_CLOSED&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SizeVfdCache&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果需要打开一个文件，那么会首先在 VfdCache 数组中查找空闲的虚拟文件描述符，主要是通过 &lt;code>nextFree&lt;/code> 指针进行查找，如果当前没有空闲的 vfd 了，那么会启动扩容机制，初始情况下，VfdCache size 是 32，每次扩容为原来的 2 倍。&lt;/p>
+&lt;p>Vfd 扩容和分配的逻辑都在方法 &lt;code>AllocateVfd&lt;/code> 中。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="n">File&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">AllocateVfd&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Index&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">File&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">elog&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">LOG&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;AllocateVfd. Size %zu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SizeVfdCache&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">SizeVfdCache&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="cm">/* InitFileAccess not called? */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * The free list is empty so it is time to increase the size of the
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * array. We choose to double it each time this happens. However,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * there&amp;#39;s not much point in starting *real* small.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Size&lt;/span> &lt;span class="n">newCacheSize&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">SizeVfdCache&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Vfd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">newVfdCache&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">newCacheSize&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newCacheSize&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">32&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Be careful not to clobber VfdCache ptr if realloc fails.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newVfdCache&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">Vfd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">realloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Vfd&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">newCacheSize&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">newVfdCache&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">ereport&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERROR&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="nf">errcode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ERRCODE_OUT_OF_MEMORY&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">errmsg&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;out of memory&amp;#34;&lt;/span>&lt;span class="p">)));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newVfdCache&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Initialize the new entries and link them into the free list.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">SizeVfdCache&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">newCacheSize&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">MemSet&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]),&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Vfd&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">VFD_CLOSED&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">newCacheSize&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">SizeVfdCache&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Record the new size
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SizeVfdCache&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newCacheSize&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">file&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">nextFree&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>拿到虚拟文件描述符之后，会调用 C 库函数 open 实际去打开文件，并且将一些文件状态维护到 Vfd 结构体中，这个结构体主要存储的是虚拟文件描述符的一些信息，也就是存储到 VfdCache 数组中的结构。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="k">typedef&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">vfd&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">fd&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* current FD, or VFD_CLOSED if none */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">short&lt;/span> &lt;span class="n">fdstate&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* bitflags for VFD&amp;#39;s state */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ResourceOwner&lt;/span> &lt;span class="n">resowner&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* owner, for automatic cleanup */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">File&lt;/span> &lt;span class="n">nextFree&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* link to next free VFD, if in freelist */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">File&lt;/span> &lt;span class="n">lruMoreRecently&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* doubly linked recency-of-use list */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">File&lt;/span> &lt;span class="n">lruLessRecently&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">off_t&lt;/span> &lt;span class="n">fileSize&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* current size of file (0 if not temporary) */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">fileName&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* name of file, or NULL for unused VFD */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* NB: fileName is malloc&amp;#39;d, and must be free&amp;#39;d when closing the VFD */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">fileFlags&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* open(2) flags for (re)opening the file */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">mode_t&lt;/span> &lt;span class="n">fileMode&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* mode to pass to open(2) */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="n">Vfd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Vfd 结构体中，主要通过 nextFree、lruMoreRecently、lruLessRecently 指针将 vfd 维护到不同的队列里面。&lt;/p>
+&lt;p>每次新打开一个文件，都会将该 vfd 通过 lruMoreRecently 和 lruLessRecently 指针，维护这个双向链表，每次关闭一个 VfdCache 中的文件，都会将其从链表中删除。&lt;/p>
+&lt;p>每次查找空闲的 VfdCache 的时候，都会通过 nextFree 链表进行查找。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-416dd3fdf45cc6d45f2193fe7bdc65f6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>以访问文件为例，首先会判断文件是否打开，如果没有打开的话，则打开文件并且将其放到最近使用的链表中。&lt;/p>
+&lt;p>主要的逻辑在函数 LruInsert 中，在实际打开文件之前，会尝试关闭最久未使用的文件。&lt;/p>
+&lt;p>然后会通过系统调用打开文件，并且获取到实际的文件描述符（fd），将其保存到 vfdP 结构中。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">LruInsert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">File&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Vfd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">file&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">elog&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">LOG&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;LruInsert %d (%s)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">fileName&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nf">FileIsNotOpen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Close excess kernel FDs. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">ReleaseLruFiles&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * The open could still fail for lack of file descriptors, eg due to
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * overall system file table being full. So, be prepared to release
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * another FD if necessary...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">BasicOpenFilePerm&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">fileName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">fileFlags&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">fileMode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">elog&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">LOG&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;re-open failed: %m&amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">++&lt;/span>&lt;span class="n">nfile&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * put it at the head of the Lru ring
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Insert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果文件已经是打开状态，那么会先从链表中删除，然后将其插入到最近使用的链表中。将 Vfd 加入到链表中，代码如下，可以看到主要是通过维护 lruMoreRecently 和 lruLessRecently 这两个指针，将当前 vfd 加入到链表的头部。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">Insert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">File&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Vfd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">file&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">elog&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">LOG&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Insert %d (%s)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">fileName&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">_dump_lru&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruMoreRecently&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruLessRecently&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">lruLessRecently&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">lruLessRecently&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruLessRecently&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">lruMoreRecently&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">_dump_lru&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>而 Delete 方法则描述的是将一个 vfd 从链表中删除。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">Delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">File&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Vfd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">file&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">elog&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">LOG&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;Delete %d (%s)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">fileName&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">_dump_lru&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vfdP&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">file&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruLessRecently&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">lruMoreRecently&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruMoreRecently&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">VfdCache&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruMoreRecently&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">lruLessRecently&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">vfdP&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lruLessRecently&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">DO_DB&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nf">_dump_lru&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="小结">小结
+&lt;/h2>&lt;p>Postgres 中的 VFD，即虚拟文件描述符，主要是为了能够规避操作系统中最大打开文件数的限制，采用切换打开的方式，维护了一个链表，将最近打开的文件维护到链表头部，最久未使用的文件放置到链表尾部。&lt;/p>
+&lt;p>访问文件的时候，会从 VfdCache 数组中查找空闲的虚拟文件描述符，如果找到的话，则直接使用，否则分配新的 VfdCache 空间。&lt;/p>
+&lt;p>在打开文件的时候，会尝试关闭最久未使用的文件，将位置留给最新打开的文件。&lt;/p>
+&lt;p>通过这种方式，Postgres 可以打开远超过系统和进程限制的文件数量，是一个非常精妙的设计。&lt;/p></description></item><item><title>Postgres 源码学习 1—Postgres 源码编译和 debug</title><link>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-1postgres-%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%92%8C-debug/</link><pubDate>Tue, 16 Apr 2024 10:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/postgres-%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-1postgres-%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%92%8C-debug/</guid><description>&lt;h2 id="docker-环境">docker 环境
+&lt;/h2>&lt;p>这里我使用了一个纯净的 Ubuntu 环境来进行演示，为了方便，使用了 docker。&lt;/p>
+&lt;p>如果你有其他的物理机，或者云服务器，都是可以的，Postgres 支持多种平台编译，如果你是非 Ubuntu 环境，可以自行查阅相关的资料进行编译安装，步骤都是大同小异的。&lt;/p>
+&lt;p>我使用了 Ubuntu 20.04 版本的镜像作为演示：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-9920d521d2801c948be231bb6c21fef7_b.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>使用镜像启动容器：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Bash" data-lang="Bash">&lt;span class="line">&lt;span class="cl">docker run -itd --name &amp;lt;container-name&amp;gt; --privileged &amp;lt;image id&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>进入环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Bash" data-lang="Bash">&lt;span class="line">&lt;span class="cl">docker &lt;span class="nb">exec&lt;/span> -it &amp;lt;container-name &lt;span class="p">|&lt;/span> container id&amp;gt; /bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="创建用户">创建用户
+&lt;/h2>&lt;p>最好不要在 root 用户下编译和安装 Postgres，这里我们可以新建一个用户&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Go" data-lang="Go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">useradd&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">username&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">m&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="nx">bin&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">bash&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>切换到新的用户环境中。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Go" data-lang="Go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">su&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">username&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装依赖">安装依赖
+&lt;/h2>&lt;p>安装 Postgres 编译所需的依赖（这里是摘取了 &lt;code>Greenplum&lt;/code> 的安装依赖，可能包含了一些没必要安装的，但肯定是涵盖了 Postgres 需要的依赖，所以全部安装上也没啥问题）。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Go" data-lang="Go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">sudo&lt;/span> &lt;span class="nx">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">get&lt;/span> &lt;span class="nx">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">sudo&lt;/span> &lt;span class="nx">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">get&lt;/span> &lt;span class="nx">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">y&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">bison&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ccache&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">cmake&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">curl&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">flex&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">git&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">core&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">gcc&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">g&lt;/span>&lt;span class="o">++&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">inetutils&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">ping&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">krb5&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">kdc&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">krb5&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">admin&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">server&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libapr1&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libbz2&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libcurl4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">gnutls&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libevent&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libkrb5&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libpam&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libperl&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libreadline&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libssl&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libxerces&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">c&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libxml2&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libyaml&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">libzstd&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">locales&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">net&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">tools&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ninja&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">build&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">openssh&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">client&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">openssh&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">server&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">openssl&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">pkg&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">config&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">python3&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">python3&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">pip&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">python3&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">psycopg2&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">python3&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">psutil&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">python3&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">yaml&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">zlib1g&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">dev&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="执行编译">执行编译
+&lt;/h2>&lt;p>拉取 Postgres 的源代码，并进入到 postgres 代码目录中。&lt;/p>
+&lt;p>如果是拉取最新版本的代码，可以从 Github 上获取：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Rust" data-lang="Rust">&lt;span class="line">&lt;span class="cl">&lt;span class="n">git&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">clone&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">https&lt;/span>:&lt;span class="c1">//github.com/postgres/postgres.git
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果想要获取对应版本的源代码，则可以从 Postgres 官网中下载：&lt;/p>
+&lt;p>地址：https://www.postgresql.org/ftp/source/&lt;/p>
+&lt;p>Postgres 有非常多的编译选项，详情可以参考官方文档：https://www.postgresql.org/docs/current/install-make.html#CONFIGURE-OPTIONS&lt;/p>
+&lt;p>我们这里只使用最简单的编译方式即可。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Go" data-lang="Go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">CFLAGS&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">O0&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">configure&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">prefix&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">roseduan&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">pg&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">install&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">enable&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">debug&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们关闭了编译器的优化，方便后续的调试，并且打开了 debug 模式。&lt;/p>
+&lt;p>&lt;code>--prefix&lt;/code> 指定编译后的二进制目录的位置，这里不指定也是可以的，默认是在 &lt;code>/usr/local&lt;/code> 下面。&lt;/p>
+&lt;p>Configure 之后，如果没有错误产生的话，则执行编译并安装：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Go" data-lang="Go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">make&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">j&lt;/span>&lt;span class="s">`nproc`&lt;/span> &lt;span class="nx">install&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>编译安装之后，得到了二进制目录，可以将 bin 目录加入到 PATH 环境变量中，如果嫌麻烦，可以加入到 $HOME 目录中的 .bashrc 或者 .zshrc（取决于你的 sh 是什么），这样下次登录就不用重复设置了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Bash" data-lang="Bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">PATH&lt;/span>&lt;span class="o">=&lt;/span>/&amp;lt;posgres-install-dir&amp;gt;/bin:&lt;span class="nv">$PATH&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="初始化-db">初始化 DB
+&lt;/h2>&lt;p>上述步骤完成后，可以使用 init 命令来初始化 postgres 的数据目录。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Bash" data-lang="Bash">&lt;span class="line">&lt;span class="cl">pg_ctl -D &amp;lt;pg 数据目录路径&amp;gt; init
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://pic1.zhimg.com/v2-f9e9d9cef9434ca8bd773d97b3cd02e0_b.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>初始化完成后，直接启动 postgres 的服务即可。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Bash" data-lang="Bash">&lt;span class="line">&lt;span class="cl">pg_ctl -D pg-data start
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://pic2.zhimg.com/v2-191fb93dec2aeba77400d4629119fc0d_b.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>启动之后，可以查看 postgres 的进程状态。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-bb5be63d2a81ad70e73dbe6bce87f2f2_b.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>也可以通过 psql 命令连接到数据库中：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Bash" data-lang="Bash">&lt;span class="line">&lt;span class="cl">psql postgres
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="如何-debug">如何 Debug
+&lt;/h2>&lt;p>有了源码环境之后，其实 Debug 调试就比较简单。&lt;/p>
+&lt;p>使用 psql 登录之后，后台会启动一个工作进程来服务于这个客户端的请求，可以通过 &lt;code>pg_backend_pid()&lt;/code> 方法查看进程 id。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-3d2dd60c40de405ae4fa4d27d16f03f3_b.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这里我的进程 id 是 1857，直接通过 &lt;code>gdb -p 1857&lt;/code> 即可对该进程进行 Debug。&lt;/p>
+&lt;p>我们可以在 gdb 中设置一个断点，比如 Postgres 的简单查询命令都会走 &lt;code>exec_simple_query&lt;/code> 方法，可以直接对这个方法打断点，然后在客户端任意执行一个 select 语句，就会到 gdb 的断点中了：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-84457b76271ef309f399ded2cedaf474_b.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.postgresql.org/docs/current/installation.html" target="_blank" rel="noopener"
+>https://www.postgresql.org/docs/current/installation.html&lt;/a>&lt;/p></description></item></channel></rss>

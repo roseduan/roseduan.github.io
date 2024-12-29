@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>开源项目 on roseduan</title><link>https://roseduan.github.io/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><description>Recent content in 开源项目 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 15 Nov 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/index.xml" rel="self" type="application/rss+xml"/><item><title>rose 聊开源—5 折腾开源这些年的收获</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%905-%E6%8A%98%E8%85%BE%E5%BC%80%E6%BA%90%E8%BF%99%E4%BA%9B%E5%B9%B4%E7%9A%84%E6%94%B6%E8%8E%B7/</link><pubDate>Fri, 15 Nov 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%905-%E6%8A%98%E8%85%BE%E5%BC%80%E6%BA%90%E8%BF%99%E4%BA%9B%E5%B9%B4%E7%9A%84%E6%94%B6%E8%8E%B7/</guid><description>&lt;p>前面的几篇文章主要讲述了：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486603%26idx%3D1%26sn%3Dc28659da0778420b8cfd947df2c7b919%26chksm%3De9b9be5adece374c9b5b79e9a1c93e0be41bd3f0c0d314db36bc3fe71d6b43a7d20ea51ceb38%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—1 你为什么需要一个开源项目&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486869%26idx%3D1%26sn%3D5a35d7b8045681abdb33808e1c1ff2b1%26chksm%3De9b9bf44dece36521312a6a744cdb974706a2dd686855634ae4c02ba8ecf8b2e8f91669f2532%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—2 如何快速上手一个开源项目&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486913%26idx%3D1%26sn%3D344c2eece0e7abced4164a1d5a8ee901%26chksm%3De9b9bf10dece3606c8c4d4488a89230d2925b5e50e7b1ba5932c9f799f0ee986d0480614c2a8%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—3 如何开始写自己的开源项目&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486918%26idx%3D1%26sn%3D1c2696a14750075fc45c6161da535026%26chksm%3De9b9bf17dece3601b12cffb4b7e0f0748f36cad578e88f5e075a100333134ceee874477a7b51%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—4 如何推广自己的开源项目&lt;/a>&lt;/p>
+&lt;p>这一篇来跟大家聊一聊我自己在这几年的开源项目折腾历程中，一些收获与做得不太好的地方，给大家一些参考和启示。&lt;/p>
+&lt;blockquote>
+&lt;p>此篇文章过后，这个系列暂告一段落，因为经其他读者反馈，可能大部分人并没有自己的开源项目，或者说也是刚起步，在这方面的经验并不是很多。
+前面几篇文章介绍的一些经验、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342798&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e9%a1%b9%e7%9b%ae%e6%8e%a8%e5%b9%bf&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>项目推广&lt;/a>等内容，还不能够立即用得上。所以有兴趣的同学，可以按照我之前的介绍去开始参与开源，或者写自己的开源项目。
+当大家有了更多的经验之后，后续如果有其他的感想，我会不定期再次对这个系列进行更新。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="1项目现状">&lt;strong>1、项目现状&lt;/strong>
+&lt;/h3>&lt;p>我在这几年的开源历程中，主要是维护了两个 Go 语言的开源项目，分别是 rosedb 和 lotusdb，目前项目的关注度，完善程度其实还是不错的了，star 数量也都上千，并且多次登上过 Github Trending 榜单。&lt;/p>
+&lt;p>对于个人开源项目来说，能够做到这种规模，也算是不小的成就了吧。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-eec8ffe2f6dcdb1517af109b09c99b1f_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-b7535f75523c3c1afb7f3f659b50fde8_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>除了这两个项目之之外，还有其他的一些组件，比如：&lt;/p>
+&lt;p>wal 预写日志组件&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-b514bfcbf4566f007667e6b478cee080_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>diskhash 基于磁盘的&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342798&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%93%88%e5%b8%8c%e8%a1%a8&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>哈希表&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-bc1b6976ffa9cc7b56ca08d7f38b4612_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>还有一些其他的 tutorial 项目。&lt;/p>
+&lt;p>比如针对数据库学习路线，项目推荐等，有 database-learning。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-fe59958d19267eaca7922de10618734a_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>针对 go 和 rust 的学习路线，也有对应的两个开源项目：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-8361b2775ad6b18565efe17be0ad436d_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>mini-bitcask，是 rosedb 的迷你版本，也是一个教学性质的项目。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-a341f79bb4bcfd2b14a12f2173e89e77_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>还有 rust 的练手项目，rust-practice&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-5c13f28ee17ed052d972b868c417e22e_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>还有一些早期的项目，比如 grpc-demo，当初学习 gRPC 的时候写的一些小的练习。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-bf75145c3521960305e12ed02edf7338_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>algo-learn，当初刷 leetcode 的一些题解记录。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-6a7347159c996bf97da3d67d0058d853_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h3 id="2对自身技术能力的提升">&lt;strong>2、对自身技术能力的提升&lt;/strong>
+&lt;/h3>&lt;p>折腾这么多项目，其实对自己最直观的提升就是技术方面。&lt;/p>
+&lt;p>针对一些学习类的项目，其实我们能够在学习的时候做一些记录，写一些文章，然后记忆模糊的时候能够随时拿出来温习，是很不错的学习方式，也能够锻炼自己总结归纳的能力。&lt;/p>
+&lt;p>然后去折腾一些偏实战的开源项目，需要去解决各种问题，比如从理论到实践的鸿沟跨越，需要去进行&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342798&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>架构设计&lt;/a>，系统设计。&lt;/p>
+&lt;p>并且一些代码细节方面需要仔细考究，对代码规范，&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342798&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>单元测试&lt;/a>，可扩展，简洁易读等方面都有很高的要求。&lt;/p>
+&lt;p>经过这方面的折腾，也增强了我自己的代码洁癖，这一习惯也延续到了工作当中。&lt;/p>
+&lt;h3 id="3对职业发展的影响">&lt;strong>3、对职业发展的影响&lt;/strong>
+&lt;/h3>&lt;p>毫不隐瞒的说，其实有了开源项目，给了我的履历非常大的加成，当然这其实也有大环境、以及运气等因素的共同影响。&lt;/p>
+&lt;p>因为有了开源项目，我在找工作的过程当中能够有更多的底牌，因为这是别人了解你的一种很直观的方式。开源项目代码都是公开的，一个人的技术能力能够马上得到体现，这其实就是最大的技术能力背书，不需要其他任何的虚名。&lt;/p>
+&lt;p>在开源项目的长期维护和运营过程当中，我也找到了自己所热爱的事情，能够有机会持续的去折腾，也是挺不错的一种状态了。&lt;/p>
+&lt;h3 id="4维护社群个人影响力">&lt;strong>4、维护社群，个人影响力&lt;/strong>
+&lt;/h3>&lt;p>目前我维护了 rosedb&amp;amp;lotusdb 的两个&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342798&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%bc%80%e6%ba%90%e7%a4%be%e5%8c%ba&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>开源社区&lt;/a>群，共计有 800+ 人，slack 虽然不太活跃，但是也有 150+ 人数。&lt;/p>
+&lt;p>而且我也靠着在开源项目的运营，产出了一些相关的内容，发布在了自己的公众号、B 站上面，进一步完善了我的个人 ip，我自己在这方面的影响力也得到了提升。&lt;/p>
+&lt;p>更重要的是，这是一段很宝贵的经历，注定给我留下很深的印象。&lt;/p>
+&lt;h3 id="5talk-能力写作能力">&lt;strong>5、talk 能力、写作能力&lt;/strong>
+&lt;/h3>&lt;p>还有就是我也会写一些相关的文章，以及录制一些视频去讲述我自己的开源项目，在这个过程中我也锻炼了自己的写作能力。&lt;/p>
+&lt;p>并且我也在一些平台，无论是线上还是线下，分享了很多关于开源项目，以及我自身的开源经历，这进一步提升了我面对公众的 talk 能力。&lt;/p>
+&lt;p>这些软技能，虽然在短期内看不到什么效果，但确实是在潜移默化的影响着我，让我能够成为一个更加全面的人。&lt;/p>
+&lt;h3 id="6做得不好的地方">&lt;strong>6、做得不好的地方&lt;/strong>
+&lt;/h3>&lt;p>当然，其实在这几年的开源项目历程中，也有做的不是很好的地方。&lt;/p>
+&lt;p>最遗憾的一点便是对于开源项目团队维护得很差，这其实是有多方面的原因吧。&lt;/p>
+&lt;p>因为外部贡献者，每个人的目的、状态、思维都是不一样的，很难去保持长期的合作关系，大多数人都只是在短期之内有一定的参与热情，但是久而久之可能因为各种原因就搁置了。&lt;/p>
+&lt;p>我其实也尝试去采用各种办法去推动一个长期合作的开源贡献团队，但最核心的一点是，如果没有金钱维系的话，每个人都会产生倦怠的情绪，靠热情是无法持久的。&lt;/p>
+&lt;p>当然还有一点就是项目本身的上限并不高，创新性比较有限，就算做到极致，也只能是一个无法盈利的简单项目，没有前瞻性的优势，同样也无法让其他贡献者保持长期的参与意愿。&lt;/p>
+&lt;p>只不过，我认为这倒也无可厚非，因为我们折腾的项目，本身也只是符合我们自己当前阶段的状态，以及技术和认知能力，能够在这个范围之内尽力做到最好，就已经很不错了。&lt;/p></description></item><item><title>rose 聊开源—4 如何推广自己的开源项目</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%904-%E5%A6%82%E4%BD%95%E6%8E%A8%E5%B9%BF%E8%87%AA%E5%B7%B1%E7%9A%84%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Wed, 13 Nov 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%904-%E5%A6%82%E4%BD%95%E6%8E%A8%E5%B9%BF%E8%87%AA%E5%B7%B1%E7%9A%84%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>前面的三篇内容，分别讲述了：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486603%26idx%3D1%26sn%3Dc28659da0778420b8cfd947df2c7b919%26chksm%3De9b9be5adece374c9b5b79e9a1c93e0be41bd3f0c0d314db36bc3fe71d6b43a7d20ea51ceb38%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—1 你为什么需要一个开源项目&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486869%26idx%3D1%26sn%3D5a35d7b8045681abdb33808e1c1ff2b1%26chksm%3De9b9bf44dece36521312a6a744cdb974706a2dd686855634ae4c02ba8ecf8b2e8f91669f2532%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—2 如何快速上手一个开源项目&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://link.zhihu.com/?target=http%3A//mp.weixin.qq.com/s%3F__biz%3DMzI0Njg1MTUxOA%3D%3D%26mid%3D2247486913%26idx%3D1%26sn%3D344c2eece0e7abced4164a1d5a8ee901%26chksm%3De9b9bf10dece3606c8c4d4488a89230d2925b5e50e7b1ba5932c9f799f0ee986d0480614c2a8%26scene%3D21%23wechat_redirect" target="_blank" rel="noopener"
+>rose 聊开源—3 如何开始写自己的开源项目&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>今天这一篇，来和大家简单聊一聊如何推广自己的开源项目。&lt;/p>
+&lt;p>其实很多技术人，对于营销、推广这类词汇带着天生的滤镜，单纯的认为技术就是最核心的，其他都是扯淡，其中尤以 Linus 的那句 &amp;ldquo;Talk is cheap, show me the code&amp;rdquo; 最为知名，成为了很多搞技术的人推崇备至的理念。&lt;/p>
+&lt;p>但我想说的是，talk 不仅不 &amp;ldquo;cheap&amp;rdquo;，它有时候比技术更加重要。&lt;/p>
+&lt;p>就像在职场中一样，你的工作能力非常出色，能够高质量的完成很多高难度的任务，但是如果你无法清楚的表达自己所做的事情，那么，别人有可能是并不知道的。&lt;/p>
+&lt;p>所以，我们有时候会看到，一些技术不那么厉害的人，靠着写 PPT，能够成功忽悠领导，升职加薪。&lt;/p>
+&lt;p>当然，这是一个不太恰当的例子，只是为了说明 talk 的重要性，并不是鼓励让大家都去搞假大空的汇报式工作。&lt;/p>
+&lt;p>我们还是需要在脚踏实地的基础之上，然后适当性的去提升 talk 能力。这样的话，一是可以清楚表达自己的想法，让自己所做的事情能够扩散到整个团队之中。二是在这个基础之上，更进一步，当你的技术实力和演讲能力都非常出众的情况下，便可以建立自己在公司内，甚至是整个行业内的威信。&lt;/p>
+&lt;p>回到我们的开源项目，其实是同样的道理，在目前开源项目众多的情况下，为了不让自己的项目石沉大海，让自己的开源项目看起来更有含金量，更有关注度。那么我们就不能只埋头开发，天真的以为只要是好的就一定能够吸引到别人，但是酒香也怕巷子深，特别是现在很多项目同质化比较严重的情况下。&lt;/p>
+&lt;p>所以，在我的经验看来，结合我自己的亲身实践，想要推广自己的开源项目，可以从以下几个点入手。&lt;/p>
+&lt;p>一是，我们可以自己去写文章推广。比如我们做出了一个自认为有价值的项目，那么可以去写文章介绍自己的项目。&lt;/p>
+&lt;p>文章应该尽可能的涵盖到各个平台，比如常见的知乎、公众号、掘金、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342737&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e6%80%9d%e5%90%a6&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>思否&lt;/a>、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342737&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%8d%9a%e5%ae%a2%e5%9b%ad&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>博客园&lt;/a>等等，然后可以转发社群，朋友圈，尽可能的让更多的人看到你的项目。&lt;/p>
+&lt;p>也可以尝试在英文圈去推广，比如 Medium、X、Reddit、Hacker News、Quora 等，所以建议大家的项目尽量使用英文 README，英文的注释，避免出现中文，和更广阔的开源群体接轨。&lt;/p>
+&lt;p>二是，可以去寻求其他人的合作。比如我们的文章，可以投稿到其他的平台，有很多关于 Github 精选、Github 项目推荐等公众号平台，而且不乏一些流量较大的平台，他们的粉丝基数更大，可以向更多的人群扩散。&lt;/p>
+&lt;p>除此之外，可以向一些行业内稍有流量的人进行推广合作，也就是俗称的大 V，或许别人帮助介绍一下，就会有非常大的流量，当然这一般都是有偿的。&lt;/p>
+&lt;p>三，降低项目的理解门槛，以及使用门槛。为什么一些刷题、面经、算法项目在 Github 上面非常火爆？一个很大的原因是这类题材面向的人群非常广，大家理解和学习起来没有太大的难度，非常容易上手。&lt;/p>
+&lt;p>如果你的项目是比较小众的，本身覆盖的人群不是很广，那么一定要在降低门槛这方面做得更好。&lt;/p>
+&lt;p>比如你可以写文章，仔细讲解透彻你的开源项目的各种细节，用通俗易懂的方式让更多的人能够理解。也可以录制视频，去讲解自己在项目过程中的一些&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342737&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%85%b3%e9%94%ae%e8%ae%be%e8%ae%a1&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>关键设计&lt;/a>、项目的亮点、代码流程等等。&lt;/p>
+&lt;p>总之，一个原则就是让别人有一个全方位了解你项目的方式，可以快速上手项目，可以大致理解项目的各种细节。&lt;/p>
+&lt;p>四，可以参加一些开源相关的活动，以及一些线上或是线下的 talk 等，近年来其实都有很多开源项目相关的活动，规模有大有小，可以选择适合自己的去进行讲述，可以介绍自己的项目，也可以去介绍自己写开源项目的一些契机，心路历程等等。&lt;/p>
+&lt;p>比如 Go 语言的有「Go 夜读」，Rust 的有「Rust &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342737&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%b8%ad%e6%96%87%e7%a4%be%e5%8c%ba&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>中文社区&lt;/a>」等等。&lt;/p>
+&lt;p>五，集中一段时间持续发力造势，争取能够上 Github Trending。&lt;/p>
+&lt;p>需要提前说明的是，这一点其实是可遇不可求的，因为是否能登上 Github Trending，以及就算上了 Trending，能够获得多少关注，其实都是不确定的。&lt;/p>
+&lt;p>Github Trending 筛选的是近一段时间内（大概一周左右）比较活跃的项目，活跃包括 commit、PR、issue、star、fork 数量等等。如果在一周之内，你的项目每天都能够维持几十 star 数量的上涨，那么就有不小的概率登上 Trending。&lt;/p>
+&lt;p>Github Trending 是很多全球&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250342737&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e5%bc%80%e5%8f%91%e8%80%85&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>开发者&lt;/a>每天都会关注的列表，如果能够在这个榜单上，那么你的项目会获得更大程度的曝光。&lt;/p>
+&lt;p>六、最重要的一点，其实还是回归项目本身，专注于持续维护和打造一个更高质量的项目，只有持续的发光发热，才能够有更多的机会将其呈现到更多的人面前。&lt;/p>
+&lt;p>否则，无论多好的项目，多好的 idea，偶尔的热情肯定敌不过长久的坚持。&lt;/p>
+&lt;p>最后需要说明一点，我们不遗余力的去推广自己的开源项目，其实并不是满足自己的虚荣心，或者出于炫耀的心态。更多的是给自己一些心里暗示，寻求一些正向反馈，让自己能够坚持下去。&lt;/p>
+&lt;p>刚开始做开源的时候，其实最缺少的就是一种反馈，如果我们的项目无人问津，那么持续维护的热情也会受到很大的影响，极有可能在短暂的挣扎之后彻底失去信心和希望。&lt;/p></description></item><item><title>rose 聊开源—3 如何开始写自己的开源项目</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%903-%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E5%86%99%E8%87%AA%E5%B7%B1%E7%9A%84%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Sat, 09 Nov 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%903-%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E5%86%99%E8%87%AA%E5%B7%B1%E7%9A%84%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>在前面的两节内容中，我分别介绍了：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>开源项目能够带给我们的好处，为什么需要一个开源项目&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如何快速上手一个开源项目，参与到其他开源社区中的一些注意事项等等&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>今天是这个系列的第三篇，来简单聊聊如何开始写自己的开源项目。&lt;/p>
+&lt;p>首先需要说明的是，无论是参与到已有的开源项目中，还是自己去写开源项目，都是很不错的方式，并没有绝对的哪个好哪个不好。&lt;/p>
+&lt;p>我们只需要在当前的状态之下，找到适合自己的参与方式就好了。&lt;/p>
+&lt;p>如果要写自己的开源项目，一般可以从这几个方面去入手：&lt;/p>
+&lt;p>一是有了好的商业契机，想要创业，并且将自己的项目开源出去，寻求更多的关注度。 但是读者中估计符合这种情况的比较少，我自己也还没有达到这种高度，后面有机会再聊。&lt;/p>
+&lt;p>二是在自己的日常工作中，发现了一些非常不错的点子，觉得这个 idea 有比较大的价值，所以本着锻炼自己的需要，自己折腾了一些相关的组件，然后将一些内容开源出来。&lt;/p>
+&lt;p>三是自己在日常工作或开发中，用到了一些第三方的开源组件，对这个组件本身比较熟悉了。并且愈发的觉得组件本身可能存在非常多的问题，有很大的优化空间，在这种情况下，有的人会选择回馈上游社区，帮助开源社区进行迭代。 当然也有的是另起炉灶，重新基于自己的新的思路、设计，去开启新的开源项目。&lt;/p>
+&lt;p>四是完全出于自己的学习需求，比如自己的一些学习笔记，学习心得，刷题方法，刷题记录等等，这一类开源项目一般戏称 README 项目，当然我自己倒没有觉得有任何的不妥，不同的开源项目本身有自己不同的受众。 并没有说谁的项目技术更硬核，就更牛逼，只要自己的项目对自己是有帮助的，或是对受众群体有帮助，就是一个非常不错的有开源价值的项目。&lt;/p>
+&lt;p>五是出于自己的折腾心态，想要去搞一个项目，这应该符合大多数人的情况。 无论是去用新的语言去重复造一个轮子，还是基于自己的一些奇妙的想法，亦或是基于某些学术上的论文去实现等等。我最开始搞 rosedb 的时候就是这样一种状态，当时看到了一篇写的不错的论文，然后就自己去实现了。&lt;/p>
+&lt;p>以上这几点，就是在我看来，常见的去搞自己的开源项目的一些点，大家可以根据自己的需求、实际情况，然后去挑选自己感兴趣的领域进行切入。&lt;/p>
+&lt;p>如果你已经开始写自己的开源项目，那么恭喜你，你已经比大多数的开发者拥有了一个更加吸引人的特点。 它可能在短期内并不会带给你任何的收益、成就、提升，但是只要能够长期坚持下去，一定能够从中获得一些回报。&lt;/p>
+&lt;p>最后我想再提一点，那就是在刚开始写自己的开源项目的时候，需要注意的一点心理上的调整。&lt;/p>
+&lt;p>最重要的是要摒弃害羞，怕丢人的心态，可能自认为自己做的东西很垃圾，开源出去之后怕被别人指点、嘲笑。但是我们要朝着长远的利益去看，任何项目在早期可能都是非常不完善，甚至是小儿科的，但是任何小事都经不起长期的坚持，只要能够日益完善，一定能够做的更好。&lt;/p>
+&lt;p>有的时候需要锻炼自己的强大心态，针对别人毫无意义的诋毁，最好的处理办法可能是一笑置之，坚持去做自己喜欢，自己擅长的事情。&lt;/p>
+&lt;p>那些喜欢在网络上诋毁别人的人，大概率自己本身就是一个没有什么能力的人，所以针对这种人，我们要保持良好的心态，不要被别人影响。 我们可以时常在心里暗示自己，我把自己的东西开源出来，能够帮助到别人，并且提升自己，针对那些诋毁者，你又有什么拿得出手的成就呢？&lt;/p></description></item><item><title>rose 聊开源—2 如何快速上手一个开源项目</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%902-%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Wed, 11 Sep 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%902-%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>在前面的一篇开源项目系列中，主要介绍了目前开源项目蓬勃发展的态势，并且拥有一个开源项目，对我们个人履历、职业发展等都有非常多的好处。&lt;/p>
+&lt;p>这一次就来跟大家分享一下，面对一个开源项目，我们应该如何上手，快速看懂项目的源代码，并且能够参与到开源项目的社区中。&lt;/p>
+&lt;p>首先，如果我们通过 Github 找到了一些项目，如何判断这个项目是否符合我们的需求，是否值得我们花时间去投入呢?&lt;/p>
+&lt;p>在我看来，有几个比较重要的点需要关注。&lt;/p>
+&lt;p>一是项目是否对新人友好，是否有比较完善的文档和上手教程。其实一般做的比较规范的项目，都会有这部分内容，会在项目的 README 文档中，说明上手项目的整体流程，以及如何参与到社区当中等等。&lt;/p>
+&lt;p>如果连这些基本的内容都没有的话，说明社区的建设并不是很好，或者说只是一些年久失修的项目，想要上手的话难度会很大。&lt;/p>
+&lt;p>二是，如果想要参与到开源项目当中的话，则需要关注这个项目是否接受外部贡献者。因为有的项目实际上是公司内部在维护，对外部贡献者可能并没有完善的流程、规范等等。&lt;/p>
+&lt;p>第三点，可以关注是否有适合的 Good First Issue，一般来说，开源社区会将一些适合新人上手的 Issue 标记为 Good First Issue，从这些 Issue 开始上手会是一个不错的选择。&lt;/p>
+&lt;p>在这个基础之上，如果你已经选择了一个不错的开源项目，如何快速上手呢？我认为搞懂下面几个问题是比较关键的。&lt;/p>
+&lt;p>首先，面对一个开源项目，其实最基础的问题，就是搞懂这个项目的基本背景，就是这个项目是基于什么契机建立的，比如是为了解决什么实际的问题，或者是对某个系统进行优化，或者是使用新的语言进行重写等等。&lt;/p>
+&lt;p>通过这些背景，需要搞懂项目主要的功能是什么，用来解决什么样的问题。&lt;/p>
+&lt;p>其次，需要搞懂项目的大致架构，当然在初期不太可能将每个模块都能够完全搞明白，特别是如果一个项目比较庞大的情况下，但是尽量搞清楚架构图中每个模块的大致功能，先从宏观上有个大致的了解。&lt;/p>
+&lt;p>这个理论背景的基础之上，我们需要动手实践起来。&lt;/p>
+&lt;p>比如，首先需要能够编译并且运行这个项目，这是最基础的一个步骤。并且针对项目当中的一些核心流程和方法，能够去进行调试，一步一步的去查看执行过程中的状态转换。&lt;/p>
+&lt;p>比如针对一个数据库项目，或者存储引擎的项目，其实最基础的流程就是，建立表，并且向表中插入数据，然后能够从表中读取数据，这是一个最基础的步骤。&lt;/p>
+&lt;p>当然，这个链路当中可能又涉及到了很多的不同的内部组件和方法等等，需要我们在调试的过程中去慢慢熟悉。&lt;/p>
+&lt;p>以上是我对如何入门开源项目的一点建议，我在 B 站也发布了一个视频，使用一个 Rust 项目作为示例，用上面我提到的步骤，一步步调试 Rust 项目，向大家详细演示了如何搞懂一个开源项目。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-1439355f6784c468ef62c088770b5306_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>感兴趣可以观看下：&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.bilibili.com/video/BV1Qc4YevEVy" target="_blank" rel="noopener"
+>https://www.bilibili.com/video/BV1Qc4YevEVy&lt;/a>&lt;/p></description></item><item><title>近期对 wal 组件的性能提升</title><link>https://roseduan.github.io/p/%E8%BF%91%E6%9C%9F%E5%AF%B9-wal-%E7%BB%84%E4%BB%B6%E7%9A%84%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/</link><pubDate>Sat, 15 Jun 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E8%BF%91%E6%9C%9F%E5%AF%B9-wal-%E7%BB%84%E4%BB%B6%E7%9A%84%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/</guid><description>&lt;h2 id="wal-的由来">wal 的由来
+&lt;/h2>&lt;p>wal 是我去年写的一个小组件，主要用于 LSM Tree 或者 Bitcask 的预写日志文件，以及任意的 append-only 文件读写都可以使用，第一次发布是 2023.6.13，刚好开源一年了：&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-67afdeac25522133bfb2f3056d3848c6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>rosedb 和 lotusdb 将其作为重要的底层日志文件存储组件使用，这个通用的组件简化了 rosedb 和 lotusdb 的一部分代码，使项目整体更加简洁。
+一年过去了，wal 同时也被很多其他的开源/闭源项目所使用（生产环境），对这个小组件我还是比较满意的，整体代码的质量还不错，代码理解起来也比较简单。&lt;/p>
+&lt;p>之前写过一篇文章，简单介绍了如何使用 wal 构建一个极简的 KV 存储模型，以及我还在 Go 夜读社区分享过关于 wal 的设计和实现，结合这些资料看懂源代码应该没有什么困难。
+&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/BAsJsdWYyIpPZjwsc1u8JQ" target="_blank" rel="noopener"
+>使用 wal 构建你自己的 KV 存储&lt;/a>
+&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//www.bilibili.com/video/BV1V44y1A7Mx" target="_blank" rel="noopener"
+>Go 夜读：高性能预写日志（Write Ahead Log）的设计与实现&lt;/a>&lt;/p>
+&lt;p>总体来说 wal 就是一个 append-only 的日志文件，提供了基础的读写方法，基本上参考了 leveldb 的预写日志文件的格式。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-1e2bfa053b3acd365a322681b78fe32a_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>写是一直 append 的，写完之后会得到一个表示数据位置的结构体，通过这个结构可以读取到对应的数据。&lt;/p>
+&lt;h2 id="这次对-wal-的优化">这次对 wal 的优化
+&lt;/h2>&lt;p>之前对整个 wal 文件进行遍历的时候，如果 value 比较小，那么会多次重复读取 value 所属的 block，这样的话效率比较低，而且是完全没必要的。
+之前的策略是加上了一个 block cache 来缓解这个问题。&lt;/p>
+&lt;p>但是细想，一个 block 读上来之后，如果 value 仍然在当前 block 中，那么可以重复利用这个 block，不用再去读取文件了。
+在这个思路之下，对 wal 的读取进行了优化，主要是去掉了 block cache，并且如果 value 比较小的话，会直接重复利用当前 block，避免重复读取。&lt;/p>
+&lt;p>优化之后的效果还是比较明显的，在我的机器上，遍历 1.8G 的数据，花了 5 s 左右，之前是 20s，遍历读取的性能提升在 4-5 倍左右。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-46aec859c87c590a15da49cc3cda6bb1_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>带来的一个好处便是，rosedb 的启动速度会得到提升，因为 rosedb 在启动的时候，会加载所有的 wal 文件进行索引的构建。&lt;/p></description></item><item><title>rose 聊开源—1 你为什么需要一个开源项目</title><link>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%901-%E4%BD%A0%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Wed, 05 Jun 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rose-%E8%81%8A%E5%BC%80%E6%BA%901-%E4%BD%A0%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>我自己从最开始开源 rosedb/lotusdb，以及一些其他组件，折腾开源也有很多年了，这次想写一个关于开源项目的系列，结合我自己的实际经历，讲讲开源项目的开发、参与、维护、流程规范、收获、盈利等内容，希望这个系列对大家有所帮助。&lt;/p>
+&lt;hr>
+&lt;p>在当今快速发展的技术领域，开源项目越来越受到开发者和企业的重视，近几年开源在国内的势头其实也发展得非常好，涌现出了非常多优秀的开源项目、开源社区，以及日益增长的开源开发者和爱好者。&lt;/p>
+&lt;p>开源甚至是一些公司的商业策略以及赖以生存的根本，比如国内开源各方面做的最好的 TiDB，还有很多其他优秀的开源项目。&lt;/p>
+&lt;p>对于我们个人来说，参与或维护开源项目不仅可以提升个人的技术水平，还能带来诸多好处，这一次来和大家简单探讨为什么你需要一个开源项目，以及它如何在个人成长和职业发展中发挥关键作用。&lt;/p>
+&lt;p>&lt;strong>技术提升&lt;/strong>&lt;/p>
+&lt;p>开源能够带给我们非常多的好处，对于技术人来说，最直观的就是技术能力方面的提升了。&lt;/p>
+&lt;p>通过开发项目解决实际问题，并且在开源维护的过程当中，阅读别人的代码，能够见识到不同的人的代码，以及编码风格，可以从别人写的好的地方去学习。&lt;/p>
+&lt;p>我自己开源了一些关于存储引擎方面的开源项目，让我能够在这方面一直深入研究，不断提升在这方面的能力。&lt;/p>
+&lt;p>&lt;strong>履历&lt;/strong>&lt;/p>
+&lt;p>开源项目是一种展示技术能力的最佳方式之一。&lt;/p>
+&lt;p>比如在简历中列出你参与的开源项目以及你的贡献，能够直观地向招聘者展示你的实际能力和项目经验，这比任何证书和成绩单都更具说服力。&lt;/p>
+&lt;p>深入参与一个比较知名的开源项目，或者自己运营一个有影响力的开源项目，都会使自己的个人履历增光添彩。&lt;/p>
+&lt;p>&lt;strong>人脉&lt;/strong>&lt;/p>
+&lt;p>开源社区汇聚了全球各地的优秀开发者，通过参与开源项目，有机会结识这些志同道合的技术爱好者。&lt;/p>
+&lt;p>无论是项目讨论、技术交流，还是合作开发，这些互动都将极大地拓展你的人脉圈。&lt;/p>
+&lt;p>强大的人脉不仅对技术提升有帮助，还能在职业发展中带来更多机遇。&lt;/p>
+&lt;p>比如我自己就通过开源项目结识了很多志同道合的朋友，并且还和一些人维持了不错的关系。&lt;/p>
+&lt;p>&lt;strong>团队协作&lt;/strong>&lt;/p>
+&lt;p>一个项目开源出去之后，你肯定不希望只是自己一个人玩儿，如果有后续有很多的人参与进来，你将学会如何在团队中有效协作，这包括代码规范、版本控制、任务分配、沟通协调等多方面的技能。&lt;/p>
+&lt;p>这些团队协作经验对于你在未来的职场中适应团队工作模式、提升工作效率具有重要意义。&lt;/p>
+&lt;p>&lt;strong>表达能力&lt;/strong>&lt;/p>
+&lt;p>参与开源项目不仅需要写代码，还需要撰写文档、报告问题和提出建议，这些活动有助于提升你的书面表达能力。&lt;/p>
+&lt;p>同时，在开源社区中，你也需要通过讨论和交流来表达自己的想法，这对于口头表达能力也是一种锻炼。这些表达能力在技术分享、会议演讲和项目汇报中都非常重要。&lt;/p>
+&lt;p>在职场工作这么多年，我发现大多数人的表达能力其实并不算太好，能够把一件事情透彻的讲清楚，并且让别人能够理解，是一件并不容易的事情。&lt;/p>
+&lt;p>&lt;strong>技术管理&lt;/strong>&lt;/p>
+&lt;p>如果你主导或维护一个开源项目，你将接触到项目管理的方方面面。&lt;/p>
+&lt;p>这包括制定项目规划、管理任务进度、协调团队工作、处理项目风险，技术选型等。&lt;/p>
+&lt;p>这些技术管理经验不仅对个人能力提升有帮助，还能为未来担任技术领导角色打下坚实的基础。&lt;/p>
+&lt;p>&lt;strong>对求职的帮助&lt;/strong>&lt;/p>
+&lt;p>目前很多公司岗位在招聘的时候，都把拥有开源项目，或者参与开源项目作为了一个重要的加分项。&lt;/p>
+&lt;p>因为参与或维护开源项目意味着候选人至少有很多的优势，比如：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>实际项目经验&lt;/strong>：开源项目中的实际开发经验可以证明候选人的技术能力和解决问题的能力。&lt;/li>
+&lt;li>&lt;strong>自主学习能力&lt;/strong>：参与开源项目通常需要自主学习和探索新技术，这表明候选人具有较强的自我驱动力和学习能力。&lt;/li>
+&lt;li>&lt;strong>团队协作能力&lt;/strong>：在开源项目中，候选人需要与来自不同背景的开发者协作，这展示了其良好的沟通和协作能力。&lt;/li>
+&lt;li>&lt;strong>责任感和毅力&lt;/strong>：开源项目通常需要长时间的投入和持续的维护，参与者需要具备高度的责任感和毅力。&lt;/li>
+&lt;/ul>
+&lt;p>说回我自己，我上一次找工作的时候，实际上我的开源项目对我的帮助非常大，在面试的过程当中，给了我很多的信心，并且也证明了自己的能力。&lt;/p>
+&lt;p>所以，无论是出于技术提升、职业发展，还是个人成长的考虑，参与或者维护开源项目都是一个明智的选择。&lt;/p></description></item></channel></rss>

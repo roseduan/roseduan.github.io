@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Lotusdb on roseduan</title><link>https://roseduan.github.io/tags/lotusdb/</link><description>Recent content in Lotusdb on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 14 Sep 2023 09:57:33 +0000</lastBuildDate><atom:link href="https://roseduan.github.io/tags/lotusdb/index.xml" rel="self" type="application/rss+xml"/><item><title>Go 语言 KV 存储引擎 LotusDB 2.0 重磅发布！</title><link>https://roseduan.github.io/p/go-%E8%AF%AD%E8%A8%80-kv-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-lotusdb-2.0-%E9%87%8D%E7%A3%85%E5%8F%91%E5%B8%83/</link><pubDate>Thu, 14 Sep 2023 09:57:33 +0000</pubDate><guid>https://roseduan.github.io/p/go-%E8%AF%AD%E8%A8%80-kv-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-lotusdb-2.0-%E9%87%8D%E7%A3%85%E5%8F%91%E5%B8%83/</guid><description>&lt;p>经过差不多两个月的重构，在社区小伙伴的共同协作努力下，LotusDB V2.0.0版本正式发布！&lt;/p>
+&lt;blockquote>
+&lt;p>LotusDB 项目地址：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/lotusdblabs/lotusdb" target="_blank" rel="noopener"
+>https://github.com/lotusdblabs/lotusdb&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-8cb9f4118f773130586c828471fcb7e1_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>LotusDB 是用 Go 语言编写的 KV 数据库，它采用 KV 分离的思想，融 LSM Tree 和 B+ Tree 存储模型为一体，适合大规模的 KV 数据存储，相较于 Go 语言领域知名的 KV 存储项目 badger 和 bbolt，LotusDB 具有更先进的设计架构。&lt;/p>
+&lt;p>这次我们通过两个月的重构，将 LotusDB 原来 V1 版本的代码基本上重新实现了一遍，目的在于提高简洁度。&lt;/p>
+&lt;p>LotusDB 的整体架构实现了全新升级，目的在于提升读写和压缩性能，下面是之前 V1 版本的架构图：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-313fffdab1f51233852f63d6462d8344_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这是重构后的 V2 版本的架构图：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-2cc9259192c81c190b8ca3c1adcda9c4_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>相对于 V1 版本，V2 版本主要有以下更新：&lt;/p>
+&lt;ul>
+&lt;li>新版本的所有磁盘存储（包括预写日志 WAL 和 Value Log）均直接采用 wal 组件（&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/rosedblabs/wal" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/wal&lt;/a>）实现，代码屏蔽了底层管理文件读写的操作，更加简洁易懂&lt;/li>
+&lt;li>新版本通过对 key 哈希分片的方式构建多个 Index 和 Value Log 对象，实现了 Index 和Value Log 的并发读写，读写和压缩性能相对于 V1 提升了 2~3 倍，这也是本次重构架构上最大的更新&lt;/li>
+&lt;li>TODO：另一大重要更新是将会引入新的基于磁盘的 Hash 索引，这样 LotusDB 将会支持磁盘 BTree 和 Hash 两种类型的索引，满足更多样化的场景（预计在下一次 Release 发布）&lt;/li>
+&lt;li>新版本舍弃了 Column Family（CF） 的设计，目的在于使架构更加简洁，原来跨 CF 的操作并不能保证原子性，如果后续有需求的话将会重新设计这个 feature&lt;/li>
+&lt;/ul>
+&lt;p>毫不夸张的说，这是目前 Go 语言领域架构最先进的 KV 存储引擎项目，其优势主要体现在：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>结合了 LSM 和 B+ 树存储模型的优点&lt;/strong>，B+ 树读性能稳定，而 LSM 写吞吐高，LotusDB 在这基础上做了一个巨大的改动，就是采用 KV 分离的思想，完全舍弃掉 LSM 中的 SST 文件，改由 B+ 树来存储索引，而 value 存放则参考了 Wisckey 和 bitcask 模型的设计，以追加写的方式存储到单独的 value log 文件中，充分利用顺序 IO 的优势&lt;/li>
+&lt;li>&lt;strong>更加均衡和快速的读/写性能&lt;/strong>，写入 LotusDB 的数据不需要在磁盘上排序，追加写的 Value Log 设计在写入过程中减少了磁盘磁头的移动，因此即便是完全无序的数据，LotusDB 依然能够保持较高的吞吐量。同时 LotusDB 的读写性能更加均衡，而不会像bbolt 那样读写性能差距极大，适合读写都非常频繁的业务场景&lt;/li>
+&lt;li>&lt;strong>比典型的 LSM 低得多的读放大&lt;/strong>，LotusDB 采用 KV 分离的思路，从 B+ 树中获取 Key 对应 Value 在磁盘中的存储地址后，即可直接一步读取 Value 数据，显著降低了传统 LSM 存储模型带来的读放大问题&lt;/li>
+&lt;li>&lt;strong>更大规模的数据存储&lt;/strong>，和 LotusDB 的姊妹项目 RoseDB 相比，LotusDB 是一个基于磁盘索引的 KV 存储引擎，而 RoseDB 是 Bitcask 存储模型全内存索引，因此数据存储规模基本不受到内存大小的影响，因此更加适合大规模的数据存储&lt;/li>
+&lt;li>&lt;strong>支持崩溃恢复&lt;/strong>，LotusDB 实现了 WAL 机制，在将 KV 数据刷盘前就将事务日志进行持久性存储，数据库崩溃后依然能够从 WAL 中读取事务日志，保证事务的原子性&lt;/li>
+&lt;li>&lt;strong>数据并发式刷盘&lt;/strong> LotusDB 通过将 key 进行哈希分片的机制，建立多个 Index 和 Value Log 对象，每一组 Index &amp;amp; Value Log 对象对应一个数据片，当 memory table 中的数据需要刷盘时，多个对象可以通过并发的方式实现刷盘，大大提升了刷盘的吞吐量&lt;/li>
+&lt;/ul>
+&lt;p>以下是 LotusDB 的简单使用示例，大家可以上手体验！&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;github.com/lotusdblabs/lotusdb/v2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 指定设置
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">options&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">lotusdb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultOptions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">options&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DirPath&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;/tmp/lotusdb_basic&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 打开数据库
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">lotusdb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">options&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 写入键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">key&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;KV store engine&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">value&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;LotusDB&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">putOptions&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">lotusdb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WriteOptions&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Sync&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">DisableWal&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Put&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">putOptions&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 读取键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">value&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 删除键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">putOptions&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 启动Value Log压缩
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Compact&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>致谢&lt;/strong>&lt;/p>
+&lt;p>在 LotusDB 的重构过程中，非常感谢社区的各位小伙伴的参与和积极贡献，特别是 @燕小七 和 @akiozihao 表现最为积极活跃，为 LotusDB 2.0 的重构做了很多工作，再次表示感谢，也希望能够继续参与。&lt;/p>
+&lt;p>同时 @燕小七 同学成为了 LotusDB 的第一位 Committer，后续我们希望能够培养更多的 Committer 和 Maintainer，充分发挥社区的作用，共同打造和完善 LotusDB 这个最先进的 KV 存储引擎！&lt;/p>
+&lt;p>同时也非常欢迎大家能够参与进来，目前我们只是发布了第一个版本，后续将会持续迭代，能够让大家发挥的空间巨大，感兴趣的可以加我微信私聊，我会将你拉到开发者群当中。&lt;/p></description></item></channel></rss>

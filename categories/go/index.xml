@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Go on roseduan</title><link>https://roseduan.github.io/categories/go/</link><description>Recent content in Go on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 05 Dec 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/categories/go/index.xml" rel="self" type="application/rss+xml"/><item><title>Rust 手写数据库的成就感！</title><link>https://roseduan.github.io/p/rust-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%88%90%E5%B0%B1%E6%84%9F/</link><pubDate>Thu, 05 Dec 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rust-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%88%90%E5%B0%B1%E6%84%9F/</guid><description>&lt;p>前几天刚好完成了 rust 手写数据库课程的命令行工具，有一个交互式的客户端，瞬间成就感拉满了！&lt;/p>
+&lt;p>不枉我写这个项目接近一年的时间，觉得之前的努力都没有白费哈哈。&lt;/p>
+&lt;p>在这个客户端当中，可以创建表：&lt;/p>
+&lt;p>&lt;img src="https://picx.zhimg.com/v2-8914f71c13b92f6a9abb23863518a40d_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>可以增删改查数据：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-5a9d47cf3434e97910dc1f78ef641481_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-1542ec04ea4aa071a377b1d5854e366c_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>可以进行常见的 sql 查询，比如&lt;/p>
+&lt;ul>
+&lt;li>Order By&lt;/li>
+&lt;li>Limit 和 Offset&lt;/li>
+&lt;li>Projection 投影&lt;/li>
+&lt;li>Join 语句&lt;/li>
+&lt;li>Agg &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251216851&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e8%81%9a%e9%9b%86%e5%87%bd%e6%95%b0&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>聚集函数&lt;/a>&lt;/li>
+&lt;li>Group By 分组&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-e9a17a9e177cac1ea41199522210ac71_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-39664db4a1d182b1d8ac245f0754a72b_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>并且还支持 ACID 的事务操作：&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/v2-fcaf19b7e6715ee293375e36331d6978_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>也可以查看当前表的信息：&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-f88cc3ff3f6573c1e3a270f9d110aae4_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>《从零实现 SQL 数据库》是我今年开始搞的，最初也只是想着试试看能不能做，但是后来帮助了一些同学，他们都从中学习到了很多，这也让我一路坚持到了现在。&lt;/p>
+&lt;p>课程虽然实现的只是一个非常简单的数据库，但是麻雀虽小五脏俱全，数据库内核的各个模块基本都实现了。&lt;/p>
+&lt;p>相信通过这样一个项目，对编程基础、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251216851&amp;amp;content_type=Article&amp;amp;match_order=2&amp;amp;q=rust&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>rust&lt;/a> 上手、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251216851&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e9%a1%b9%e7%9b%ae%e5%ae%9e%e6%88%98&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>项目实战&lt;/a>、系统设计等等能力都会上一个台阶！&lt;/p>
+&lt;p>现在课程项目接近尾声了，代码量（加注释）接近 6000 行，是非常不错的适合上手和实践 rust 的项目。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-2189148cc0a9a5c22c7769857b49e970_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>课程的详细目录如下：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-67a4387d0a16cc4ad2880126b0ebb19a_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-d3eb15903564359b63aebbefd6545ca9_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>感兴趣的同学可以进这个课程详情链接查看：&lt;/p>
+&lt;p>&lt;a class="link" href="https://icnyamgobd0u.feishu.cn/docx/AbXZdEbY0obdcTxF0FKcx4Pqnyf" target="_blank" rel="noopener"
+>https://icnyamgobd0u.feishu.cn/docx/AbXZdEbY0obdcTxF0FKcx4Pqnyf&lt;/a>&lt;/p></description></item><item><title>到明年，Rust 和 Go 都将稳居前十</title><link>https://roseduan.github.io/p/%E5%88%B0%E6%98%8E%E5%B9%B4rust-%E5%92%8C-go-%E9%83%BD%E5%B0%86%E7%A8%B3%E5%B1%85%E5%89%8D%E5%8D%81/</link><pubDate>Sat, 16 Nov 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E5%88%B0%E6%98%8E%E5%B9%B4rust-%E5%92%8C-go-%E9%83%BD%E5%B0%86%E7%A8%B3%E5%B1%85%E5%89%8D%E5%8D%81/</guid><description>&lt;p>平时不太关注 TIOBE INDEX 的排名，但是今天刚好看到了，发现 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=Go&amp;#43;%e8%af%ad%e8%a8%80&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Go 语言&lt;/a>都已经排在第七了。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-cc5468004d8b6ebfe0aa564289ca3f6a_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>几年前我刚开始学习的时候，Go 语言其实受关注和欢迎程度没有这么高，但是近些年来一路狂飙，稳坐前十，成为了主流编程语言之一。&lt;/p>
+&lt;p>Go 在云计算、容器化和微服务架构中的应用越来越广泛。&lt;/p>
+&lt;p>而且&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%ba%91%e5%8e%9f%e7%94%9f&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>云原生&lt;/a>的基础设施 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=Kubernetes&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Kubernetes&lt;/a> 和 Docker 等技术的普及，Go 语言凭借其高效的执行性能和简洁的代码结构，成为开发者构建&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%ba%91%e5%8e%9f%e7%94%9f%e7%b3%bb%e7%bb%9f&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>云原生系统&lt;/a>的首选语言。&lt;/p>
+&lt;p>未来几年，Go 语言应该会继续向前，稳居前十应该没什么问题，看什么时候能够超过 JavaScript 了。&lt;/p>
+&lt;p>其实另一个值得关注的是 Rust，Rust 的上升速度也非常惊人，去年还在 20 名左右徘徊，今年这时候的排名已经来到第 14 位了。&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/v2-34ded798f69579519fc2761ed36e2c7e_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>我在这几年接触和使用 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=3&amp;amp;q=Rust&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Rust&lt;/a> 的经历中，也非常看好 Rust 的发展。&lt;/p>
+&lt;p>Rust 的内存安全性和高性能，其实也逐步成为开发高性能系统、嵌入式应用和区块链技术的理想选择。&lt;/p>
+&lt;p>主要是 &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=Rust&amp;#43;%e8%af%ad%e8%a8%80&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>Rust 语言&lt;/a>避免了传统 C/C++ 中存在的许多内存管理问题，且在性能上几乎不输给这些底层语言，这使得它在需要高效并且稳定的应用中逐渐取代了传统的&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e6%8a%80%e6%9c%af%e6%a0%88&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>技术栈&lt;/a>。&lt;/p>
+&lt;p>当然，C 和 C++ 的基本盘还是很大，Rust 作为一门相对较年轻的语言，其实能做到这种程度已经非常不错了。&lt;/p>
+&lt;p>到明年，Rust 或许能够超过前面的几个，首次进入到前十当中，拭目以待吧哈哈！&lt;/p>
+&lt;hr>
+&lt;p>我自己的课程也是优先支持 Go 和 Rust 这两种语言，目前看来是挺正确的选择。&lt;/p>
+&lt;p>目前《&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=250386577&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e4%bb%8e%e9%9b%b6%e5%ae%9e%e7%8e%b0&amp;#43;KV&amp;#43;%e5%ad%98%e5%82%a8&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>从零实现 KV 存储&lt;/a>》支持 Rust 和 Go 两种语言，手把手教学，只需要了解基础的语法知识，即可学会一个硬核实战项目！&lt;/p>
+&lt;p>课程详情链接：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p>
+&lt;p>《从零实现 SQL 数据库》支持 Rust，使用 Rust 手写一个数据库系统，超级硬核，Rust 实战项目首选，并且还有 Rust 零基础的入门讲解，就算没有 Rust 基础也可以来学习。&lt;/p>
+&lt;p>课程详情链接：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/OxwGdeM30oss7vxEG5AcUn4unEc" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/do&lt;/a>&lt;/p></description></item></channel></rss>

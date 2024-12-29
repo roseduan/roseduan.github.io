@@ -1,0 +1,1001 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>KV 存储 on roseduan</title><link>https://roseduan.github.io/tags/kv-%E5%AD%98%E5%82%A8/</link><description>Recent content in KV 存储 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 12 Aug 2024 13:19:33 +0000</lastBuildDate><atom:link href="https://roseduan.github.io/tags/kv-%E5%AD%98%E5%82%A8/index.xml" rel="self" type="application/rss+xml"/><item><title>简历上写什么项目，校招能拿到 30w 的 offer</title><link>https://roseduan.github.io/p/%E7%AE%80%E5%8E%86%E4%B8%8A%E5%86%99%E4%BB%80%E4%B9%88%E9%A1%B9%E7%9B%AE%E6%A0%A1%E6%8B%9B%E8%83%BD%E6%8B%BF%E5%88%B0-30w-%E7%9A%84-offer/</link><pubDate>Mon, 12 Aug 2024 13:19:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E7%AE%80%E5%8E%86%E4%B8%8A%E5%86%99%E4%BB%80%E4%B9%88%E9%A1%B9%E7%9B%AE%E6%A0%A1%E6%8B%9B%E8%83%BD%E6%8B%BF%E5%88%B0-30w-%E7%9A%84-offer/</guid><description>&lt;p>去年开始，陆续有很多同学开始学习我的课程，半年多的时间过去了，他们从中收获很多，最近这段时间捷报频传，都凭借项目丰富了自己的项目经历，提升了自己的技术能力，在面试中也是披荆斩棘。&lt;/p>
+&lt;p>很多同学自发的给我反馈，表示课程很赞，甚至是唯一能捡起来的练手项目：&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-648f72daa2a93bdef53d3201144733d2_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://picx.zhimg.com/80/v2-47d72596b007d5eb996f04adbe5e7e4b_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-2c61e5a27ec59993a2c4270156d4663a_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h2 id="项目面试求职">项目面试&amp;amp;求职
+&lt;/h2>&lt;p>也有同学将项目用于面试，拿到大厂实习 offer：&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/80/v2-d4c502f9b23cc6e3b4bfe7533f2da2cc_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>甚至有的同学在求职中，项目发挥关键作用，刚毕业就能拿下 30w+ 的 offer！&lt;/p>
+&lt;p>&lt;img src="https://picx.zhimg.com/80/v2-00bc60f840bea691b75f1f0b1decfd61_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-181105b58f8ac30a53ac757da533aa43_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>其实每个有收获的同学，都更应该感谢自己，能够坚持做好一个硬核项目，本身就不是一件容易的事情。&lt;/p>
+&lt;p>在大环境不好，就业糟糕的情况下，其实我们唯一能做的，就是不断提升自己的能力，去做别人做不到的事情，这样才能够和别人拉开差距，凸显自己的优势。而不是整天自怨自艾，无所事事，这根本改变不了什么。 其实，静下心来做好一件事，就已经能够超越很多人了，只要努力，结果也一定不会太差。&lt;/p>
+&lt;h2 id="课程详情">课程详情
+&lt;/h2>&lt;p>对课程感兴趣的同学，可以进这个链接查看课程详情：&lt;/p>
+&lt;p>&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p></description></item><item><title>分布式 KV 面试汇总</title><link>https://roseduan.github.io/p/%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E9%9D%A2%E8%AF%95%E6%B1%87%E6%80%BB/</link><pubDate>Mon, 04 Mar 2024 22:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E9%9D%A2%E8%AF%95%E6%B1%87%E6%80%BB/</guid><description>&lt;blockquote>
+&lt;p>本文选自《从零实现分布式 KV》课程的加餐文章。 从零开始，手写基于 raft 的分布式 KV 系统，课程详情可以看这里：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>
+&lt;h2 id="在简历上如何写这个项目">在简历上如何写这个项目？
+&lt;/h2>&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>项目概述&lt;/strong>&lt;/p>
+&lt;p>基于 MIT 6824 课程 lab 框架，实现一个基于 raft 共识算法、高性能、可容错的分布式 KV 存储系统，保证系统的一致性和可靠性。&lt;/p>
+&lt;p>&lt;strong>设计细节&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>设计基于 Raft 一致性算法的分布式系统架构。&lt;/li>
+&lt;li>支持分布式数据存储和检索的 KV 存储引擎，采用 Raft 协议确保数据的强一致性。&lt;/li>
+&lt;li>实现数据分片和自动故障转移机制，以实现系统的高可用性和容错性。&lt;/li>
+&lt;li>使用 Go 语言编写，工程级代码可靠性和简洁性。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>结果&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>参照 Raft 论文使用 Golang 实现了领导选举、日志同步、宕机重启和日志压缩等主要功能。熟悉 Raft 算法的基本原理和实现细节，熟悉 Golang 并发编程和分布式调试。&lt;/li>
+&lt;li>实现了一个高性能的分布式键值存储系统，保证数据的一致性和可靠性。&lt;/li>
+&lt;li>通过所有代码测试，在负载测试中表现出良好的性能和稳定性，能够有效地应对并发访问和故障情况。&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>
+&lt;h2 id="可能的面试问题回答">可能的面试问题&amp;amp;回答
+&lt;/h2>&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>以下我们每个节点统称为 Peer，面试官可能会叫节点、副本(Replica)、Node 等等术语，记得和面试官对齐就好。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="raft-主要在什么场景中使用">Raft 主要在什么场景中使用？
+&lt;/h3>&lt;p>通常有两种用途：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>元信息服务&lt;/strong>，也称为配置服务（configuration services）、分布式协调服务（coordinator services）等等。如 etcd。用以追踪集群中元信息（比如副本位置等等）、多副本选主、通知（Watch）等等。&lt;/li>
+&lt;li>&lt;strong>数据&lt;strong>&lt;strong>复制&lt;/strong>&lt;/strong>（Data replication）&lt;/strong>。如 TiKV、CockroachDB 和本课程中的 ShardKV，使用 Raft 作为数据复制和冗余的一种手段。与之相对，GFS 使用简单的主从复制的方法来冗余数据，可用性和一致性都比 Raft 要差。&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>注：在分布式系统中，数据指的是外界用户存在系统中的数据；元数据指的是用户维护集群运转的内部信息，比如有哪些机器、哪些副本放在哪里等等。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="raft-为了简洁性做了哪些牺牲即有哪些性能问题">Raft 为了简洁性做了哪些牺牲（即有哪些性能问题）？
+&lt;/h3>&lt;ol>
+&lt;li>&lt;strong>每个操作都要落盘&lt;/strong>。如果想提高性能可能需要将多个操作 batch 起来。&lt;/li>
+&lt;li>&lt;strong>主从同步数据较慢&lt;/strong>。在每个 Leader 和 Follower 之间只允许有一个已经发出 AppendEntries；只有收到确认了，Leader 才能发下一个。类似 TCP 中的“停等协议”。如果写入速度较大，可能将所有的 AppendEntries Pipeline 起来性能会好一些（即 Leader 不等收到上一个 AppendEntries 的 RPC Reply，就开始发下一个）&lt;/li>
+&lt;li>&lt;strong>只支持全量快照&lt;/strong>。如果状态机比较小这种方式还可以接受，如果数据量较大，就得支持增量快照。&lt;/li>
+&lt;li>&lt;strong>全量快照同步代价大&lt;/strong>。如果快照数据量很大，每次全量发送代价会过高。尤其是如果 Follower 本地有一些较老的快照时，我们只需要发增量部分即可。&lt;/li>
+&lt;li>&lt;strong>难以利用多核&lt;/strong>。因为 log 只有一个写入点，所有操作都得抢这一个写入点。&lt;/li>
+&lt;/ol>
+&lt;h3 id="raft-在选举时是不能正常对外提供服务的这在工程中影响大吗">Raft 在选举时是不能正常对外提供服务的，这在工程中影响大吗？
+&lt;/h3>&lt;p>不太大，因为只有网络故障、机器宕机等事件才会引起宕机。这些故障的发生率可能在数天到数月一次，但 Raft 选主在秒级就能完成。因此，在实践中，这通常不是一个问题。&lt;/p>
+&lt;h3 id="有其他不基于-leader-的共识协议吗">有其他不基于 Leader 的共识协议吗？
+&lt;/h3>&lt;p>原始的 Paxos 就是无主的（区别于有主的 MultiPaxos）。因此不会有选举时的服务停顿，但也有代价——每次数据同步时都要达成共识，则数据同步代价会更大（所需要的 RPC 更多，因为每次同步消息都是两阶段的）。&lt;/p>
+&lt;h3 id="论文提到-raft-只在非拜占庭的条件下才能正常工作什么是拜占庭条件为什么-raft-会出问题">论文提到 Raft 只在非拜占庭的条件下才能正常工作，什么是拜占庭条件？为什么 Raft 会出问题？
+&lt;/h3>&lt;p>“非拜占庭条件”（Non-Byzantine conditions）是指所有的服务器都是“宕机-停止”（ fail stop）模型（更多模型参见&lt;a class="link" href="https://ddia.qtmuniao.com/#/ch08?id=%e7%b3%bb%e7%bb%9f%e6%a8%a1%e5%9e%8b%e5%92%8c%e7%8e%b0%e5%ae%9e" target="_blank" rel="noopener"
+>这里&lt;/a>）：即每个服务器要么严格遵循 Raft 协议，要么停止服务。例如，服务器断电就是一个非拜占庭条件，此时服务器会停止执行指令，则 Raft 也会停止运行，且不会发送错误结果给客户端。&lt;/p>
+&lt;p>拜占庭故障（Byzantine failure）是指有些服务器不好好干活了——可能是代码因为有 bug，也可能是混入了恶意节点。如果出现这种类型节点，Raft 可能会发送错误的结果给客户端。&lt;/p>
+&lt;h3 id="通常来说raft-的所有节点都期望部署在一个数据中心吗">通常来说，Raft 的所有节点都期望部署在一个数据中心吗？
+&lt;/h3>&lt;p>是的。跨数据中心的部署可能会有一些问题。有些系统，如原始的 Paxos（由于是 Leaderless）可以跨数据中心部署。因为客户端可以和本地的 Peer 进行通信。&lt;/p>
+&lt;h3 id="如果发生网络分区raft-会出现两个-leader-即脑裂的情况吗">如果发生网络分区，Raft 会出现两个 Leader ，即脑裂的情况吗？
+&lt;/h3>&lt;p>不会，被分到少数派分区的 Leader 会发现日志不能同步到大多数节点，从而不能提交任何日志。一种优化是，如果一个 Leader 持续不能联系到多数节点，就自动变为 Follower。&lt;/p>
+&lt;h3 id="当集群中有些-peer-宕机后此时的多数派是指所有节点的多数还是指存活节点的多数">当集群中有些 Peer 宕机后，此时的“多数派”是指所有节点的多数，还是指存活节点的多数？
+&lt;/h3>&lt;p>所有节点的多数。比如集群总共有五个 Peer，则多数派永远是指不低于 3 个 Peer。&lt;/p>
+&lt;p>如果是后者，考虑这样一个例子。集群中有五个 Peer，有两个 Peer 被分到一个分区，他们就会认为其他三个 Peer 都宕机了，则这两个 Peer 仍然会选出 Leader ，这明显是不符合预期的。&lt;/p>
+&lt;h3 id="选举超时间隔选择的过短会有什么后果会导致-raft-算法出错吗">选举超时间隔选择的过短会有什么后果？会导致 Raft 算法出错吗？
+&lt;/h3>&lt;p>选举超时间隔选的不好，只会影响服务的可用性（liveness），而不会影响正确性（safety）。&lt;/p>
+&lt;p>如果选举间隔过小，则所有的 Follower 可能会频繁的发起选举。这样，Raft 的时间都耗在了选举上，而不能正常的对外提供服务。&lt;/p>
+&lt;p>如果选举间隔过大，则当老 Leader 故障之后、新 Leader 当选之前，会有一个不必要的过长等待。&lt;/p>
+&lt;h3 id="为什么使用随机超时间隔">为什么使用随机超时间隔？
+&lt;/h3>&lt;p>为了避免多个 Candidate 一直出现平票的情况，导致一直选不出主。&lt;/p>
+&lt;h3 id="candidate-可以在收到多数票后不等其余-follower-的回复就直接变成-leader-吗">Candidate 可以在收到多数票后，不等其余 Follower 的回复就直接变成 Leader 吗？
+&lt;/h3>&lt;p>可以的。首先，多数票就足够成为主了；其次，想等所有票也是不对的，因为可能有些 Peer 已经宕机或者发生网络隔离了。&lt;/p>
+&lt;h3 id="raft-对网络有什么假设">Raft 对网络有什么假设？
+&lt;/h3>&lt;p>网络是不可靠的：可能会丢失 RPC 请求和回复，也可能会经历任意延迟后请求才到达。&lt;/p>
+&lt;p>但网络是有界的（bounded）：在一段时间内请求总会到达，如果还不到达，我们就认为该 RPC 丢失了。&lt;/p>
+&lt;h3 id="votedfor-在-requestvote-rpc-中起什么作用">votedFor 在 requestVote RPC 中起什么作用？
+&lt;/h3>&lt;p>保证每个 Peer 在一个 Term 中只能投一次票。即，如果在某个 term 中，出现了两个 Candidate，那么 Follower 只能投其中一人。&lt;/p>
+&lt;p>且 votedFor 要进行持久化，即不能说某个 Peer 之前投过一次票，宕机重启后就又可以投票了。&lt;/p>
+&lt;h3 id="即使服务器不宕机leader-也可能会下台吗">即使服务器不宕机，Leader 也可能会下台吗？
+&lt;/h3>&lt;p>是的，比如说 Leader 所在服务器可能 CPU 负载太高、响应速度过慢，或者网络出现故障，或者丢包太严重，都有可能造成其他 Peer 不能及时收到其 AppendEntries，从而造成超时，发起选举。&lt;/p>
+&lt;h3 id="如果-raft-进群中有过半数的-peer-宕机会发生什么">如果 Raft 进群中有过半数的 Peer 宕机会发生什么？
+&lt;/h3>&lt;p>Raft 集群不能正常对外提供服务。所有剩余的节点会不断尝试发起选举，但都由于不能获得多数票而当选。&lt;/p>
+&lt;p>但只要有足够多的服务器恢复正常，就能再次选出 Leader，继续对外提供服务。&lt;/p>
+&lt;h3 id="请简单说说-raft-中的选举流程">请简单说说 Raft 中的选举流程？
+&lt;/h3>&lt;p>所有的 Peer 都会初始化为 Follower，且每个 Peer 都会有一个内置的选举超时的 Timer。&lt;/p>
+&lt;p>当一段时间没有收到领导者的心跳或者没有投给其他 Candidate 票时，选举时钟就会超时。&lt;/p>
+&lt;p>该 Peer 就会由 Follower 变为 Candidate，Term++，然后向其他 Peer 要票（带上自己的 Term 和最后一条日志信息）&lt;/p>
+&lt;p>其他 Peer 收到请求后，如果发现 Term 不大于该 Candidate、日志也没有该 Candidate 新、本 Term 中也没有投过票，就投给该 Term 票。&lt;/p>
+&lt;p>如果该 Peer 能收集到多数票，则为成为 Leader。&lt;/p>
+&lt;h3 id="如果所有-peer-初始化时不为-follower而都是-candidate其他部分保持不变算法还正确吗">如果所有 Peer 初始化时不为 Follower、而都是 Candidate，其他部分保持不变，算法还正确吗？
+&lt;/h3>&lt;p>正确，但是效率会变低一些。&lt;/p>
+&lt;p>因为这相当于在原来的基础上，所有 Peer 的第一轮选举超时是一样：同时变为 Candidate。则谁都要不到多数票，会浪费一些时间。之后就又会变成原来的选举流程。&lt;/p>
+&lt;h3 id="如何避免出现网络分区的-peer-恢复通信时将整体-term-推高">如何避免出现网络分区的 Peer 恢复通信时将整体 Term 推高？
+&lt;/h3>&lt;p>&lt;strong>问题解释&lt;/strong>：如果某个 Peer （我们不妨称其为 A）和其他 Peers 隔离后，也就是出现了网络分区，会不断推高 Term，发起选举。由于持续要不到其他 Peer 的票，因此会持续推高 Term。一旦其之后某个时刻恢复和其他 Peer 的通信，而由于 Term 是 Raft 中的&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/ZYMGdQMA2ouPnKxfh56cUvpwnAg#BkIfd6wS8o2x1LxstRYcr82PnSe" target="_blank" rel="noopener"
+>第一优先级&lt;/a>，因此会强迫当前的 Leader 下台。但问题是，由于在隔离期间日志被落下很多，Peer A 通常也无法成为 Leader。最终结果大概率是原来的 Leader 的 Term 被拉上来之后，重新当选为 Leader。有的人也将这个过程形象的称之为“惊群效应”。&lt;/p>
+&lt;p>&lt;strong>解决办法&lt;/strong>：&lt;strong>PrevVote&lt;/strong>。每次 Candidate 发起选举时，不再推高 Term，但是会拿着 Term+1 去跟其他 Peer 要票，如果能要到合法的票数，再去推高 Term（Term+1）。而如果能要到多数票，其实就保证该 Candidate 没有发生网络隔离、日志是最新的。如果要不到多数票，就不能推高 Term，这样会保证发生了网络隔离的 Peer 不会一直推高自己的 Term。&lt;/p>
+&lt;h3 id="raft-和-paxos-有什么区别">Raft 和 Paxos 有什么区别？
+&lt;/h3>&lt;p>首先，Raft 和 Paxos 都是共识协议，而所有的共识协议在原理上都可以等价为 Paxos，所以才有共识协议本质上都是 Paxos 一说。&lt;/p>
+&lt;p>如 Raft 论文中提到的，Raft 是为了解决 Paxos 理解和实现都相对复杂的问题。将共识协议拆成两个相对独立的过程：领导者选举和日志复制，以降低理解和实现的复杂度。当然，如果要想工程可用，Raft 的优化也是无止境的大坑，也并非像论文声称的那么简单。因此，有人说，Raft 看起来简单只是因为论文叙述的更清楚，而非算法本身更为简洁。&lt;/p>
+&lt;p>Raft 其实是和 Multi-Paxos 等价，因为 Paxos 只解决单个值的共识问题。&lt;/p>
+&lt;p>Raft 和 Paxos 的角色分法也不太相同，Raft 的每个 Peer 都可以有 Leader，Candidate 和 Follower 三种状态；而 Paxos 是将系统分为 Proposer，Acceptor 和 Learner 三种角色，实现时可以按需组合角色。&lt;/p>
+&lt;p>在 Paxos 中，一旦某个日志在多数节点存在后就可以安全的提交；但在 Raft 中，不总是这样，比如一条日志在多数节点中存在后，但不是当前 Leader 任期的日志，也不能进行直接提交；而只能通过提交当前任期的日志来间接提交。&lt;/p>
+&lt;p>在Paxos 在选举时，Leader 可能需要借机补足日志，但 Raft 中选举过程完全不涉及日志复制（这也是 Raft 进行拆分的初衷）。这是因为 Raft 只允许具有最新日志的 Candidate 成为 Leader，而 Paxos 不限制这一点。&lt;/p>
+&lt;p>在 Paxos 中，允许乱序 commit 日志，而 Raft 只允许顺序提交。&lt;/p>
+&lt;p>在 Paxos 中，每个 Peer 的 term 是不一致的，全局自增的；在 Raft 中 term 是每个 Peer 独立自增的，但需要对齐。&lt;/p>
+&lt;p>更多区别，可以参考文末给出的资料。&lt;/p>
+&lt;h3 id="raft-在工程中有哪些常见的优化">Raft 在工程中有哪些常见的优化？
+&lt;/h3>&lt;p>由于领导者选举是个低频操作，主要 IO 路径优化还是集中在日志同步流程上。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>batch&lt;/strong>：Leader 每次攒一批再刷盘和对 Follower 进行同步。降低刷盘和 RPC 开销。&lt;/li>
+&lt;li>&lt;strong>pipeline&lt;/strong>：每次发送日志时类似 TCP 的“停-等”协议，收到 Follower 确认后才更新 nextIndex，发送后面日志。其实可以改成流水线式的，不等前面日志确认就更新 nextIndex 继续发后面的。当然，如果后面发现之前日志同步出错，就要回退 nextIndex 重发之前日志——而原始版本 nextIndex 在&lt;strong>同步阶段&lt;/strong>是单调递增的。&lt;/li>
+&lt;li>&lt;strong>并行 append&lt;/strong>：Leader 在 append 日志到本地前，就先发送日志给所有 Follower。&lt;/li>
+&lt;/ul>
+&lt;h3 id="请简单描述基于-raft-的分布式-kv-系统的架构">请简单描述基于 raft 的分布式 KV 系统的架构？
+&lt;/h3>&lt;p>一个基于 raft 的分布式 KV 系统，实际上是由一组使用 raft 算法进行状态复制的节点组成。客户端会选择将请求发送到 Leader 节点，然后由 Leader 节点进行状态复制，即发送日志，当收到多数的节点成功提交日志的响应之后，Leader 会更新自己的 commitIndex，表示这条日志提交成功，并且 apply 到状态机中，然后返回结果给客户端。&lt;/p>
+&lt;p>以上是单个 raft 集群的分布式 KV 系统架构。&lt;/p>
+&lt;p>如果系统中数据量较大，一个 raft 集群可能无法承受大量的数据，性能也会受到影响。因此还基于此设计了可分片的分布式 shardkv 系统。shardkv 由多个 raft 集群组成，每个集群负责一部分 shard 数据。&lt;/p>
+&lt;p>Shard 到 raft 集群的映射关系，保存在独立的配置服务中。&lt;/p>
+&lt;h3 id="分布式系统中读数据的流程是什么样的如何优化">分布式系统中读数据的流程是什么样的，如何优化？
+&lt;/h3>&lt;p>为了保证线性一致性，目前的实现是利用了 raft 算法，将读请求传入到 raft 并进行状态复制，这样能够保证读到的数据一定是最新的。&lt;/p>
+&lt;p>但是由于读请求也进行了一次日志复制，执行效率会受到影响，业界常用的两种优化方式是 ReadIndex 和 LeaseRead。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://cn.pingcap.com/blog/linearizability-and-raft/" target="_blank" rel="noopener"
+>https://cn.pingcap.com/blog/linearizability-and-raft/&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.sofastack.tech/blog/sofa-jraft-linear-consistent-read-implementation/" target="_blank" rel="noopener"
+>https://www.sofastack.tech/blog/sofa-jraft-linear-consistent-read-implementation/&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="客户端发送请求的时候如何知道集群中的-leader-节点是哪个">客户端发送请求的时候，如何知道集群中的 Leader 节点是哪个？
+&lt;/h3>&lt;p>在没有任何前置条件的情况下，客户端会轮询集群中的每个节点并发送请求，如果非 Leader 节点收到请求，会返回一个错误给客户端。客户端然后挑选下一个 server 进行重试，直到得到了正确的响应。&lt;/p>
+&lt;p>然后会将 Leader 节点的 id 保存起来，下次发送请求的时候，优先选择这个节点发送。&lt;/p>
+&lt;h3 id="如果-raft-集群的-leader-节点发生故障客户端如何处理">如果 raft 集群的 Leader 节点发生故障，客户端如何处理？
+&lt;/h3>&lt;p>对于一个可容错的分布式 KV 系统，需要能够应对这种故障发生，并且在多数节点正常的情况下，需要依然提供服务。&lt;/p>
+&lt;p>得益于 raft 共识算法的特性，在某个节点故障后，其他节点会由于收不到心跳消息而超时，并重新发起选举。&lt;/p>
+&lt;p>所以客户端会在得不到正常响应的时候轮询重试，直到 raft 集群中的 Leader 节点重新选举完成并提供正常服务。&lt;/p>
+&lt;h3 id="如何处理客户端的重复请求">如何处理客户端的重复请求？
+&lt;/h3>&lt;p>如果客户端的请求已经提交，但是 server 返回的过程中结果丢失，那么客户端会发起重试，导致这个请求在状态机中被执行了两次，会违背线性一致性。&lt;/p>
+&lt;p>因此我们需要保证客户端的请求只能被状态机应用一次，我们可以维护一个去重哈希表，客户端 ID + 命令 ID 组成一个唯一的标识符，如果判断到命令是已经被执行过的，则直接返回对应的结果。&lt;/p>
+&lt;h3 id="shardkv-的问题为什么需要对分布式-kv-系统进行分片">Shardkv 的问题：为什么需要对分布式 KV 系统进行分片？
+&lt;/h3>&lt;p>一是单个 raft 集群实际存储数据的引擎是单机的，能够存储的数据量有限。二是在不分区的情况下，所有数据的读写请求都会在一个分片中，这在并发量较大的情况下可能存在一定的瓶颈。&lt;/p>
+&lt;p>如果对数据做了分区，那么不同分区之间的数据读写请求是可以并行的，这能够较大的提升 KV 系统的并发能力。&lt;/p>
+&lt;h3 id="shardkv-的配置怎么保存">Shardkv 的配置怎么保存？
+&lt;/h3>&lt;p>Shardkv 的配置是单独保存在一个服务中，客户端会向这个服务发起请求，查询 key 所属的 shard 应该在哪个 raft 集群中，并向这个集群发起请求。&lt;/p>
+&lt;p>配置服务也需要高可用特性，因为配置服务如果发生故障不可用的话，那么整个分布式 kv 服务都会无法提供服务，因此也使用 raft 算法保证高可用，构建了一个单 raft 集群来存储配置信息。&lt;/p>
+&lt;h3 id="shard-数据如何迁移">Shard 数据如何迁移？
+&lt;/h3>&lt;p>启动一个后台定时任务，定期从配置服务中获取最新的配置，如果检测到配置发生变更，则变更对应 shard 的状态，标记为需要进行迁移。&lt;/p>
+&lt;p>同时启动另一个后台定时任务，定期扫描 shard 的状态，如果检测到需要进行迁移的 shard，则发送消息，通过 raft 模块进行同步。然后在 Leader 节点中处理 shard 迁移的请求，将 shard 数据从原所属的 raft 集群中迁移到新的集群中。&lt;/p>
+&lt;h3 id="shard-迁移的时候客户端的请求会受到影响吗">Shard 迁移的时候，客户端的请求会受到影响吗？
+&lt;/h3>&lt;p>如果客户端请求的 key 所属的 shard 并没有在迁移中，那么可以正常提供服务。&lt;/p>
+&lt;p>否则，说明客户端请求的 key 在迁移中，则返回错误，让客户端进行重试。&lt;/p>
+&lt;h3 id="如果有并发的客户端请求和-shard-迁移请求应该怎么处理">如果有并发的客户端请求和 shard 迁移请求，应该怎么处理？
+&lt;/h3>&lt;p>客户端请求和 shard 迁移请求的确存在并发情况，如果处理顺序不一致，会违背线性一致性。&lt;/p>
+&lt;p>我们将 shard 迁移的请求也传入到 raft 模块进行同步，这样和客户端的请求是一致的，利用 raft 的一致性来保证两种不同请求的先后顺序，前面的执行结果一定对后续的请求可见。&lt;/p>
+&lt;h3 id="如果某个-shard-已经迁移了那么它还会占存储空间吗">如果某个 Shard 已经迁移了，那么它还会占存储空间吗？
+&lt;/h3>&lt;p>不会，我们实现了 shard 清理的完整流程，会启动一个后台定时任务，定期扫描 shard 的状态，如果检测到 shard 是需要进行清理的，则也会发送 shard 清理消息进行处理。&lt;/p>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;ol>
+&lt;li>Paxos vs Raft：https://ics.uci.edu/~cs237/reading/Paxos_vs_Raft.pdf&lt;/li>
+&lt;li>TiKV Raft 的优化：https://zhuanlan.zhihu.com/p/25735592&lt;/li>
+&lt;li>Raft FAQ：https://pdos.csail.mit.edu/6.824/papers/raft-faq.txt&lt;/li>
+&lt;/ol></description></item><item><title>从零实现分布式 KV——课程完结！</title><link>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E5%AE%8C%E7%BB%93/</link><pubDate>Sat, 27 Jan 2024 10:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E5%AE%8C%E7%BB%93/</guid><description>&lt;p>自从去年 11 月份上线《从零实现分布式 KV》课程以来，得到了一些朋友的支持。
+目前三个多月过去了，在我们的共同努力下，《从零实现分布式 KV》课程已经全部完结！&lt;/p>
+&lt;blockquote>
+&lt;p>课程详情，以及购买方式，可查看这个链接：https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/p>
+&lt;/blockquote>
+&lt;p>课程包含实现一个分布式 KV 系统的全部流程，从 raft 共识算法，到分布式 KV 的实现，再到 shardkv 的实现，都有详细的讲解和代码实现。&lt;/p>
+&lt;p>raft 算法部分，从论文讲解，再到具体的代码实现，包含 raft 的核心模块，例如 Leader 选举、日志复制、日志压缩。分布式 KV 部分，基于 raft 实现了完整的分布式系统，并且实现了分片的分布式 KV，分片迁移、分片清理等内容。&lt;/p>
+&lt;p>我们按照循序渐进的方式，将内容拆分成了独立的部分，总共 35 小节内容，让大家能够一步一个台阶，从零开始掌握分布式理论和系统实践！&lt;/p>
+&lt;p>&lt;strong>可以毫不谦虚的说，这应该是目前全网最详细的 raft 和分布式 KV 教程了！&lt;/strong>&lt;/p>
+&lt;p>以下是课程的完整目录：&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-7a5fbd4b4a572e3590cc04507ca4936d_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>看到我们做的教程真正的能够帮助到别人，其实是一件很开心的事情。&lt;/p>
+&lt;p>也希望能够帮助到更多的人，让大家能够更深入的理解分布式理论和实践，给自己的简历上增加一个亮点，并且为自己的职业发展提供更多的可能。&lt;/p>
+&lt;p>强烈推荐感兴趣的同学可以入手学习起来，假期想充充电的话，这就是和别人拉开差距的最好时机，或者可以假期好好玩玩，之后再冲刺一波！&lt;/p></description></item><item><title>从零实现分布式 KV——课程更新</title><link>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E6%9B%B4%E6%96%B0/</link><pubDate>Sun, 07 Jan 2024 22:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E6%9B%B4%E6%96%B0/</guid><description>&lt;p>自从去年 11 月份上线《从零实现分布式 KV》课程以来，得到了一些朋友的支持。&lt;/p>
+&lt;p>&lt;strong>课程详情：https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/strong>&lt;/p>
+&lt;p>目前课程按照原定计划稳步更新中，目前已经更新到了第 20 节，raft 部分的实现已经全部完成。&lt;/p>
+&lt;p>raft 这一部分，是分布式理论的重要基础，我们采用了循序渐进的方式，从论文讲解，然后再到代码实现，构造了完整的 raft 共识算法。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-743b7c7c301e1f4eeff38eb8a4267f6b_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>主要分为了四个部分：&lt;/p>
+&lt;ul>
+&lt;li>Leader 选举&lt;/li>
+&lt;li>日志复制&lt;/li>
+&lt;li>日志持久化&lt;/li>
+&lt;li>日志压缩&lt;/li>
+&lt;/ul>
+&lt;p>每一部分都有详细的理论讲解，并且拆分成了多个小节，每个小节都有对应的代码实现，可以说是保姆级的手撕 raft 教程了。&lt;/p>
+&lt;p>下面是课程的详细目录：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-7364bbc9d561708ccb3be7a3966a4573_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>后续会持续更新分布式 KV 和 shardkv 部分，预计 2024.1 月底前就能更新完成。&lt;/p>
+&lt;p>想要上车的同学，请直接联系我，有其他任何疑问都可以进行咨询。&lt;/p></description></item><item><title>从零实现 KV 和分布式 KV 有什么区别？</title><link>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0-kv-%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</link><pubDate>Sun, 19 Nov 2023 10:15:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0-kv-%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</guid><description>&lt;p>在众望所归之下，前两天终于出了一个全新的课程《从零实现分布式 KV》，大家的学习热情都非常高涨，其中有很多同学都问到了一个共同的问题，&lt;strong>那就是这个课程和我之前的《从零实现 KV 存储》有什么区别呢？&lt;/strong>&lt;/p>
+&lt;p>这一次就专门给大家解释一下。&lt;/p>
+&lt;p>其实说起来也比较简单，《从零实现 KV 存储》实现的是一个单机 KV 存储引擎，何为单机？一般指的是在一个 server 上的单个进程里运行的数据库，其主要解决的问题是数据如何存储到持久化存储介质中，比如最常见的磁盘。&lt;/p>
+&lt;p>所以我们会设计存储到磁盘上的数据会怎么进行组织，磁盘上的文件格式是什么样的，然后会考虑怎么才能够更加高效的从磁盘读取数据，减少磁盘 IO 次数。所以单机存储引擎更加专注于数据存储到磁盘的具体实现方法，并且要尽量保证数据不丢失。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-2737796188d4ed88f0136082c9d845e4_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>常见的单机 KV 存储模型有 B+ 树、LSM 树、Bitcask，使用这些模型实现的单机 KV 引擎有 LevelDB、RocksDB、BoltDB、Badger、Pebble、RoseDB 等等。&lt;/p>
+&lt;p>&lt;strong>那么《从零实现分布式 KV》 课程又实现的什么呢？&lt;/strong>&lt;/p>
+&lt;p>分布式 KV，其重点在于分布式。前面说到了，单机 KV 是在一个 server 上运行的，如果这个 server 出现了故障，或者磁盘损坏了导致了数据丢失等情况，那么这个数据库一是不能够响应用户的请求，二是存储在其中的数据有可能损坏，并且如果我们没有备份的话，数据就永远丢失了，会造成比较严重的后果。&lt;/p>
+&lt;p>所以分布式就能够比较好的解决这个问题，利用最朴素的思想，不要把鸡蛋放在同一个篮子里。既然数据存储在一个 server 上有非常大的问题，那么我们将数据拷贝出来，存储到不同的 server 上不就好了？&lt;/p>
+&lt;p>这样每个 server 上的一份数据一般叫做一个副本（Replica），如果一个 server 出现了故障，还有其他的数据副本可以继续使用。&lt;/p>
+&lt;p>但是数据有了多个副本之后，随之而来又带来了新的问题，那就是写数据的时候，应该写到哪个副本里面？还是全部的副本都写一遍？读数据的时候，应该从哪个副本去读？如果副本之间的数据不一致了怎么办？&lt;/p>
+&lt;p>等等，这些问题抽象出了一个新的概念，那就是共识，即让多个副本之间协调一致，统一对外提供服务，并且保证数据的完整一致性，我们需要一些手段来让多个副本之间达成共识，这一般称之为共识算法，常见的有 Paxos 和 Raft，而我们课程中实现的是 Raft 算法。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-21b9620be70803cd7e958b3c727697be_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>有了共识算法之后，我们可以在这个基础之上构建分布式、高可用的系统，而课程中实现的是最常见的分布式 KV 系统，每个 server 之上，都会使用 Raft 共识算法来保证多个副本之间的一致性，然后每个 server 本地都会维护一个存储数据的单机 KV，这个单机 KV 一般叫做状态机。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-9ac9a52409ad37e08ae82d48879f7db8_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>常见的分布式 KV 系统有 TiKV、ETCD、FoundationDB 等等。&lt;/p>
+&lt;p>所以现在大家应该就清楚了，分布式 KV 重点在于分布式算法，以及分布式系统的设计与实现，并且只是用到了单机 KV 来存储本地数据，而存储数据、磁盘数据组织的具体逻辑，是交给了单机 KV 去负责。&lt;/p>
+&lt;p>&lt;strong>这两个课程的学习有先后顺序吗？&lt;/strong>&lt;/p>
+&lt;p>这也是问的比较多的问题，实际上并没有先后顺序，所以先学哪个都是可以的，也都能够学懂，彼此都是独立的内容。&lt;/p>
+&lt;p>最后，感谢大家的支持，希望这个课程能够对大家有所帮助，附上课程链接，想要购买者可查看：&lt;/p>
+&lt;p>&lt;strong>《从零实现 KV 存储》&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p>
+&lt;p>&lt;strong>《从零实现分布式 KV》&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p></description></item><item><title>重磅出炉！从零实现分布式 KV！</title><link>https://roseduan.github.io/p/%E9%87%8D%E7%A3%85%E5%87%BA%E7%82%89%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv/</link><pubDate>Tue, 14 Nov 2023 10:15:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E9%87%8D%E7%A3%85%E5%87%BA%E7%82%89%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv/</guid><description>&lt;p>今年初上线了我的第一个课程《从零实现 KV 存储》，广受好评，在这段时间里，有非常多的同学咨询我是否有意向去开设一个分布式 KV 的课程，毕竟之前的课程只专注于单机 KV 的实现，对于想要更进一步了解分布式存储的同学来说，分布式系统的理论和实践也是必不可少的。&lt;/p>
+&lt;p>于是我联合知名博主「青藤木鸟」一起，经过几个月的精心打磨，为大家带来了这个全新的课程，希望能够帮助到大家深入理解分布式理论，深入实践分布式系统的设计与实现，不断提升自己，增强自身的技术竞争力。&lt;/p>
+&lt;p>以下是此课程的详情，大家也可以直接进这个链接查看课程的内容以及购买方式：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5bav6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p>
+&lt;hr>
+&lt;p>本课程基于 MIT 6.5840（前 6.824，主要复用了课程实验的代码框架和测试），参考各种资料，结合我们的一些工业界经验和多次实现相关实验的经验，按易于理解的方式，拆成循序渐进的模块，每节只关注一小部分，以图文、代码和视频的形式呈现。&lt;/p>
+&lt;p>本课程会手把手教你如何弄懂一个共识协议，以及基于共识协议的分布式 KV 的方方面面、各种细节；也会教你如何组织和写出漂亮的工程代码。分布式系统是当今主流互联网系统的基础架构，而共识协议又是其中的典型代表和基石中的基石。&lt;/p>
+&lt;p>学习本课程，能让你对分布式系统所面临的问题、所使用的技能有一个全面和深入的认识。&lt;/p>
+&lt;h2 id="关于作者">&lt;strong>关于作者&lt;/strong>
+&lt;/h2>&lt;p>&lt;strong>青藤木鸟&lt;/strong>，计算机本硕，有多年大厂、外企和创业公司的 infra 从业经验。专注大规模数据系统，包括分布式系统、数据库、存储和数据处理。以“木鸟杂记”的网名在知乎、b 站和公众号等平台，进行分布式系统和数据库相关知识持续输出。写过几十万字来翻译和分享分布式、数据库方面的经典书籍 DDIA。《分布式数据库论坛》创建者。现有维护专栏：《DDIA学习会》和 《系统日知录》。&lt;/p>
+&lt;p>**roseduan，**数据库内核开发工程师（Greenplum 和 Postgres 内核），专注于数据库、分布式、存储引擎等领域，有着丰富的实践经验，知名开源存储引擎 rosedb 和 lotusdb 的作者，累计约 6k star。&lt;/p>
+&lt;h2 id="学习方式">&lt;strong>学习方式&lt;/strong>
+&lt;/h2>&lt;p>建议按照章节顺序来看，每章先看文档内容，然后再看对应的视频，跟着实现代码，加深理解。如果你对一些前置知识和某些章节很熟悉，也可以快速跳到你关心的章节来看。&lt;/p>
+&lt;p>也可以结合 MIT 6.824 的 lecture 进行辅助学习：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//www.youtube.com/@6.824" target="_blank" rel="noopener"
+>https://www.youtube.com/@6.824&lt;/a>。&lt;/p>
+&lt;p>其他的参考资料，我们会列在每节的文末（文中也会在相关文字直接关联一些超链接），大家可以按需自行取用。&lt;/p>
+&lt;h2 id="课程大纲">&lt;strong>课程大纲&lt;/strong>
+&lt;/h2>&lt;p>课程主要分为三部分内容：&lt;/p>
+&lt;ul>
+&lt;li>raft 共识算法的实现&lt;/li>
+&lt;li>基于 raft 的分布式 KV&lt;/li>
+&lt;li>基于 multi raft 的 shardkv&lt;/li>
+&lt;/ul>
+&lt;p>以及一些附录内容，比如分布式调试、并发编程等，这些技术在课程中会经常使用到，基础薄弱者可以多学习一下。&lt;/p>
+&lt;p>之后还会根据根据同学们的需求和反馈添加一些加餐内容。&lt;/p>
+&lt;p>&lt;strong>课程大致目录如下：&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-d111a6203598a2975c4c2f2ff2ce9b99_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h2 id="试看内容">&lt;strong>试看内容&lt;/strong>
+&lt;/h2>&lt;p>\01. Raft 论文演绎&lt;/p>
+&lt;p>\04. PartA 状态转换&lt;/p>
+&lt;h2 id="适用人群">&lt;strong>适用人群&lt;/strong>
+&lt;/h2>&lt;p>这个课程对以下同学应该都非常的合适，包括但不限于：&lt;/p>
+&lt;ul>
+&lt;li>想&lt;strong>入门数据库内核&lt;/strong>的同学，分布式 KV 是现代分布式数据库中必不可少的重要组成部分，它为数据库提供数据存储、高可用性、横向扩展等保障，并且具备高性能和可伸缩性，学习课程可以帮助理解分布式数据库的技术核心。&lt;/li>
+&lt;li>想&lt;strong>入门分布式存储&lt;/strong>的同学，从零实现一个分布式系统，加强对分布式相关知识的理解，而不仅仅限于理论知识，掌握如何构建、调试和优化分布式应用。&lt;/li>
+&lt;li>增加 &lt;strong>Go 项目经验&lt;/strong>的同学，如果学习了一些 Go 的基础知识，但是苦于没有项目经验，想要进一步巩固自己的知识，这个项目将会非常硬核，用于面试也会极具亮点。&lt;/li>
+&lt;li>想要&lt;strong>巩固基本功&lt;/strong>的同学，基本功对一个程序员来说非常重要。但是平常的一些课程，例如编程语言、数据结构、算法、多线程编程、分布式理论等，学完了之后总是没有太多的使用场景来实践，没过多久就忘记了。这个课程当中涉及到手写共识算法 raft、代码组织、代码命名、分布式理论、并发编程、并发调试等知识，可以帮助你打牢基本功。&lt;/li>
+&lt;li>做&lt;strong>毕业设计&lt;/strong>，对于即将毕业的同学，苦于无法找到一个合适的毕设项目，基于这个项目做一些衍生处理（比如可视化）应该会让老师眼前一亮。&lt;/li>
+&lt;/ul>
+&lt;h2 id="前置知识">&lt;strong>前置知识&lt;/strong>
+&lt;/h2>&lt;p>本课程只需要对 &lt;strong>Golang&lt;/strong> 有一个最基本的了解：懂基本语法，能看懂代码。不需要其他特别的前置知识，录屏的视频会带着大家一步步敲代码。如果有大家有觉得铺垫不清楚的地方，随时给我们反馈，我们会增加相关前置章节。&lt;/p>
+&lt;h2 id="更新进度">&lt;strong>更新进度&lt;/strong>
+&lt;/h2>&lt;p>目前已经更新了 7 节内容，预计后续每周将会更新 1-2 节，大概 2024.3 月更新完毕。&lt;/p>
+&lt;h2 id="常见-qa">&lt;strong>常见 Q&amp;amp;A&lt;/strong>
+&lt;/h2>&lt;p>&lt;strong>购买后在什么平台学习？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>课程内容都在飞书云文档，购买成功后，为你开启对应的权限，所有内容都可以在线观看&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>课程时长？代码量？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>以下皆为当前预估，以最后课程完成时状态为准。
+课程视频时长：Raft 部分大概 6 小时、分布式 KV 部分大概 10 小时。
+课程代码：自己需要写的部分，Raft 部分和 KV 部分大概各 1k 行；总 repo（包含测试代码、其他工具性代码）大概 10k 行。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>课程代码是什么语言实现的？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>课程基于 MIT 6824（现已更名为 6.5840） 的实验代码，因此是由 Go 语言实现的。后续根据同学需求和我们的精力有可能会支持其他的语言，比如 Rust 和 C++ 等。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>课程和 MIT 6824 有什么区别，或者联系？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>与 MIT 6.824 的联系是，课程复用了实验代码的框架和测试，因此课程内容和公开课 Lab 基本对应。
+与 MIT 6.824 的区别是，本课程更侧重代码实践，只专注 Raft 和分布式 KV 代码的实现。为此我们通过详尽的前置知识铺垫、手敲代码录屏、代码级文档、多种答疑形式来确保你能在代码的级别理解 Raft 这个共识算法和基于 Raft 的分布式 KV 的方方面面。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>如何获取项目中的代码？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>购买成功后将会开启代码 pull 的权限，也可以到课程专属飞书用户群中下载。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>文档和视频对应的吗？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>涉及到写代码的部分，都会有对应的视频。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>没有任何分布式系统和存储的基础，能学会吗？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>当然可以，本课程只需要熟悉 Go 的语言基础就可以了。其他的内容，例如论文讲解、架构设计、代码组织，都会在课程中详细讲述，你也可以在文档中、用户群中进行咨询，完全可以学会。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>购买后是否有有效期？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>没有，购买后永久持有，无限次观看。&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;p>感谢大家一如既往的支持，也希望这个课程能够真正的帮助到大家，想要购买的同学，添加我下面的微信，有任何疑问都可以进行咨询。&lt;/p>
+&lt;p>&lt;strong>最后再附上课程详情链接：&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p></description></item><item><title>Go 语言 KV 存储引擎 LotusDB 2.0 重磅发布！</title><link>https://roseduan.github.io/p/go-%E8%AF%AD%E8%A8%80-kv-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-lotusdb-2.0-%E9%87%8D%E7%A3%85%E5%8F%91%E5%B8%83/</link><pubDate>Thu, 14 Sep 2023 09:57:33 +0000</pubDate><guid>https://roseduan.github.io/p/go-%E8%AF%AD%E8%A8%80-kv-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-lotusdb-2.0-%E9%87%8D%E7%A3%85%E5%8F%91%E5%B8%83/</guid><description>&lt;p>经过差不多两个月的重构，在社区小伙伴的共同协作努力下，LotusDB V2.0.0版本正式发布！&lt;/p>
+&lt;blockquote>
+&lt;p>LotusDB 项目地址：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/lotusdblabs/lotusdb" target="_blank" rel="noopener"
+>https://github.com/lotusdblabs/lotusdb&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-8cb9f4118f773130586c828471fcb7e1_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>LotusDB 是用 Go 语言编写的 KV 数据库，它采用 KV 分离的思想，融 LSM Tree 和 B+ Tree 存储模型为一体，适合大规模的 KV 数据存储，相较于 Go 语言领域知名的 KV 存储项目 badger 和 bbolt，LotusDB 具有更先进的设计架构。&lt;/p>
+&lt;p>这次我们通过两个月的重构，将 LotusDB 原来 V1 版本的代码基本上重新实现了一遍，目的在于提高简洁度。&lt;/p>
+&lt;p>LotusDB 的整体架构实现了全新升级，目的在于提升读写和压缩性能，下面是之前 V1 版本的架构图：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-313fffdab1f51233852f63d6462d8344_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这是重构后的 V2 版本的架构图：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-2cc9259192c81c190b8ca3c1adcda9c4_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>相对于 V1 版本，V2 版本主要有以下更新：&lt;/p>
+&lt;ul>
+&lt;li>新版本的所有磁盘存储（包括预写日志 WAL 和 Value Log）均直接采用 wal 组件（&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/rosedblabs/wal" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/wal&lt;/a>）实现，代码屏蔽了底层管理文件读写的操作，更加简洁易懂&lt;/li>
+&lt;li>新版本通过对 key 哈希分片的方式构建多个 Index 和 Value Log 对象，实现了 Index 和Value Log 的并发读写，读写和压缩性能相对于 V1 提升了 2~3 倍，这也是本次重构架构上最大的更新&lt;/li>
+&lt;li>TODO：另一大重要更新是将会引入新的基于磁盘的 Hash 索引，这样 LotusDB 将会支持磁盘 BTree 和 Hash 两种类型的索引，满足更多样化的场景（预计在下一次 Release 发布）&lt;/li>
+&lt;li>新版本舍弃了 Column Family（CF） 的设计，目的在于使架构更加简洁，原来跨 CF 的操作并不能保证原子性，如果后续有需求的话将会重新设计这个 feature&lt;/li>
+&lt;/ul>
+&lt;p>毫不夸张的说，这是目前 Go 语言领域架构最先进的 KV 存储引擎项目，其优势主要体现在：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>结合了 LSM 和 B+ 树存储模型的优点&lt;/strong>，B+ 树读性能稳定，而 LSM 写吞吐高，LotusDB 在这基础上做了一个巨大的改动，就是采用 KV 分离的思想，完全舍弃掉 LSM 中的 SST 文件，改由 B+ 树来存储索引，而 value 存放则参考了 Wisckey 和 bitcask 模型的设计，以追加写的方式存储到单独的 value log 文件中，充分利用顺序 IO 的优势&lt;/li>
+&lt;li>&lt;strong>更加均衡和快速的读/写性能&lt;/strong>，写入 LotusDB 的数据不需要在磁盘上排序，追加写的 Value Log 设计在写入过程中减少了磁盘磁头的移动，因此即便是完全无序的数据，LotusDB 依然能够保持较高的吞吐量。同时 LotusDB 的读写性能更加均衡，而不会像bbolt 那样读写性能差距极大，适合读写都非常频繁的业务场景&lt;/li>
+&lt;li>&lt;strong>比典型的 LSM 低得多的读放大&lt;/strong>，LotusDB 采用 KV 分离的思路，从 B+ 树中获取 Key 对应 Value 在磁盘中的存储地址后，即可直接一步读取 Value 数据，显著降低了传统 LSM 存储模型带来的读放大问题&lt;/li>
+&lt;li>&lt;strong>更大规模的数据存储&lt;/strong>，和 LotusDB 的姊妹项目 RoseDB 相比，LotusDB 是一个基于磁盘索引的 KV 存储引擎，而 RoseDB 是 Bitcask 存储模型全内存索引，因此数据存储规模基本不受到内存大小的影响，因此更加适合大规模的数据存储&lt;/li>
+&lt;li>&lt;strong>支持崩溃恢复&lt;/strong>，LotusDB 实现了 WAL 机制，在将 KV 数据刷盘前就将事务日志进行持久性存储，数据库崩溃后依然能够从 WAL 中读取事务日志，保证事务的原子性&lt;/li>
+&lt;li>&lt;strong>数据并发式刷盘&lt;/strong> LotusDB 通过将 key 进行哈希分片的机制，建立多个 Index 和 Value Log 对象，每一组 Index &amp;amp; Value Log 对象对应一个数据片，当 memory table 中的数据需要刷盘时，多个对象可以通过并发的方式实现刷盘，大大提升了刷盘的吞吐量&lt;/li>
+&lt;/ul>
+&lt;p>以下是 LotusDB 的简单使用示例，大家可以上手体验！&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;github.com/lotusdblabs/lotusdb/v2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 指定设置
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">options&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">lotusdb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultOptions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">options&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DirPath&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;/tmp/lotusdb_basic&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 打开数据库
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">lotusdb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">options&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 写入键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">key&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;KV store engine&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">value&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;LotusDB&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">putOptions&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">lotusdb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WriteOptions&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Sync&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">DisableWal&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Put&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">putOptions&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 读取键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">value&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">value&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 删除键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">putOptions&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 启动Value Log压缩
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Compact&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>致谢&lt;/strong>&lt;/p>
+&lt;p>在 LotusDB 的重构过程中，非常感谢社区的各位小伙伴的参与和积极贡献，特别是 @燕小七 和 @akiozihao 表现最为积极活跃，为 LotusDB 2.0 的重构做了很多工作，再次表示感谢，也希望能够继续参与。&lt;/p>
+&lt;p>同时 @燕小七 同学成为了 LotusDB 的第一位 Committer，后续我们希望能够培养更多的 Committer 和 Maintainer，充分发挥社区的作用，共同打造和完善 LotusDB 这个最先进的 KV 存储引擎！&lt;/p>
+&lt;p>同时也非常欢迎大家能够参与进来，目前我们只是发布了第一个版本，后续将会持续迭代，能够让大家发挥的空间巨大，感兴趣的可以加我微信私聊，我会将你拉到开发者群当中。&lt;/p></description></item><item><title>学员故事，两个上百星开源项目</title><link>https://roseduan.github.io/p/%E5%AD%A6%E5%91%98%E6%95%85%E4%BA%8B%E4%B8%A4%E4%B8%AA%E4%B8%8A%E7%99%BE%E6%98%9F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</link><pubDate>Wed, 02 Aug 2023 13:19:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E5%AD%A6%E5%91%98%E6%95%85%E4%BA%8B%E4%B8%A4%E4%B8%AA%E4%B8%8A%E7%99%BE%E6%98%9F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</guid><description>&lt;p>自从三月份上线我的课程《从零实现 KV 存储》以来，陆陆续续得到一些朋友的支持，在这期间，也涌现出了一些优秀的学员，他们有的人基于课程，搞出了自己的开源项目，并且得到了非常不错的发展，这里以下面的这两个项目为例给大家分享下。&lt;/p>
+&lt;p>&lt;strong>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/ByteStorage/FlyDB" target="_blank" rel="noopener"
+>FlyDB&lt;/a>&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>项目地址：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/ByteStorage/FlyDB" target="_blank" rel="noopener"
+>https://github.com/ByteStorage/FlyDB&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>第一个项目叫 &lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/ByteStorage/FlyDB" target="_blank" rel="noopener"
+>FlyDB&lt;/a>，这个学员之前跟我提过，跟着课程然后自己搞项目，但是没有给我说项目地址，我也就没在意了。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-847a18f859a65518a0ab229ab2551072_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>但是今天突然刷到了，然后看了看代码结构，发现有点眼熟，然后我再看贡献者列表的时候突然就想起来了。&lt;/p>
+&lt;p>一问，果然是这个学员的项目。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-82ebcb7143059e88db6a68c0d21d0911_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>更让我惊讶的是，项目看起来非常的不错，文档写的也很漂亮，代码质量也很不错，并且在课程的基础之上，加入了很多扩展的内容，比如集群，项目 star 也有 500+。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-3b549c61f40bbde7c0d027daeb92815f_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-47bed066563df0ca6cca609575bc7b49_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;strong>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/Kirov7/CouloyDB" target="_blank" rel="noopener"
+>CouloyDB&lt;/a>&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/Kirov7/CouloyDB" target="_blank" rel="noopener"
+>https://github.com/Kirov7/CouloyDB&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>第二个项目叫 &lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/Kirov7/CouloyDB" target="_blank" rel="noopener"
+>CouloyDB&lt;/a>，这个同学做的这个项目我是知道的，之前他还在课程的用户群里面说过，也是自己加上了很多内容，比如事务的完善。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-8e8607c8392e04dde81106dc14957b68_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>今天在看到这个项目的时候，发现还在维护，并且也有一百多 star，看起来还是非常不错的。&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-d8e9135a18af028bc9cc30794abec645_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>这两个项目都是课程学员开源出去的，看起来我的课程对大家的学习有了很大的帮助，能够帮助大家激发兴趣，做自己热爱的事情，也是我做这个课程的初衷。&lt;/p>
+&lt;p>我也很开心和惊喜，甚至有点惶恐，现在的年轻人太生猛了，有了更多的学习经验和资料，就能够少走很多我之前走过的弯路，真是教会徒弟，饿死师傅啊！&lt;/p>
+&lt;p>希望大家能够给与这些项目更多的支持，比如点点 star，或者感兴趣的话也可以参与进去，因为这两个项目目前看起都处于比较早期的阶段，能够做的事情应该还是挺多的。&lt;/p>
+&lt;p>当然这次列举的两个项目仅仅是我知道的，或许还有一些我不知道的学员做的项目，反正大家加油干就是了！&lt;/p>
+&lt;p>最后，再召集一下还在犹豫要不要上车的同学，跟着课程学习完，并且完全学懂是肯定没问题的，并且你自己感兴趣的话，也可以自己多花时间，或许你也可以像上面的两个学员一样，做出属于自己的开源项目。&lt;/p>
+&lt;p>课程详情点击这里：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p></description></item><item><title>使用 WAL 构建你自己的 KV 存储</title><link>https://roseduan.github.io/p/%E4%BD%BF%E7%94%A8-wal-%E6%9E%84%E5%BB%BA%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84-kv-%E5%AD%98%E5%82%A8/</link><pubDate>Mon, 31 Jul 2023 13:24:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E4%BD%BF%E7%94%A8-wal-%E6%9E%84%E5%BB%BA%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84-kv-%E5%AD%98%E5%82%A8/</guid><description>&lt;p>这篇文章将主要描述，如何使用我最近新开发的 WAL（Write Ahead Log）构建属于你自己的 KV 存储引擎。&lt;/p>
+&lt;blockquote>
+&lt;p>wal 地址：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/rosedblabs/wal" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/wal&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="什么是-wal">什么是 WAL？
+&lt;/h2>&lt;p>wal，即 Write Ahead Log，通常叫做预写日志，在一般的数据库或者存储系统中，是为了预防崩溃恢复而存在的，以传统的 LSM 和 Bitcask 存储引擎为例，数据首先进入存储引擎时，会先写到 WAL 中，然后再更新内存索引，LSM 一般是跳表，而 Bitcask 一般是哈希表，当然你也可以选择其他的内存数据结构。&lt;/p>
+&lt;p>这样当系统重启时，会通过重放 wal 日志来构建内存数据结构中的内容。&lt;/p>
+&lt;p>在 Bitcask 存储引擎中，有一个非常特殊的地方在于，预写日志 wal 和实际存储数据的日志文件，其实就是同一个文件，这样便带来一个极大的好处，那就是我们可以直接基于 wal 构建出一个轻量、快速、简单可靠的 KV 存储引擎。&lt;/p>
+&lt;p>而在 LSM 存储引擎中，会稍微复杂点，因为其后还有 SSTable 这一大块内容，所以本文将会简单起见，只介绍下如何构建 Bitcask 存储，当然如果你在 LSM 中使用了 Wisckey 这样的优化技术后，也可以使用 wal 来存储 kv 分离之后的 Value Log 文件。&lt;/p>
+&lt;h2 id="wal-的由来">WAL 的由来
+&lt;/h2>&lt;p>最开始想开发这个项目，其实主要是想到要重构 rosedb 和 lotusdb，然后这其中有很多重复的内容，rosedb 的数据文件可以用 wal 来存储，lotusdb 中 Memtable 对应的预写日志，和 Value Log 也可以用 wal 来存储。&lt;/p>
+&lt;p>因为这几种类型它们的存储格式都是一样的，即日志追加（append only）。所以我将这个公共的部分单独提取出来，形成了一个新的项目。&lt;/p>
+&lt;h2 id="wal-的大致结构">WAL 的大致结构
+&lt;/h2>&lt;p>然后我们再来看一下 wal 项目的大致结构，一个 wal 实例，其实分为了多个文件，每个文件叫做一个 Segment，这个 Segment 具体有多大，是可以在启动时配置的，默认是 1GB。&lt;/p>
+&lt;p>Segment 文件是分为了多个旧的文件，和一个当前活跃的文件，新写入的数据，会写到活跃的 Segment 文件中。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-8b40a7773af8b3a1617566e1c64080dc_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>一个 Segment 文件内部，又分为了 n 个等分的 block 块，每一个 block 块的大小是 32 KB。block 写的是变长的 chunk 数据，一个 chunk 主要是有固定的 7 字节的头部，以及其后的实际的用户存储的数据。每个 chunk 都分为了四种类型，分别是 FULL、FIRST、MIDDLE、LAST，这主要是借鉴了 Leveldb/RocksDB 中的 wal 的设计。&lt;/p>
+&lt;p>数据在写入到 wal 中后，会得到一个 ChunkPosition，这个 Position 是描述数据在 wal 中的位置信息，你可以直接使用这个位置信息从 wal 中通过 Read 方法读取到写入的数据。&lt;/p>
+&lt;h2 id="如何基于-wal-构建-kv-存储">如何基于 wal 构建 KV 存储
+&lt;/h2>&lt;p>从前面的描述中，可以看出，wal 其实就是由多个 Segment 文件组成，支持日志追加写数据，并且可以从中读数据的一个服务。&lt;/p>
+&lt;p>这几天集中优化了一下 wal 的读写性能，目前的读写速度很快，并且几乎不怎么占据内存。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-3e5a0b9e07a0d5a4b36a9f4c115093e6_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>有了这个 wal 组件之后，我们再基于此构建一个 Bitcask 存储引擎，将会变得极其的简单。&lt;/p>
+&lt;p>首先，我们要做的就是选择一个内存数据结构，比如 B-Tree、跳表、红黑树、哈希表等等都是可以的，只要是能够存储一个 KV 值即可。&lt;/p>
+&lt;p>用户写入数据，实际就是先写入到 wal 中，写到 wal 之后，你会得到一个位置信息 ChunkPosition，然后把 Key+ChunkPosition 存储到内存数据结构中即可。&lt;/p>
+&lt;p>然后是读数据，直接根据 Key 从内存数据结构中获取到对应的 ChunkPosition，然后根据这个位置从 wal 中读取到实际的 Value 即可。&lt;/p>
+&lt;p>最后是重启数据库，需要调用 wal 中的 NewReader 方法，这个方法可以遍历 wal 中的所有数据，并返回 Key+ChunkPosition 信息，你只需要把这个数据再次存放到内存数据结构中就可以了。&lt;/p>
+&lt;p>这几个主要的步骤一完成，一个最基础的 KV 存储引擎就构建起来了，当然你还可以基于此做很多的完善和优化。&lt;/p>
+&lt;p>好了，这就是基于 wal 这个组件来构建你自己的 KV 存储引擎的大致流程，大家可以自己去尝试动手写一下，对自己的实战能力提升应该还是很大的。如果项目对大家有帮助的话，可以给个 star 支持下哦！&lt;/p></description></item><item><title>硬核项目 KV 存储，轻松拿捏面试官！</title><link>https://roseduan.github.io/p/%E7%A1%AC%E6%A0%B8%E9%A1%B9%E7%9B%AE-kv-%E5%AD%98%E5%82%A8%E8%BD%BB%E6%9D%BE%E6%8B%BF%E6%8D%8F%E9%9D%A2%E8%AF%95%E5%AE%98/</link><pubDate>Thu, 06 Jul 2023 08:56:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E7%A1%AC%E6%A0%B8%E9%A1%B9%E7%9B%AE-kv-%E5%AD%98%E5%82%A8%E8%BD%BB%E6%9D%BE%E6%8B%BF%E6%8D%8F%E9%9D%A2%E8%AF%95%E5%AE%98/</guid><description>&lt;blockquote>
+&lt;p>本文是《从零实现 KV 存储》课程的面试要点总结，相当于只要你学习了课程，以下提到的内容都是你自己完成的。对课程感兴趣的同学可以进这个链接查看详情：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="在简历上如何写这个项目">&lt;strong>在简历上如何写这个项目？&lt;/strong>
+&lt;/h2>&lt;p>&lt;strong>项目概述&lt;/strong>&lt;/p>
+&lt;p>基于 Bitcask 模型，兼容 Redis 数据结构和协议的高性能 KV 存储引擎 &lt;strong>设计细节&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>采用 Key/Value 的数据模型，实现数据存储和检索的快速、稳定、高效&lt;/li>
+&lt;li>存储模型：采用 Bitcask 存储模型，具备高吞吐量和低读写放大的特征&lt;/li>
+&lt;li>持久化：实现了数据的持久化，确保数据的可靠性和可恢复性&lt;/li>
+&lt;li>索引：多种内存索引结构，高效、快速数据访问&lt;/li>
+&lt;li>并发控制：使用锁机制，确保数据的一致性和并发访问的正确性&lt;/li>
+&lt;li>编程语言：采用 Go/Rust（根据实际情况写 Go 或者 Rust） 编写，兼顾高性能以及编码简洁性&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>结果&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>性能方面：相较于其他同类型的存储引擎，读写性能稳定快速，相较于 redis，能够基本在一个数量级，但是节省了大量的内存空间&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>例如 leveldb、bolt、badger、sled 等等，做个简单的对比&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>可靠性：依赖数据文件的持久化特性，确保了数据的可靠存储和恢复，降低数据丢失的风险&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>简洁直观的用户 API，支持内嵌式的基础 Put/Get/Delete 等接口，也可以通过 HTTP 接口进行数据访问，也可以通过 redis client 进行直接访问&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="可能的面试问题回答">&lt;strong>可能的面试问题&amp;amp;回答&lt;/strong>
+&lt;/h2>&lt;h3 id="你做的这个项目能简单介绍一下吗">&lt;strong>你做的这个项目能简单介绍一下吗&lt;/strong>
+&lt;/h3>&lt;p>我开发的项目是一个基于 Bitcask 存储模型的 KV 数据库。bitcask 是一种高性能的持久化存储引擎，其基本原理是采用了预写日志的数据存储方式，每一条数据在写入时首先会追加写入到数据文件中，然后更新内存索引，内存索引存储了 Key 和 Value 在磁盘上的位置，读取数据时，会先从内存中根据 key 找到对应 Value 的位置，然后再从磁盘中取出实际的 Value。&lt;/p>
+&lt;p>基于这种模型，其读写性能都非常高效快速，因为每次写入实际上都是一次顺序 IO 操作，然后更新内存，每次读取也是直接从内存中找到对应数据在磁盘上的位置。&lt;/p>
+&lt;h3 id="为什么会做这个项目">&lt;strong>为什么会做这个项目&lt;/strong>
+&lt;/h3>&lt;p>这个问题的答案因人而异，可以根据自己的情况来回答，例如：&lt;/p>
+&lt;blockquote>
+&lt;p>对数据库存储系统实现的好奇心，看到了对应的 Bitcask 的论文，想要自己去实现
+弥补 redis 的缺陷，因为 redis 是一种基于内存的数据库，在数据量较大的情况下，对内存的压力会非常大，而 Bitcask 可以规避这个缺点，显著降低内存使用量
+参加数据库比赛，针对性的设计了一种存储引擎
+现有的存储引擎例如基于 B+ 树，读性能稳定，但是写数据是随机 IO，性能较差，LSM Tree 写性能优秀，但是读性能不稳定，读放大、写放大、空间放大问题严重；而 Bitcask 存储模型的读写性能则非常的稳定快速。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="有哪些适用场景">&lt;strong>有哪些适用场景&lt;/strong>
+&lt;/h3>&lt;p>&lt;strong>缓存系统&lt;/strong>&lt;/p>
+&lt;p>KV 数据库可用作缓存系统的后端存储，以提供快速的数据访问和响应能力。由于 Bitcask 存储模型具有高性能和低读写放大的特性，它适合存储频繁访问的热数据，提供快速的缓存读取操作。&lt;/p>
+&lt;p>&lt;strong>日志存储&lt;/strong>&lt;/p>
+&lt;p>KV 数据库可以作为日志存储系统使用，将日志数据持久化到磁盘上的日志文件中。Bitcask 存储模型的追加写入方式使得日志的写入操作非常高效，确保了日志的可靠存储和后续分析。&lt;/p>
+&lt;p>&lt;strong>Key 小 Value 大的 KV 数据存储&lt;/strong>&lt;/p>
+&lt;p>Bitcask 将 key 和对应的索引都维护在了内存当中，这样如果 key 较小的话，那么内存当中能够维护的数据量就更多，并且 Value 是在磁盘上存储的，因此可利用磁盘更大的空间来存储 Value。&lt;/p>
+&lt;h3 id="优缺点是什么">&lt;strong>优缺点是什么&lt;/strong>
+&lt;/h3>&lt;p>&lt;strong>优点&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>读写低延迟&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>这是由于 Bitcask 存储模型文件的追加写入特性，充分利用顺序 IO 的优势。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>高吞吐量，即使数据完全无序&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>写入的数据不需要在磁盘上排序，Bitcask 的日志结构文件设计在写入过程中减少了磁盘磁头的移动。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>能够处理大于内存的数据集，性能稳定&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>数据访问涉及对内存中的索引数据结构进行直接查找，这使得即使数据集非常大，查找数据也非常高效。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>一次磁盘 IO 可以获取任意键值对&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>内存索引数据结构直接指向数据所在的磁盘位置，不需要多次磁盘寻址来读取一个值，有时甚至不需要寻址，这归功于操作系统的文件系统缓存以及 WAL 的 block 缓存。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>性能快速稳定&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>写入操作最多需要一次对当前打开文件的尾部的寻址，然后进行追加写入，写入后会更新内存。这个流程不会受到数据库数据量大小的影响，因此性能稳定。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>备份简单&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>在大多数系统中，备份可能非常复杂。Bitcask 通过其只追加写入一次的磁盘格式简化了此过程。任何按磁盘块顺序存档或复制文件的工具都将正确备份或复制 Bitcask 数据库。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>批处理操作可以保证原子性、一致性和持久性&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>支持批处理操作，这些操作是原子、一致和持久的。批处理中的新写入操作在提交之前被缓存在内存中。如果批处理成功提交，批处理中的所有写入操作将持久保存到磁盘。如果批处理失败，批处理中的所有写入操作将被丢弃。&lt;/p>
+&lt;p>即一个批处理操作中的所有写入操作要么全部成功，要么全部失败。&lt;/p>
+&lt;p>&lt;strong>缺点&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>所有的 key 必须在内存中维护&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>始终将所有 key 保留在内存中，这意味着您的系统必须具有足够的内存来容纳所有的 key。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>启动速度受数据量的影响&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>数据库启动时，会加载所有的数据，并且会重放所有的操作，以此来构建内存索引，如果数据量较大，这个过程可能会非常漫长&lt;/p>
+&lt;h3 id="磁盘上产生了无效的数据如何清理">&lt;strong>磁盘上产生了无效的数据，如何清理&lt;/strong>
+&lt;/h3>&lt;p>实现了 Bitcask 论文中提到的 Merge 方案，Merge 实际上就是对磁盘数据空间进行清理的操作，其基本执行流程是遍历所有的数据，并将有效的数据进行重写，然后使用新的文件替换旧的文件，以此达到回收空间的效果。&lt;/p>
+&lt;p>&lt;strong>追问：&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Merge 的过程会阻塞读写操作吗&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>不会，Merge 实际上是在新的目录打开了新的 Bitcask 进程实例，这个实例和原目录上运行的实例互不冲突，Merge 的时候，只会读取原 Bitcask 实例的索引数据结构，判断数据是否有效，并不会对原来的实例产生任何影响，并且原实例的写入会写到新的文件中，不会参与到 Merge 过程中，所以对写入也没有影响。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Merge 过程万一很漫长，中途挂了怎么办&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>在具体实现中，会在 Merge 结束之后，在磁盘文件中写入一个 Merge 完成的标识，只有当有这个标识的时候，我们才认为一次 Merge 是完整的，否则 Merge 都是不完整的，直接删除掉 Merge 的数据目录即可。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="写操作是如何保证原子性的">&lt;strong>写操作是如何保证原子性的&lt;/strong>
+&lt;/h3>&lt;p>采用了预写日志的方式，和其他大多数系统一样，WAL 通常是保证事务原子性和持久性的关键，在 Bitcask 存储模型中，比较特殊的是 WAL 文件本身就是数据文件，所以天然可以保证原子性，我们在写入的时候加上了一个完成的标识，并且给每一批次的数据都附了一个全局递增的 id，只有全部提交完成了，这个批次的数据才算完成，否则都不会进行加载。&lt;/p>
+&lt;h3 id="和-leveldbboltdbredis-的区别">&lt;strong>和 LevelDB、BoltDB、Redis 的区别&lt;/strong>
+&lt;/h3>&lt;p>LevelDB 是经典的 LSM Tree 存储模型，其基本架构大致分为了 WAL、memtable、SSTable，数据写入首先会到 wal 中保证持久化，然后更新到内存的 memtable 中，如果 memtable 满了，则 flush 到磁盘的 sstable 中。&lt;/p>
+&lt;p>读数据会从 memtable 查找，如果没找到，则从磁盘上的多级 sstable 中查找，读性能不稳定。&lt;/p>
+&lt;p>BoltDB 是 B+ 树存储模型，读性能稳定，但是写入是随机 IO，性能较差。&lt;/p>
+&lt;p>Redis 是一种纯内存的数据结构服务，也可以持久化到磁盘中，但其实际上是一种面向内存的 KV 存储，数据量受到内存容量的影响。&lt;/p>
+&lt;p>而 Bitcask 存储模型，写性能和 LSM 模型相当，读性能也很稳定，读写都是一次磁盘 IO 操作即完成，并且相较于 Redis，Value 是不会存储到内存中，节省了内存空间，并且性能能够和 Redis 维持在一个数量级。&lt;/p>
+&lt;h3 id="做了哪些改进">&lt;strong>做了哪些改进&lt;/strong>
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>内存索引限制&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>前面说到，Bitcask 的一大缺点就是所有的 key 都必须在内存中维护，这样数据库中能存储的数据量就受到了内存容量的限制，而我的项目中，创造性的使用了持久化的 B+ 树来作为索引数据结构，这样就可以将索引存储到磁盘上，突破了内存容量的限制。但是这样带来的一个副作用便是读性能会下降，因为原来是直接从内存中就能到获取到 Value 的位置，但是使用 B+ 树存储索引的话，还需要从磁盘 B+ 树中获取索引，然后再到磁盘中获取 Value，相当于多了几次磁盘 IO 操作&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>内存索引锁粒度优化&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>在我的最初的项目中，内存索引是单个数据结构，并且为了保证并发安全，这个结构的读写都需要加锁，如果在大数据量下，所有的数据都会竞争这把锁，所以我将索引进行了分区，并通过哈希函数将 key 映射到不同的索引结构当中，大大减少了并发冲突&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>启动速度优化&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>为了避免在重启的时候全量加载所有的数据来构建内存索引，我的项目中实现了 Bitcask 论文中提到的 Hint 文件，Hint 文件实际上就是一个 key+索引的文件，它不存储 Value，相较于原始文件容量会小很多，这样重启加载的时候，直接加载这个 Hint 文件&lt;/li>
+&lt;li>追问 1：Hint 文件是在什么时候生成的呢&lt;/li>
+&lt;li>Merge 的时候生成的，Merge 时实际上所有的数据都是有效的，这个时候只需要依次存储对应的 key 和索引数据&lt;/li>
+&lt;li>追问 2：Hint 文件的格式是什么&lt;/li>
+&lt;li>和数据文件是一样的，都采用了日志追加的方式&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>持久化策略优化&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>在最开始的设计中，默认的刷盘策略是交给了操作系统来调度，这样的好处是性能很好，但是存在丢失数据的风险，在实际环境中，我们可以再提供另一个选项，用户可以设置积累到多少个字节之后，再进行一次持久化。这相当于提供了一个折中的方案，相较于之前的要么每条都持久化，要么完全交给操作系统，这样能够让用户自己灵活配置。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>数据文件布局优化&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>我还参考了 LevelDB 和 RocksDB 的 WAL 文件的格式，将数据文件的组织形式改为 block（32KB） 的方式，加速数据读写的效率。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>兼容 HTTP 协议&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>单纯的 KV 接口大多只能在嵌入式的场景中使用，但无法作为远程调用服务使用，所以我在存储引擎的基础之上，加上了 HTTP 的访问接口，这样便可以将存储引擎作为 HTTP 服务使用&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>兼容 Redis 数据结构和协议&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>原生的 KV 接口能够满足的需求比较有限，而 Redis 支持了多种数据结构，比如 String、List、Hash、Set、ZSet，满足了多样化的需求。于是我在 KV 的接口之上，兼容了 Redis 的数据结构，并且兼容了 Redis 的通信协议 RESP，这样一是可以满足多样需求，二是可以让用户无缝切换到我的存储项目中&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>注：以上是我个人能够想到的一些东西，但在实际场景中，可能问的问题会更多，大家如果有相关的经验，可以在这里留言分享！&lt;/p>
+&lt;/blockquote></description></item><item><title>rosedb v2 版本发布！</title><link>https://roseduan.github.io/p/rosedb-v2-%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83/</link><pubDate>Wed, 14 Jun 2023 09:57:33 +0000</pubDate><guid>https://roseduan.github.io/p/rosedb-v2-%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83/</guid><description>&lt;p>RoseDB V2 重构的第一个版本发布了！&lt;/p>
+&lt;p>RoseDB 是一个基于 Bitcask 存储模型，轻量、快速、可靠的 KV 存储引擎。Bitcask 存储模型的设计主要受到日志结构化的文件系统和日志文件合并的启发。&lt;/p>
+&lt;blockquote>
+&lt;p>感兴趣可参考 Bitcask 论文：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//riak.com/assets/bitcask-intro.pdf" target="_blank" rel="noopener"
+>https://riak.com/assets/bitcask-intro.pdf&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>RoseDB 存储数据的文件使用预写日志（Write Ahead Log）进行了重新设计，这些日志文件是具有 block 缓存的只追加写入（append-only）文件。&lt;/p>
+&lt;blockquote>
+&lt;p>wal: &lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/rosedblabs/wal" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/wal&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>我将原来 rosedb 中的 Redis 数据结构和协议拆分了出去，后面会单独形成一个项目，方便接入不同的存储引擎，比如 rosedb、badger、pebble、levledb 等等。&lt;/p>
+&lt;p>所以 rosedb 只专注于单机存储引擎的功能，目前处于积极维护状态，欢迎大家 issue 或者贡献，点点 star ⭐️。&lt;/p>
+&lt;p>项目地址：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/rosedblabs/rosedb" target="_blank" rel="noopener"
+>https://github.com/rosedblabs/rosedb&lt;/a>&lt;/p>
+&lt;p>以下是 RoseDB 的一些简单介绍和使用示例：&lt;/p>
+&lt;h2 id="主要特点">&lt;strong>主要特点&lt;/strong>
+&lt;/h2>&lt;h3 id="优势">&lt;strong>优势&lt;/strong>
+&lt;/h3>&lt;p>&lt;strong>读写低延迟&lt;/strong>&lt;/p>
+&lt;p>这是由于 Bitcask 存储模型文件的追加写入特性，充分利用顺序 IO 的优势。高吞吐量，即使数据完全无序&lt;/p>
+&lt;p>写入 RoseDB 的数据不需要在磁盘上排序，Bitcask 的日志结构文件设计在写入过程中减少了磁盘磁头的移动。&lt;/p>
+&lt;p>&lt;strong>能够处理大于内存的数据集，性能稳定&lt;/strong>&lt;/p>
+&lt;p>RoseDB 的数据访问涉及对内存中的索引数据结构进行直接查找，这使得即使数据集非常大，查找数据也非常高效。&lt;/p>
+&lt;p>&lt;strong>一次磁盘 IO 可以获取任意键值对&lt;/strong>&lt;/p>
+&lt;p>RoseDB 的内存索引数据结构直接指向数据所在的磁盘位置，不需要多次磁盘寻址来读取一个值，有时甚至不需要寻址，这归功于操作系统的文件系统缓存以及 WAL 的 block 缓存。&lt;/p>
+&lt;p>&lt;strong>性能快速稳定&lt;/strong>&lt;/p>
+&lt;p>RoseDB 写入操作最多需要一次对当前打开文件的尾部的寻址，然后进行追加写入，写入后会更新内存。这个流程不会受到数据库数据量大小的影响，因此性能稳定。&lt;/p>
+&lt;p>&lt;strong>崩溃恢复快速&lt;/strong>&lt;/p>
+&lt;p>使用 RoseDB 的崩溃恢复很容易也很快，因为 RoseDB 文件是只追加写入一次的。恢复操作需要检查记录并验证CRC数据，以确保数据一致。&lt;/p>
+&lt;p>&lt;strong>备份简单&lt;/strong>&lt;/p>
+&lt;p>在大多数系统中，备份可能非常复杂。RoseDB 通过其只追加写入一次的磁盘格式简化了此过程。任何按磁盘块顺序存档或复制文件的工具都将正确备份或复制 RoseDB 数据库。&lt;/p>
+&lt;p>&lt;strong>批处理操作可以保证原子性、一致性和持久性&lt;/strong>&lt;/p>
+&lt;p>RoseDB 支持批处理操作，这些操作是原子、一致和持久的。批处理中的新写入操作在提交之前被缓存在内存中。如果批处理成功提交，批处理中的所有写入操作将持久保存到磁盘。如果批处理失败，批处理中的所有写入操作将被丢弃。即一个批处理操作中的所有写入操作要么全部成功，要么全部失败。&lt;/p>
+&lt;h3 id="缺点">&lt;strong>缺点&lt;/strong>
+&lt;/h3>&lt;p>&lt;strong>所有的 key 必须在内存中维护&lt;/strong>&lt;/p>
+&lt;p>RoseDB 始终将所有 key 保留在内存中，这意味着您的系统必须具有足够的内存来容纳所有的 key。&lt;/p>
+&lt;h2 id="快速上手">&lt;strong>快速上手&lt;/strong>
+&lt;/h2>&lt;h3 id="基本操作">&lt;strong>基本操作&lt;/strong>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="s">&amp;#34;github.com/rosedblabs/rosedb/v2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 指定选项
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">options&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">rosedb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultOptions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">options&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DirPath&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;/tmp/rosedb_basic&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 打开数据库
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">rosedb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">options&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 设置键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Put&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;rosedb&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">val&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">val&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 删除键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Delete&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">panic&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="批处理操作">&lt;strong>批处理操作&lt;/strong>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 创建批处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">batch&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">db&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewBatch&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">rosedb&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DefaultBatchOptions&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 设置键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">batch&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Put&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;rosedb&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">val&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">batch&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">val&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 删除键值对
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">batch&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Delete&lt;/span>&lt;span class="p">([]&lt;/span>&lt;span class="nb">byte&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 提交批处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">batch&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Commit&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>完整代码可查看 examples 示例代码。&lt;/p></description></item><item><title>使用 Rust 和 Go 从零构建 KV 存储</title><link>https://roseduan.github.io/p/%E4%BD%BF%E7%94%A8-rust-%E5%92%8C-go-%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA-kv-%E5%AD%98%E5%82%A8/</link><pubDate>Mon, 06 Mar 2023 10:15:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E4%BD%BF%E7%94%A8-rust-%E5%92%8C-go-%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA-kv-%E5%AD%98%E5%82%A8/</guid><description>&lt;p>精雕细琢了几个月的时间之后，《从零实现 KV 存储》课程终于上线了，打造此课程的目的，是看到很多人想要入行数据库内核或者分布式存储，但是苦于没有一个很好的实战项目来进行系统性的学习。&lt;/p>
+&lt;p>结合自己从 Java 业务开发转行数据库内核的经历，我认为从零实现 KV 存储是一个很好的起点，希望这个课程可以帮助到一部分同学。&lt;/p>
+&lt;p>本课程是从零实现一个完整的 KV 存储项目，比起其他的项目，一个很大的不同在于，我会在视频当中，带着大家从第一行代码开始编写，而不是对着代码进行讲解，或者让你自己去看。&lt;/p>
+&lt;p>并且本课程将会使用 &lt;strong>Rust 和 Go&lt;/strong> 两种语言实现。&lt;/p>
+&lt;p>通过每一行代码的编写，你会对整个系统了如指掌，这样对自己基本功的锻炼、对编程能力的提升都是很大的，下面是关于本课程的一些基本情况：&lt;/p>
+&lt;h2 id="关于我">关于我
+&lt;/h2>&lt;p>我的网名叫 roseduan，是开源项目&lt;code>rosedb、lotusdb&lt;/code>的作者，目前约累计 4.6k star，在存储引擎方面有自己的一些实践经验。&lt;/p>
+&lt;blockquote>
+&lt;p>我的 Github 主页：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//github.com/roseduan" target="_blank" rel="noopener"
+>https://github.com/roseduan&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-835c64c682ad53a78f1ceedb2a4cfe7f_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h2 id="课程形式">课程形式
+&lt;/h2>&lt;p>课程提供了两种展现的方式，&lt;strong>文档+视频&lt;/strong>。&lt;/p>
+&lt;p>文档中描述了一小节内容的基本流程，例如数据读写流程、删除流程等，以及一些代码细节，主要是方便你随时温习，在手机端也能够很好的观看。&lt;/p>
+&lt;p>另一个是视频，在视频当中，我会专注于代码细节，带着你一行一行的来完成每一个章节，你可以先跟着我把代码敲一遍，然后自己不断的反思学习，提出自己的思考，以及可能的优化思路，这样才能够不断的提升自己。&lt;/p>
+&lt;p>课程的每一篇文档开头，都有一个对应的视频，建议你先通过观看视频的方式，跟着我把代码写完。&lt;/p>
+&lt;p>&lt;strong>课程的视频演示中，将使用 Rust 和 Go 两种语言来实现，一次付费购买，相当于可以用两种语言来学习实现一个 KV 数据库。&lt;/strong>&lt;/p>
+&lt;h2 id="课程内容">课程内容
+&lt;/h2>&lt;p>课程大致分为了几个部分&lt;/p>
+&lt;ul>
+&lt;li>一是 KV 存储基本功能的实现，包含数据读写、Merge、WriteBatch 等&lt;/li>
+&lt;li>二是一些常见的优化策略，主要包含内存索引、文件 IO、Merge 操作的优化&lt;/li>
+&lt;li>三是对 Redis 数据结构以及 Redis 协议的支持&lt;/li>
+&lt;li>以及其他的例如数据备份、测试、HTTP 接口接入等等。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>课程目录如下：&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-b48605114343b0da26f35e5a95fcb278_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>如果你在学习的过程当中，发现有任何问题，或者可以补充的内容，都可以提出来，如果合理的话，我会再加入到课程内容中。&lt;/p>
+&lt;h2 id="适用人群">适用人群
+&lt;/h2>&lt;p>这个课程对以下同学应该都非常的合适，包括但不限于：&lt;/p>
+&lt;ul>
+&lt;li>想&lt;strong>入门数据库&lt;/strong>的同学，存储对一个数据库来说是必不可少的，存储也是一个数据库当中非常重要的模块，通过自己动手写 KV 存储可以掌握一些数据库的基本概念，以及数据库的基本设计思路&lt;/li>
+&lt;li>想&lt;strong>入门分布式存储&lt;/strong>的同学，单机 KV 存储是分布式存储岗位的必备，可以了解单机存储引擎的设计思路，优化思路等，增强自己对存储引擎的深入理解&lt;/li>
+&lt;li>增加 &lt;strong>Go 项目经验&lt;/strong>的同学，如果学习了一些 Go 的基础知识，但是苦于没有项目经验，想要进一步巩固自己的知识&lt;/li>
+&lt;li>增加 &lt;strong>Rust 项目经验&lt;/strong>的同学，这个和 Go 类似，课程支持了两种语言，所以想要进一步巩固自己的 Rust 基础知识，这个课程也很合适&lt;/li>
+&lt;li>想要&lt;strong>巩固基本功&lt;/strong>的同学，基本功对一个程序员来说非常重要，但是平常的一些课程，例如操作系统，学完了之后总是没有太多的使用场景，没过多久就忘记了，这个课程当中涉及到操作系统、文件、磁盘等知识，可以帮助你打牢基本功&lt;/li>
+&lt;li>做&lt;strong>毕业设计&lt;/strong>，对于尚未毕业的同学，苦于无法找到一个合适的毕设项目，这个项目应该会让导师们眼前一亮&lt;/li>
+&lt;/ul>
+&lt;h2 id="前置知识">前置知识
+&lt;/h2>&lt;p>学习本课程，不需要什么特别的前置知识，只需要熟悉 Go 或者 Rust 的&lt;strong>基础语法&lt;/strong>即可，课程当中涉及到的一些内容，我将会详细的为大家讲解，前期先跟着视频中敲代码，是完全可以学会的，没有任何障碍。&lt;/p>
+&lt;h2 id="是否可以试看">是否可以试看
+&lt;/h2>&lt;p>可以，课程的前两节可以试看：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/CWlYdkQFZosYlbxw2ttce5dinrh" target="_blank" rel="noopener"
+>01 从零实现 KV 存储—初识 KV 数据库&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//w02agegxg3.feishu.cn/docx/HGeJdldvWotP4uxINEMcbtbwnef" target="_blank" rel="noopener"
+>02 从零实现 KV 存储—bitcask 论文详解&lt;/a>&lt;/p>
+&lt;h2 id="课程目前的进度">课程目前的进度
+&lt;/h2>&lt;p>课程目前更新到了第七节，KV 引擎的数据读写接口都定义好了，后续每周将会更新 1-2 节内容。&lt;/p>
+&lt;h2 id="如何购买">如何购买
+&lt;/h2>&lt;p>&lt;strong>售价：450 元&lt;/strong>&lt;/p>
+&lt;p>课程提供了文档+视频，并且使用 Rust 和 Go 两种语言实现，在市面基本上没有同类型的课程。学习一个硬核的项目，为自己的职业发展提供更多的可能，我自己就是从业务 Java 后端转到数据库内核的，我的启蒙项目就是自己从零实现了一个 KV 引擎，所以对于这一点我是深有体会。&lt;/p>
+&lt;p>想要购买的同学，请加我 vx（vx号：kiss_duan），或扫描下面的二维码，有其他任何疑问都可以咨询。&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;img src="https://i.loli.net/2021/05/06/tGTH7SXg8w95slA.jpg" width="200px" align="left"/>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;/tbody>
+&lt;/table>
+&lt;p>购买成功后，将会为你开启对应的权限。&lt;/p>
+&lt;p>&lt;strong>购买后是否有有效期？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>没有，购买后永久持有，无限次观看。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>咨询服务&lt;/strong>&lt;/p>
+&lt;p>购买后，我会拉你进课程用户专属的飞书群，我会亲自为你解答学习过程中的疑难杂症，保证你肯定能够完全学会课程中的内容！&lt;/p>
+&lt;hr>
+&lt;p>PS. 课程主页详情请点击这里：&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p></description></item></channel></rss>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>分布式 KV on roseduan</title><link>https://roseduan.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F-kv/</link><description>Recent content in 分布式 KV on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 04 Mar 2024 22:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F-kv/index.xml" rel="self" type="application/rss+xml"/><item><title>分布式 KV 面试汇总</title><link>https://roseduan.github.io/p/%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E9%9D%A2%E8%AF%95%E6%B1%87%E6%80%BB/</link><pubDate>Mon, 04 Mar 2024 22:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E9%9D%A2%E8%AF%95%E6%B1%87%E6%80%BB/</guid><description>&lt;blockquote>
+&lt;p>本文选自《从零实现分布式 KV》课程的加餐文章。 从零开始，手写基于 raft 的分布式 KV 系统，课程详情可以看这里：&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>
+&lt;h2 id="在简历上如何写这个项目">在简历上如何写这个项目？
+&lt;/h2>&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>项目概述&lt;/strong>&lt;/p>
+&lt;p>基于 MIT 6824 课程 lab 框架，实现一个基于 raft 共识算法、高性能、可容错的分布式 KV 存储系统，保证系统的一致性和可靠性。&lt;/p>
+&lt;p>&lt;strong>设计细节&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>设计基于 Raft 一致性算法的分布式系统架构。&lt;/li>
+&lt;li>支持分布式数据存储和检索的 KV 存储引擎，采用 Raft 协议确保数据的强一致性。&lt;/li>
+&lt;li>实现数据分片和自动故障转移机制，以实现系统的高可用性和容错性。&lt;/li>
+&lt;li>使用 Go 语言编写，工程级代码可靠性和简洁性。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>结果&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>参照 Raft 论文使用 Golang 实现了领导选举、日志同步、宕机重启和日志压缩等主要功能。熟悉 Raft 算法的基本原理和实现细节，熟悉 Golang 并发编程和分布式调试。&lt;/li>
+&lt;li>实现了一个高性能的分布式键值存储系统，保证数据的一致性和可靠性。&lt;/li>
+&lt;li>通过所有代码测试，在负载测试中表现出良好的性能和稳定性，能够有效地应对并发访问和故障情况。&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>
+&lt;h2 id="可能的面试问题回答">可能的面试问题&amp;amp;回答
+&lt;/h2>&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>以下我们每个节点统称为 Peer，面试官可能会叫节点、副本(Replica)、Node 等等术语，记得和面试官对齐就好。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="raft-主要在什么场景中使用">Raft 主要在什么场景中使用？
+&lt;/h3>&lt;p>通常有两种用途：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>元信息服务&lt;/strong>，也称为配置服务（configuration services）、分布式协调服务（coordinator services）等等。如 etcd。用以追踪集群中元信息（比如副本位置等等）、多副本选主、通知（Watch）等等。&lt;/li>
+&lt;li>&lt;strong>数据&lt;strong>&lt;strong>复制&lt;/strong>&lt;/strong>（Data replication）&lt;/strong>。如 TiKV、CockroachDB 和本课程中的 ShardKV，使用 Raft 作为数据复制和冗余的一种手段。与之相对，GFS 使用简单的主从复制的方法来冗余数据，可用性和一致性都比 Raft 要差。&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>注：在分布式系统中，数据指的是外界用户存在系统中的数据；元数据指的是用户维护集群运转的内部信息，比如有哪些机器、哪些副本放在哪里等等。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="raft-为了简洁性做了哪些牺牲即有哪些性能问题">Raft 为了简洁性做了哪些牺牲（即有哪些性能问题）？
+&lt;/h3>&lt;ol>
+&lt;li>&lt;strong>每个操作都要落盘&lt;/strong>。如果想提高性能可能需要将多个操作 batch 起来。&lt;/li>
+&lt;li>&lt;strong>主从同步数据较慢&lt;/strong>。在每个 Leader 和 Follower 之间只允许有一个已经发出 AppendEntries；只有收到确认了，Leader 才能发下一个。类似 TCP 中的“停等协议”。如果写入速度较大，可能将所有的 AppendEntries Pipeline 起来性能会好一些（即 Leader 不等收到上一个 AppendEntries 的 RPC Reply，就开始发下一个）&lt;/li>
+&lt;li>&lt;strong>只支持全量快照&lt;/strong>。如果状态机比较小这种方式还可以接受，如果数据量较大，就得支持增量快照。&lt;/li>
+&lt;li>&lt;strong>全量快照同步代价大&lt;/strong>。如果快照数据量很大，每次全量发送代价会过高。尤其是如果 Follower 本地有一些较老的快照时，我们只需要发增量部分即可。&lt;/li>
+&lt;li>&lt;strong>难以利用多核&lt;/strong>。因为 log 只有一个写入点，所有操作都得抢这一个写入点。&lt;/li>
+&lt;/ol>
+&lt;h3 id="raft-在选举时是不能正常对外提供服务的这在工程中影响大吗">Raft 在选举时是不能正常对外提供服务的，这在工程中影响大吗？
+&lt;/h3>&lt;p>不太大，因为只有网络故障、机器宕机等事件才会引起宕机。这些故障的发生率可能在数天到数月一次，但 Raft 选主在秒级就能完成。因此，在实践中，这通常不是一个问题。&lt;/p>
+&lt;h3 id="有其他不基于-leader-的共识协议吗">有其他不基于 Leader 的共识协议吗？
+&lt;/h3>&lt;p>原始的 Paxos 就是无主的（区别于有主的 MultiPaxos）。因此不会有选举时的服务停顿，但也有代价——每次数据同步时都要达成共识，则数据同步代价会更大（所需要的 RPC 更多，因为每次同步消息都是两阶段的）。&lt;/p>
+&lt;h3 id="论文提到-raft-只在非拜占庭的条件下才能正常工作什么是拜占庭条件为什么-raft-会出问题">论文提到 Raft 只在非拜占庭的条件下才能正常工作，什么是拜占庭条件？为什么 Raft 会出问题？
+&lt;/h3>&lt;p>“非拜占庭条件”（Non-Byzantine conditions）是指所有的服务器都是“宕机-停止”（ fail stop）模型（更多模型参见&lt;a class="link" href="https://ddia.qtmuniao.com/#/ch08?id=%e7%b3%bb%e7%bb%9f%e6%a8%a1%e5%9e%8b%e5%92%8c%e7%8e%b0%e5%ae%9e" target="_blank" rel="noopener"
+>这里&lt;/a>）：即每个服务器要么严格遵循 Raft 协议，要么停止服务。例如，服务器断电就是一个非拜占庭条件，此时服务器会停止执行指令，则 Raft 也会停止运行，且不会发送错误结果给客户端。&lt;/p>
+&lt;p>拜占庭故障（Byzantine failure）是指有些服务器不好好干活了——可能是代码因为有 bug，也可能是混入了恶意节点。如果出现这种类型节点，Raft 可能会发送错误的结果给客户端。&lt;/p>
+&lt;h3 id="通常来说raft-的所有节点都期望部署在一个数据中心吗">通常来说，Raft 的所有节点都期望部署在一个数据中心吗？
+&lt;/h3>&lt;p>是的。跨数据中心的部署可能会有一些问题。有些系统，如原始的 Paxos（由于是 Leaderless）可以跨数据中心部署。因为客户端可以和本地的 Peer 进行通信。&lt;/p>
+&lt;h3 id="如果发生网络分区raft-会出现两个-leader-即脑裂的情况吗">如果发生网络分区，Raft 会出现两个 Leader ，即脑裂的情况吗？
+&lt;/h3>&lt;p>不会，被分到少数派分区的 Leader 会发现日志不能同步到大多数节点，从而不能提交任何日志。一种优化是，如果一个 Leader 持续不能联系到多数节点，就自动变为 Follower。&lt;/p>
+&lt;h3 id="当集群中有些-peer-宕机后此时的多数派是指所有节点的多数还是指存活节点的多数">当集群中有些 Peer 宕机后，此时的“多数派”是指所有节点的多数，还是指存活节点的多数？
+&lt;/h3>&lt;p>所有节点的多数。比如集群总共有五个 Peer，则多数派永远是指不低于 3 个 Peer。&lt;/p>
+&lt;p>如果是后者，考虑这样一个例子。集群中有五个 Peer，有两个 Peer 被分到一个分区，他们就会认为其他三个 Peer 都宕机了，则这两个 Peer 仍然会选出 Leader ，这明显是不符合预期的。&lt;/p>
+&lt;h3 id="选举超时间隔选择的过短会有什么后果会导致-raft-算法出错吗">选举超时间隔选择的过短会有什么后果？会导致 Raft 算法出错吗？
+&lt;/h3>&lt;p>选举超时间隔选的不好，只会影响服务的可用性（liveness），而不会影响正确性（safety）。&lt;/p>
+&lt;p>如果选举间隔过小，则所有的 Follower 可能会频繁的发起选举。这样，Raft 的时间都耗在了选举上，而不能正常的对外提供服务。&lt;/p>
+&lt;p>如果选举间隔过大，则当老 Leader 故障之后、新 Leader 当选之前，会有一个不必要的过长等待。&lt;/p>
+&lt;h3 id="为什么使用随机超时间隔">为什么使用随机超时间隔？
+&lt;/h3>&lt;p>为了避免多个 Candidate 一直出现平票的情况，导致一直选不出主。&lt;/p>
+&lt;h3 id="candidate-可以在收到多数票后不等其余-follower-的回复就直接变成-leader-吗">Candidate 可以在收到多数票后，不等其余 Follower 的回复就直接变成 Leader 吗？
+&lt;/h3>&lt;p>可以的。首先，多数票就足够成为主了；其次，想等所有票也是不对的，因为可能有些 Peer 已经宕机或者发生网络隔离了。&lt;/p>
+&lt;h3 id="raft-对网络有什么假设">Raft 对网络有什么假设？
+&lt;/h3>&lt;p>网络是不可靠的：可能会丢失 RPC 请求和回复，也可能会经历任意延迟后请求才到达。&lt;/p>
+&lt;p>但网络是有界的（bounded）：在一段时间内请求总会到达，如果还不到达，我们就认为该 RPC 丢失了。&lt;/p>
+&lt;h3 id="votedfor-在-requestvote-rpc-中起什么作用">votedFor 在 requestVote RPC 中起什么作用？
+&lt;/h3>&lt;p>保证每个 Peer 在一个 Term 中只能投一次票。即，如果在某个 term 中，出现了两个 Candidate，那么 Follower 只能投其中一人。&lt;/p>
+&lt;p>且 votedFor 要进行持久化，即不能说某个 Peer 之前投过一次票，宕机重启后就又可以投票了。&lt;/p>
+&lt;h3 id="即使服务器不宕机leader-也可能会下台吗">即使服务器不宕机，Leader 也可能会下台吗？
+&lt;/h3>&lt;p>是的，比如说 Leader 所在服务器可能 CPU 负载太高、响应速度过慢，或者网络出现故障，或者丢包太严重，都有可能造成其他 Peer 不能及时收到其 AppendEntries，从而造成超时，发起选举。&lt;/p>
+&lt;h3 id="如果-raft-进群中有过半数的-peer-宕机会发生什么">如果 Raft 进群中有过半数的 Peer 宕机会发生什么？
+&lt;/h3>&lt;p>Raft 集群不能正常对外提供服务。所有剩余的节点会不断尝试发起选举，但都由于不能获得多数票而当选。&lt;/p>
+&lt;p>但只要有足够多的服务器恢复正常，就能再次选出 Leader，继续对外提供服务。&lt;/p>
+&lt;h3 id="请简单说说-raft-中的选举流程">请简单说说 Raft 中的选举流程？
+&lt;/h3>&lt;p>所有的 Peer 都会初始化为 Follower，且每个 Peer 都会有一个内置的选举超时的 Timer。&lt;/p>
+&lt;p>当一段时间没有收到领导者的心跳或者没有投给其他 Candidate 票时，选举时钟就会超时。&lt;/p>
+&lt;p>该 Peer 就会由 Follower 变为 Candidate，Term++，然后向其他 Peer 要票（带上自己的 Term 和最后一条日志信息）&lt;/p>
+&lt;p>其他 Peer 收到请求后，如果发现 Term 不大于该 Candidate、日志也没有该 Candidate 新、本 Term 中也没有投过票，就投给该 Term 票。&lt;/p>
+&lt;p>如果该 Peer 能收集到多数票，则为成为 Leader。&lt;/p>
+&lt;h3 id="如果所有-peer-初始化时不为-follower而都是-candidate其他部分保持不变算法还正确吗">如果所有 Peer 初始化时不为 Follower、而都是 Candidate，其他部分保持不变，算法还正确吗？
+&lt;/h3>&lt;p>正确，但是效率会变低一些。&lt;/p>
+&lt;p>因为这相当于在原来的基础上，所有 Peer 的第一轮选举超时是一样：同时变为 Candidate。则谁都要不到多数票，会浪费一些时间。之后就又会变成原来的选举流程。&lt;/p>
+&lt;h3 id="如何避免出现网络分区的-peer-恢复通信时将整体-term-推高">如何避免出现网络分区的 Peer 恢复通信时将整体 Term 推高？
+&lt;/h3>&lt;p>&lt;strong>问题解释&lt;/strong>：如果某个 Peer （我们不妨称其为 A）和其他 Peers 隔离后，也就是出现了网络分区，会不断推高 Term，发起选举。由于持续要不到其他 Peer 的票，因此会持续推高 Term。一旦其之后某个时刻恢复和其他 Peer 的通信，而由于 Term 是 Raft 中的&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/ZYMGdQMA2ouPnKxfh56cUvpwnAg#BkIfd6wS8o2x1LxstRYcr82PnSe" target="_blank" rel="noopener"
+>第一优先级&lt;/a>，因此会强迫当前的 Leader 下台。但问题是，由于在隔离期间日志被落下很多，Peer A 通常也无法成为 Leader。最终结果大概率是原来的 Leader 的 Term 被拉上来之后，重新当选为 Leader。有的人也将这个过程形象的称之为“惊群效应”。&lt;/p>
+&lt;p>&lt;strong>解决办法&lt;/strong>：&lt;strong>PrevVote&lt;/strong>。每次 Candidate 发起选举时，不再推高 Term，但是会拿着 Term+1 去跟其他 Peer 要票，如果能要到合法的票数，再去推高 Term（Term+1）。而如果能要到多数票，其实就保证该 Candidate 没有发生网络隔离、日志是最新的。如果要不到多数票，就不能推高 Term，这样会保证发生了网络隔离的 Peer 不会一直推高自己的 Term。&lt;/p>
+&lt;h3 id="raft-和-paxos-有什么区别">Raft 和 Paxos 有什么区别？
+&lt;/h3>&lt;p>首先，Raft 和 Paxos 都是共识协议，而所有的共识协议在原理上都可以等价为 Paxos，所以才有共识协议本质上都是 Paxos 一说。&lt;/p>
+&lt;p>如 Raft 论文中提到的，Raft 是为了解决 Paxos 理解和实现都相对复杂的问题。将共识协议拆成两个相对独立的过程：领导者选举和日志复制，以降低理解和实现的复杂度。当然，如果要想工程可用，Raft 的优化也是无止境的大坑，也并非像论文声称的那么简单。因此，有人说，Raft 看起来简单只是因为论文叙述的更清楚，而非算法本身更为简洁。&lt;/p>
+&lt;p>Raft 其实是和 Multi-Paxos 等价，因为 Paxos 只解决单个值的共识问题。&lt;/p>
+&lt;p>Raft 和 Paxos 的角色分法也不太相同，Raft 的每个 Peer 都可以有 Leader，Candidate 和 Follower 三种状态；而 Paxos 是将系统分为 Proposer，Acceptor 和 Learner 三种角色，实现时可以按需组合角色。&lt;/p>
+&lt;p>在 Paxos 中，一旦某个日志在多数节点存在后就可以安全的提交；但在 Raft 中，不总是这样，比如一条日志在多数节点中存在后，但不是当前 Leader 任期的日志，也不能进行直接提交；而只能通过提交当前任期的日志来间接提交。&lt;/p>
+&lt;p>在Paxos 在选举时，Leader 可能需要借机补足日志，但 Raft 中选举过程完全不涉及日志复制（这也是 Raft 进行拆分的初衷）。这是因为 Raft 只允许具有最新日志的 Candidate 成为 Leader，而 Paxos 不限制这一点。&lt;/p>
+&lt;p>在 Paxos 中，允许乱序 commit 日志，而 Raft 只允许顺序提交。&lt;/p>
+&lt;p>在 Paxos 中，每个 Peer 的 term 是不一致的，全局自增的；在 Raft 中 term 是每个 Peer 独立自增的，但需要对齐。&lt;/p>
+&lt;p>更多区别，可以参考文末给出的资料。&lt;/p>
+&lt;h3 id="raft-在工程中有哪些常见的优化">Raft 在工程中有哪些常见的优化？
+&lt;/h3>&lt;p>由于领导者选举是个低频操作，主要 IO 路径优化还是集中在日志同步流程上。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>batch&lt;/strong>：Leader 每次攒一批再刷盘和对 Follower 进行同步。降低刷盘和 RPC 开销。&lt;/li>
+&lt;li>&lt;strong>pipeline&lt;/strong>：每次发送日志时类似 TCP 的“停-等”协议，收到 Follower 确认后才更新 nextIndex，发送后面日志。其实可以改成流水线式的，不等前面日志确认就更新 nextIndex 继续发后面的。当然，如果后面发现之前日志同步出错，就要回退 nextIndex 重发之前日志——而原始版本 nextIndex 在&lt;strong>同步阶段&lt;/strong>是单调递增的。&lt;/li>
+&lt;li>&lt;strong>并行 append&lt;/strong>：Leader 在 append 日志到本地前，就先发送日志给所有 Follower。&lt;/li>
+&lt;/ul>
+&lt;h3 id="请简单描述基于-raft-的分布式-kv-系统的架构">请简单描述基于 raft 的分布式 KV 系统的架构？
+&lt;/h3>&lt;p>一个基于 raft 的分布式 KV 系统，实际上是由一组使用 raft 算法进行状态复制的节点组成。客户端会选择将请求发送到 Leader 节点，然后由 Leader 节点进行状态复制，即发送日志，当收到多数的节点成功提交日志的响应之后，Leader 会更新自己的 commitIndex，表示这条日志提交成功，并且 apply 到状态机中，然后返回结果给客户端。&lt;/p>
+&lt;p>以上是单个 raft 集群的分布式 KV 系统架构。&lt;/p>
+&lt;p>如果系统中数据量较大，一个 raft 集群可能无法承受大量的数据，性能也会受到影响。因此还基于此设计了可分片的分布式 shardkv 系统。shardkv 由多个 raft 集群组成，每个集群负责一部分 shard 数据。&lt;/p>
+&lt;p>Shard 到 raft 集群的映射关系，保存在独立的配置服务中。&lt;/p>
+&lt;h3 id="分布式系统中读数据的流程是什么样的如何优化">分布式系统中读数据的流程是什么样的，如何优化？
+&lt;/h3>&lt;p>为了保证线性一致性，目前的实现是利用了 raft 算法，将读请求传入到 raft 并进行状态复制，这样能够保证读到的数据一定是最新的。&lt;/p>
+&lt;p>但是由于读请求也进行了一次日志复制，执行效率会受到影响，业界常用的两种优化方式是 ReadIndex 和 LeaseRead。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://cn.pingcap.com/blog/linearizability-and-raft/" target="_blank" rel="noopener"
+>https://cn.pingcap.com/blog/linearizability-and-raft/&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.sofastack.tech/blog/sofa-jraft-linear-consistent-read-implementation/" target="_blank" rel="noopener"
+>https://www.sofastack.tech/blog/sofa-jraft-linear-consistent-read-implementation/&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="客户端发送请求的时候如何知道集群中的-leader-节点是哪个">客户端发送请求的时候，如何知道集群中的 Leader 节点是哪个？
+&lt;/h3>&lt;p>在没有任何前置条件的情况下，客户端会轮询集群中的每个节点并发送请求，如果非 Leader 节点收到请求，会返回一个错误给客户端。客户端然后挑选下一个 server 进行重试，直到得到了正确的响应。&lt;/p>
+&lt;p>然后会将 Leader 节点的 id 保存起来，下次发送请求的时候，优先选择这个节点发送。&lt;/p>
+&lt;h3 id="如果-raft-集群的-leader-节点发生故障客户端如何处理">如果 raft 集群的 Leader 节点发生故障，客户端如何处理？
+&lt;/h3>&lt;p>对于一个可容错的分布式 KV 系统，需要能够应对这种故障发生，并且在多数节点正常的情况下，需要依然提供服务。&lt;/p>
+&lt;p>得益于 raft 共识算法的特性，在某个节点故障后，其他节点会由于收不到心跳消息而超时，并重新发起选举。&lt;/p>
+&lt;p>所以客户端会在得不到正常响应的时候轮询重试，直到 raft 集群中的 Leader 节点重新选举完成并提供正常服务。&lt;/p>
+&lt;h3 id="如何处理客户端的重复请求">如何处理客户端的重复请求？
+&lt;/h3>&lt;p>如果客户端的请求已经提交，但是 server 返回的过程中结果丢失，那么客户端会发起重试，导致这个请求在状态机中被执行了两次，会违背线性一致性。&lt;/p>
+&lt;p>因此我们需要保证客户端的请求只能被状态机应用一次，我们可以维护一个去重哈希表，客户端 ID + 命令 ID 组成一个唯一的标识符，如果判断到命令是已经被执行过的，则直接返回对应的结果。&lt;/p>
+&lt;h3 id="shardkv-的问题为什么需要对分布式-kv-系统进行分片">Shardkv 的问题：为什么需要对分布式 KV 系统进行分片？
+&lt;/h3>&lt;p>一是单个 raft 集群实际存储数据的引擎是单机的，能够存储的数据量有限。二是在不分区的情况下，所有数据的读写请求都会在一个分片中，这在并发量较大的情况下可能存在一定的瓶颈。&lt;/p>
+&lt;p>如果对数据做了分区，那么不同分区之间的数据读写请求是可以并行的，这能够较大的提升 KV 系统的并发能力。&lt;/p>
+&lt;h3 id="shardkv-的配置怎么保存">Shardkv 的配置怎么保存？
+&lt;/h3>&lt;p>Shardkv 的配置是单独保存在一个服务中，客户端会向这个服务发起请求，查询 key 所属的 shard 应该在哪个 raft 集群中，并向这个集群发起请求。&lt;/p>
+&lt;p>配置服务也需要高可用特性，因为配置服务如果发生故障不可用的话，那么整个分布式 kv 服务都会无法提供服务，因此也使用 raft 算法保证高可用，构建了一个单 raft 集群来存储配置信息。&lt;/p>
+&lt;h3 id="shard-数据如何迁移">Shard 数据如何迁移？
+&lt;/h3>&lt;p>启动一个后台定时任务，定期从配置服务中获取最新的配置，如果检测到配置发生变更，则变更对应 shard 的状态，标记为需要进行迁移。&lt;/p>
+&lt;p>同时启动另一个后台定时任务，定期扫描 shard 的状态，如果检测到需要进行迁移的 shard，则发送消息，通过 raft 模块进行同步。然后在 Leader 节点中处理 shard 迁移的请求，将 shard 数据从原所属的 raft 集群中迁移到新的集群中。&lt;/p>
+&lt;h3 id="shard-迁移的时候客户端的请求会受到影响吗">Shard 迁移的时候，客户端的请求会受到影响吗？
+&lt;/h3>&lt;p>如果客户端请求的 key 所属的 shard 并没有在迁移中，那么可以正常提供服务。&lt;/p>
+&lt;p>否则，说明客户端请求的 key 在迁移中，则返回错误，让客户端进行重试。&lt;/p>
+&lt;h3 id="如果有并发的客户端请求和-shard-迁移请求应该怎么处理">如果有并发的客户端请求和 shard 迁移请求，应该怎么处理？
+&lt;/h3>&lt;p>客户端请求和 shard 迁移请求的确存在并发情况，如果处理顺序不一致，会违背线性一致性。&lt;/p>
+&lt;p>我们将 shard 迁移的请求也传入到 raft 模块进行同步，这样和客户端的请求是一致的，利用 raft 的一致性来保证两种不同请求的先后顺序，前面的执行结果一定对后续的请求可见。&lt;/p>
+&lt;h3 id="如果某个-shard-已经迁移了那么它还会占存储空间吗">如果某个 Shard 已经迁移了，那么它还会占存储空间吗？
+&lt;/h3>&lt;p>不会，我们实现了 shard 清理的完整流程，会启动一个后台定时任务，定期扫描 shard 的状态，如果检测到 shard 是需要进行清理的，则也会发送 shard 清理消息进行处理。&lt;/p>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;ol>
+&lt;li>Paxos vs Raft：https://ics.uci.edu/~cs237/reading/Paxos_vs_Raft.pdf&lt;/li>
+&lt;li>TiKV Raft 的优化：https://zhuanlan.zhihu.com/p/25735592&lt;/li>
+&lt;li>Raft FAQ：https://pdos.csail.mit.edu/6.824/papers/raft-faq.txt&lt;/li>
+&lt;/ol></description></item><item><title>从零实现分布式 KV——课程完结！</title><link>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E5%AE%8C%E7%BB%93/</link><pubDate>Sat, 27 Jan 2024 10:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E5%AE%8C%E7%BB%93/</guid><description>&lt;p>自从去年 11 月份上线《从零实现分布式 KV》课程以来，得到了一些朋友的支持。
+目前三个多月过去了，在我们的共同努力下，《从零实现分布式 KV》课程已经全部完结！&lt;/p>
+&lt;blockquote>
+&lt;p>课程详情，以及购买方式，可查看这个链接：https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/p>
+&lt;/blockquote>
+&lt;p>课程包含实现一个分布式 KV 系统的全部流程，从 raft 共识算法，到分布式 KV 的实现，再到 shardkv 的实现，都有详细的讲解和代码实现。&lt;/p>
+&lt;p>raft 算法部分，从论文讲解，再到具体的代码实现，包含 raft 的核心模块，例如 Leader 选举、日志复制、日志压缩。分布式 KV 部分，基于 raft 实现了完整的分布式系统，并且实现了分片的分布式 KV，分片迁移、分片清理等内容。&lt;/p>
+&lt;p>我们按照循序渐进的方式，将内容拆分成了独立的部分，总共 35 小节内容，让大家能够一步一个台阶，从零开始掌握分布式理论和系统实践！&lt;/p>
+&lt;p>&lt;strong>可以毫不谦虚的说，这应该是目前全网最详细的 raft 和分布式 KV 教程了！&lt;/strong>&lt;/p>
+&lt;p>以下是课程的完整目录：&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-7a5fbd4b4a572e3590cc04507ca4936d_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>看到我们做的教程真正的能够帮助到别人，其实是一件很开心的事情。&lt;/p>
+&lt;p>也希望能够帮助到更多的人，让大家能够更深入的理解分布式理论和实践，给自己的简历上增加一个亮点，并且为自己的职业发展提供更多的可能。&lt;/p>
+&lt;p>强烈推荐感兴趣的同学可以入手学习起来，假期想充充电的话，这就是和别人拉开差距的最好时机，或者可以假期好好玩玩，之后再冲刺一波！&lt;/p></description></item><item><title>从零实现分布式 KV——课程更新</title><link>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E6%9B%B4%E6%96%B0/</link><pubDate>Sun, 07 Jan 2024 22:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv%E8%AF%BE%E7%A8%8B%E6%9B%B4%E6%96%B0/</guid><description>&lt;p>自从去年 11 月份上线《从零实现分布式 KV》课程以来，得到了一些朋友的支持。&lt;/p>
+&lt;p>&lt;strong>课程详情：https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/strong>&lt;/p>
+&lt;p>目前课程按照原定计划稳步更新中，目前已经更新到了第 20 节，raft 部分的实现已经全部完成。&lt;/p>
+&lt;p>raft 这一部分，是分布式理论的重要基础，我们采用了循序渐进的方式，从论文讲解，然后再到代码实现，构造了完整的 raft 共识算法。&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-743b7c7c301e1f4eeff38eb8a4267f6b_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>主要分为了四个部分：&lt;/p>
+&lt;ul>
+&lt;li>Leader 选举&lt;/li>
+&lt;li>日志复制&lt;/li>
+&lt;li>日志持久化&lt;/li>
+&lt;li>日志压缩&lt;/li>
+&lt;/ul>
+&lt;p>每一部分都有详细的理论讲解，并且拆分成了多个小节，每个小节都有对应的代码实现，可以说是保姆级的手撕 raft 教程了。&lt;/p>
+&lt;p>下面是课程的详细目录：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/80/v2-7364bbc9d561708ccb3be7a3966a4573_1440w.webp"
+loading="lazy"
+>&lt;/p>
+&lt;p>后续会持续更新分布式 KV 和 shardkv 部分，预计 2024.1 月底前就能更新完成。&lt;/p>
+&lt;p>想要上车的同学，请直接联系我，有其他任何疑问都可以进行咨询。&lt;/p></description></item><item><title>从零实现 KV 和分布式 KV 有什么区别？</title><link>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0-kv-%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</link><pubDate>Sun, 19 Nov 2023 10:15:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0-kv-%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F-kv-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</guid><description>&lt;p>在众望所归之下，前两天终于出了一个全新的课程《从零实现分布式 KV》，大家的学习热情都非常高涨，其中有很多同学都问到了一个共同的问题，&lt;strong>那就是这个课程和我之前的《从零实现 KV 存储》有什么区别呢？&lt;/strong>&lt;/p>
+&lt;p>这一次就专门给大家解释一下。&lt;/p>
+&lt;p>其实说起来也比较简单，《从零实现 KV 存储》实现的是一个单机 KV 存储引擎，何为单机？一般指的是在一个 server 上的单个进程里运行的数据库，其主要解决的问题是数据如何存储到持久化存储介质中，比如最常见的磁盘。&lt;/p>
+&lt;p>所以我们会设计存储到磁盘上的数据会怎么进行组织，磁盘上的文件格式是什么样的，然后会考虑怎么才能够更加高效的从磁盘读取数据，减少磁盘 IO 次数。所以单机存储引擎更加专注于数据存储到磁盘的具体实现方法，并且要尽量保证数据不丢失。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-2737796188d4ed88f0136082c9d845e4_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>常见的单机 KV 存储模型有 B+ 树、LSM 树、Bitcask，使用这些模型实现的单机 KV 引擎有 LevelDB、RocksDB、BoltDB、Badger、Pebble、RoseDB 等等。&lt;/p>
+&lt;p>&lt;strong>那么《从零实现分布式 KV》 课程又实现的什么呢？&lt;/strong>&lt;/p>
+&lt;p>分布式 KV，其重点在于分布式。前面说到了，单机 KV 是在一个 server 上运行的，如果这个 server 出现了故障，或者磁盘损坏了导致了数据丢失等情况，那么这个数据库一是不能够响应用户的请求，二是存储在其中的数据有可能损坏，并且如果我们没有备份的话，数据就永远丢失了，会造成比较严重的后果。&lt;/p>
+&lt;p>所以分布式就能够比较好的解决这个问题，利用最朴素的思想，不要把鸡蛋放在同一个篮子里。既然数据存储在一个 server 上有非常大的问题，那么我们将数据拷贝出来，存储到不同的 server 上不就好了？&lt;/p>
+&lt;p>这样每个 server 上的一份数据一般叫做一个副本（Replica），如果一个 server 出现了故障，还有其他的数据副本可以继续使用。&lt;/p>
+&lt;p>但是数据有了多个副本之后，随之而来又带来了新的问题，那就是写数据的时候，应该写到哪个副本里面？还是全部的副本都写一遍？读数据的时候，应该从哪个副本去读？如果副本之间的数据不一致了怎么办？&lt;/p>
+&lt;p>等等，这些问题抽象出了一个新的概念，那就是共识，即让多个副本之间协调一致，统一对外提供服务，并且保证数据的完整一致性，我们需要一些手段来让多个副本之间达成共识，这一般称之为共识算法，常见的有 Paxos 和 Raft，而我们课程中实现的是 Raft 算法。&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/80/v2-21b9620be70803cd7e958b3c727697be_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>有了共识算法之后，我们可以在这个基础之上构建分布式、高可用的系统，而课程中实现的是最常见的分布式 KV 系统，每个 server 之上，都会使用 Raft 共识算法来保证多个副本之间的一致性，然后每个 server 本地都会维护一个存储数据的单机 KV，这个单机 KV 一般叫做状态机。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/80/v2-9ac9a52409ad37e08ae82d48879f7db8_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>常见的分布式 KV 系统有 TiKV、ETCD、FoundationDB 等等。&lt;/p>
+&lt;p>所以现在大家应该就清楚了，分布式 KV 重点在于分布式算法，以及分布式系统的设计与实现，并且只是用到了单机 KV 来存储本地数据，而存储数据、磁盘数据组织的具体逻辑，是交给了单机 KV 去负责。&lt;/p>
+&lt;p>&lt;strong>这两个课程的学习有先后顺序吗？&lt;/strong>&lt;/p>
+&lt;p>这也是问的比较多的问题，实际上并没有先后顺序，所以先学哪个都是可以的，也都能够学懂，彼此都是独立的内容。&lt;/p>
+&lt;p>最后，感谢大家的支持，希望这个课程能够对大家有所帮助，附上课程链接，想要购买者可查看：&lt;/p>
+&lt;p>&lt;strong>《从零实现 KV 存储》&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g" target="_blank" rel="noopener"
+>https://w02agegxg3.feishu.cn/docx/Ktp3dBGl9oHdbOxbjUWcGdSnn3g&lt;/a>&lt;/p>
+&lt;p>&lt;strong>《从零实现分布式 KV》&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p></description></item><item><title>重磅出炉！从零实现分布式 KV！</title><link>https://roseduan.github.io/p/%E9%87%8D%E7%A3%85%E5%87%BA%E7%82%89%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv/</link><pubDate>Tue, 14 Nov 2023 10:15:33 +0000</pubDate><guid>https://roseduan.github.io/p/%E9%87%8D%E7%A3%85%E5%87%BA%E7%82%89%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-kv/</guid><description>&lt;p>今年初上线了我的第一个课程《从零实现 KV 存储》，广受好评，在这段时间里，有非常多的同学咨询我是否有意向去开设一个分布式 KV 的课程，毕竟之前的课程只专注于单机 KV 的实现，对于想要更进一步了解分布式存储的同学来说，分布式系统的理论和实践也是必不可少的。&lt;/p>
+&lt;p>于是我联合知名博主「青藤木鸟」一起，经过几个月的精心打磨，为大家带来了这个全新的课程，希望能够帮助到大家深入理解分布式理论，深入实践分布式系统的设计与实现，不断提升自己，增强自身的技术竞争力。&lt;/p>
+&lt;p>以下是此课程的详情，大家也可以直接进这个链接查看课程的内容以及购买方式：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5bav6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p>
+&lt;hr>
+&lt;p>本课程基于 MIT 6.5840（前 6.824，主要复用了课程实验的代码框架和测试），参考各种资料，结合我们的一些工业界经验和多次实现相关实验的经验，按易于理解的方式，拆成循序渐进的模块，每节只关注一小部分，以图文、代码和视频的形式呈现。&lt;/p>
+&lt;p>本课程会手把手教你如何弄懂一个共识协议，以及基于共识协议的分布式 KV 的方方面面、各种细节；也会教你如何组织和写出漂亮的工程代码。分布式系统是当今主流互联网系统的基础架构，而共识协议又是其中的典型代表和基石中的基石。&lt;/p>
+&lt;p>学习本课程，能让你对分布式系统所面临的问题、所使用的技能有一个全面和深入的认识。&lt;/p>
+&lt;h2 id="关于作者">&lt;strong>关于作者&lt;/strong>
+&lt;/h2>&lt;p>&lt;strong>青藤木鸟&lt;/strong>，计算机本硕，有多年大厂、外企和创业公司的 infra 从业经验。专注大规模数据系统，包括分布式系统、数据库、存储和数据处理。以“木鸟杂记”的网名在知乎、b 站和公众号等平台，进行分布式系统和数据库相关知识持续输出。写过几十万字来翻译和分享分布式、数据库方面的经典书籍 DDIA。《分布式数据库论坛》创建者。现有维护专栏：《DDIA学习会》和 《系统日知录》。&lt;/p>
+&lt;p>**roseduan，**数据库内核开发工程师（Greenplum 和 Postgres 内核），专注于数据库、分布式、存储引擎等领域，有着丰富的实践经验，知名开源存储引擎 rosedb 和 lotusdb 的作者，累计约 6k star。&lt;/p>
+&lt;h2 id="学习方式">&lt;strong>学习方式&lt;/strong>
+&lt;/h2>&lt;p>建议按照章节顺序来看，每章先看文档内容，然后再看对应的视频，跟着实现代码，加深理解。如果你对一些前置知识和某些章节很熟悉，也可以快速跳到你关心的章节来看。&lt;/p>
+&lt;p>也可以结合 MIT 6.824 的 lecture 进行辅助学习：&lt;/p>
+&lt;p>&lt;a class="link" href="https://link.zhihu.com/?target=https%3A//www.youtube.com/@6.824" target="_blank" rel="noopener"
+>https://www.youtube.com/@6.824&lt;/a>。&lt;/p>
+&lt;p>其他的参考资料，我们会列在每节的文末（文中也会在相关文字直接关联一些超链接），大家可以按需自行取用。&lt;/p>
+&lt;h2 id="课程大纲">&lt;strong>课程大纲&lt;/strong>
+&lt;/h2>&lt;p>课程主要分为三部分内容：&lt;/p>
+&lt;ul>
+&lt;li>raft 共识算法的实现&lt;/li>
+&lt;li>基于 raft 的分布式 KV&lt;/li>
+&lt;li>基于 multi raft 的 shardkv&lt;/li>
+&lt;/ul>
+&lt;p>以及一些附录内容，比如分布式调试、并发编程等，这些技术在课程中会经常使用到，基础薄弱者可以多学习一下。&lt;/p>
+&lt;p>之后还会根据根据同学们的需求和反馈添加一些加餐内容。&lt;/p>
+&lt;p>&lt;strong>课程大致目录如下：&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/80/v2-d111a6203598a2975c4c2f2ff2ce9b99_1440w.webp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h2 id="试看内容">&lt;strong>试看内容&lt;/strong>
+&lt;/h2>&lt;p>\01. Raft 论文演绎&lt;/p>
+&lt;p>\04. PartA 状态转换&lt;/p>
+&lt;h2 id="适用人群">&lt;strong>适用人群&lt;/strong>
+&lt;/h2>&lt;p>这个课程对以下同学应该都非常的合适，包括但不限于：&lt;/p>
+&lt;ul>
+&lt;li>想&lt;strong>入门数据库内核&lt;/strong>的同学，分布式 KV 是现代分布式数据库中必不可少的重要组成部分，它为数据库提供数据存储、高可用性、横向扩展等保障，并且具备高性能和可伸缩性，学习课程可以帮助理解分布式数据库的技术核心。&lt;/li>
+&lt;li>想&lt;strong>入门分布式存储&lt;/strong>的同学，从零实现一个分布式系统，加强对分布式相关知识的理解，而不仅仅限于理论知识，掌握如何构建、调试和优化分布式应用。&lt;/li>
+&lt;li>增加 &lt;strong>Go 项目经验&lt;/strong>的同学，如果学习了一些 Go 的基础知识，但是苦于没有项目经验，想要进一步巩固自己的知识，这个项目将会非常硬核，用于面试也会极具亮点。&lt;/li>
+&lt;li>想要&lt;strong>巩固基本功&lt;/strong>的同学，基本功对一个程序员来说非常重要。但是平常的一些课程，例如编程语言、数据结构、算法、多线程编程、分布式理论等，学完了之后总是没有太多的使用场景来实践，没过多久就忘记了。这个课程当中涉及到手写共识算法 raft、代码组织、代码命名、分布式理论、并发编程、并发调试等知识，可以帮助你打牢基本功。&lt;/li>
+&lt;li>做&lt;strong>毕业设计&lt;/strong>，对于即将毕业的同学，苦于无法找到一个合适的毕设项目，基于这个项目做一些衍生处理（比如可视化）应该会让老师眼前一亮。&lt;/li>
+&lt;/ul>
+&lt;h2 id="前置知识">&lt;strong>前置知识&lt;/strong>
+&lt;/h2>&lt;p>本课程只需要对 &lt;strong>Golang&lt;/strong> 有一个最基本的了解：懂基本语法，能看懂代码。不需要其他特别的前置知识，录屏的视频会带着大家一步步敲代码。如果有大家有觉得铺垫不清楚的地方，随时给我们反馈，我们会增加相关前置章节。&lt;/p>
+&lt;h2 id="更新进度">&lt;strong>更新进度&lt;/strong>
+&lt;/h2>&lt;p>目前已经更新了 7 节内容，预计后续每周将会更新 1-2 节，大概 2024.3 月更新完毕。&lt;/p>
+&lt;h2 id="常见-qa">&lt;strong>常见 Q&amp;amp;A&lt;/strong>
+&lt;/h2>&lt;p>&lt;strong>购买后在什么平台学习？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>课程内容都在飞书云文档，购买成功后，为你开启对应的权限，所有内容都可以在线观看&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>课程时长？代码量？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>以下皆为当前预估，以最后课程完成时状态为准。
+课程视频时长：Raft 部分大概 6 小时、分布式 KV 部分大概 10 小时。
+课程代码：自己需要写的部分，Raft 部分和 KV 部分大概各 1k 行；总 repo（包含测试代码、其他工具性代码）大概 10k 行。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>课程代码是什么语言实现的？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>课程基于 MIT 6824（现已更名为 6.5840） 的实验代码，因此是由 Go 语言实现的。后续根据同学需求和我们的精力有可能会支持其他的语言，比如 Rust 和 C++ 等。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>课程和 MIT 6824 有什么区别，或者联系？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>与 MIT 6.824 的联系是，课程复用了实验代码的框架和测试，因此课程内容和公开课 Lab 基本对应。
+与 MIT 6.824 的区别是，本课程更侧重代码实践，只专注 Raft 和分布式 KV 代码的实现。为此我们通过详尽的前置知识铺垫、手敲代码录屏、代码级文档、多种答疑形式来确保你能在代码的级别理解 Raft 这个共识算法和基于 Raft 的分布式 KV 的方方面面。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>如何获取项目中的代码？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>购买成功后将会开启代码 pull 的权限，也可以到课程专属飞书用户群中下载。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>文档和视频对应的吗？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>涉及到写代码的部分，都会有对应的视频。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>没有任何分布式系统和存储的基础，能学会吗？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>当然可以，本课程只需要熟悉 Go 的语言基础就可以了。其他的内容，例如论文讲解、架构设计、代码组织，都会在课程中详细讲述，你也可以在文档中、用户群中进行咨询，完全可以学会。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>购买后是否有有效期？&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>没有，购买后永久持有，无限次观看。&lt;/p>
+&lt;/blockquote>
+&lt;hr>
+&lt;p>感谢大家一如既往的支持，也希望这个课程能够真正的帮助到大家，想要购买的同学，添加我下面的微信，有任何疑问都可以进行咨询。&lt;/p>
+&lt;p>&lt;strong>最后再附上课程详情链接：&lt;/strong>&lt;/p>
+&lt;p>&lt;a class="link" href="https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b" target="_blank" rel="noopener"
+>https://av6huf2e1k.feishu.cn/docx/JCssdlgF4oRADcxxLqncPpRCn5b&lt;/a>&lt;/p></description></item></channel></rss>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>SQL 数据库 on roseduan</title><link>https://roseduan.github.io/tags/sql-%E6%95%B0%E6%8D%AE%E5%BA%93/</link><description>Recent content in SQL 数据库 on roseduan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 05 Dec 2024 16:51:56 +0800</lastBuildDate><atom:link href="https://roseduan.github.io/tags/sql-%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml"/><item><title>Rust 手写数据库的成就感！</title><link>https://roseduan.github.io/p/rust-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%88%90%E5%B0%B1%E6%84%9F/</link><pubDate>Thu, 05 Dec 2024 16:51:56 +0800</pubDate><guid>https://roseduan.github.io/p/rust-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%88%90%E5%B0%B1%E6%84%9F/</guid><description>&lt;p>前几天刚好完成了 rust 手写数据库课程的命令行工具，有一个交互式的客户端，瞬间成就感拉满了！&lt;/p>
+&lt;p>不枉我写这个项目接近一年的时间，觉得之前的努力都没有白费哈哈。&lt;/p>
+&lt;p>在这个客户端当中，可以创建表：&lt;/p>
+&lt;p>&lt;img src="https://picx.zhimg.com/v2-8914f71c13b92f6a9abb23863518a40d_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>可以增删改查数据：&lt;/p>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-5a9d47cf3434e97910dc1f78ef641481_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-1542ec04ea4aa071a377b1d5854e366c_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>可以进行常见的 sql 查询，比如&lt;/p>
+&lt;ul>
+&lt;li>Order By&lt;/li>
+&lt;li>Limit 和 Offset&lt;/li>
+&lt;li>Projection 投影&lt;/li>
+&lt;li>Join 语句&lt;/li>
+&lt;li>Agg &lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251216851&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e8%81%9a%e9%9b%86%e5%87%bd%e6%95%b0&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>聚集函数&lt;/a>&lt;/li>
+&lt;li>Group By 分组&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://pic4.zhimg.com/v2-e9a17a9e177cac1ea41199522210ac71_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-39664db4a1d182b1d8ac245f0754a72b_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>并且还支持 ACID 的事务操作：&lt;/p>
+&lt;p>&lt;img src="https://pica.zhimg.com/v2-fcaf19b7e6715ee293375e36331d6978_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>也可以查看当前表的信息：&lt;/p>
+&lt;p>&lt;img src="https://pic3.zhimg.com/v2-f88cc3ff3f6573c1e3a270f9d110aae4_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>《从零实现 SQL 数据库》是我今年开始搞的，最初也只是想着试试看能不能做，但是后来帮助了一些同学，他们都从中学习到了很多，这也让我一路坚持到了现在。&lt;/p>
+&lt;p>课程虽然实现的只是一个非常简单的数据库，但是麻雀虽小五脏俱全，数据库内核的各个模块基本都实现了。&lt;/p>
+&lt;p>相信通过这样一个项目，对编程基础、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251216851&amp;amp;content_type=Article&amp;amp;match_order=2&amp;amp;q=rust&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>rust&lt;/a> 上手、&lt;a class="link" href="https://zhida.zhihu.com/search?content_id=251216851&amp;amp;content_type=Article&amp;amp;match_order=1&amp;amp;q=%e9%a1%b9%e7%9b%ae%e5%ae%9e%e6%88%98&amp;amp;zhida_source=entity" target="_blank" rel="noopener"
+>项目实战&lt;/a>、系统设计等等能力都会上一个台阶！&lt;/p>
+&lt;p>现在课程项目接近尾声了，代码量（加注释）接近 6000 行，是非常不错的适合上手和实践 rust 的项目。&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-2189148cc0a9a5c22c7769857b49e970_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>课程的详细目录如下：&lt;/p>
+&lt;p>&lt;img src="https://pic1.zhimg.com/v2-67a4387d0a16cc4ad2880126b0ebb19a_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>&lt;img src="https://pic2.zhimg.com/v2-d3eb15903564359b63aebbefd6545ca9_1440w.jpg"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;p>感兴趣的同学可以进这个课程详情链接查看：&lt;/p>
+&lt;p>&lt;a class="link" href="https://icnyamgobd0u.feishu.cn/docx/AbXZdEbY0obdcTxF0FKcx4Pqnyf" target="_blank" rel="noopener"
+>https://icnyamgobd0u.feishu.cn/docx/AbXZdEbY0obdcTxF0FKcx4Pqnyf&lt;/a>&lt;/p></description></item></channel></rss>
