@@ -27,7 +27,7 @@ tags:
 
 国内数据库行业大致已经进入到了存量淘汰的阶段，在这样的一个趋势下，对我们个人来说有太多的不确定性，未来只能说走一步看一步了。
 
-### **[开源项目](https://zhida.zhihu.com/search?content_id=251680215&content_type=Article&match_order=1&q=开源项目&zhida_source=entity)**
+### **开源项目**
 
 今年在开源项目方面没有投入太多的精力，因为项目已经趋于稳定，功能也比较完善，大多是一些常规迭代更新，根据一些社区 issue 反馈来驱动。
 
